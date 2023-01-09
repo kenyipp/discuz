@@ -1,0 +1,125 @@
+use reqwest;
+use lazy_static::lazy_static;
+use std::collections::HashMap;
+use std::{ fmt, error::Error };
+use tokio::sync::Mutex;
+use serde::{ Serialize, Deserialize };
+use jsonwebtoken::{ decode, decode_header, DecodingKey, Validation, Algorithm };
+use error_stack::{ IntoReport, Report, Result, ResultExt };
+
+lazy_static! {
+	static ref JWK_CACHE: Mutex<HashMap<String, Vec<JWK>>> = Mutex::new(HashMap::new());
+}
+
+pub async fn validate_cognito_access_token(
+	jwk_url: &str,
+	access_token: &str
+) -> Result<Payload, JWTError> {
+	let jwk_keys = get_json_web_tokens(jwk_url.to_owned()).await?;
+
+	let header = decode_header(access_token)
+		.into_report()
+		.change_context(JWTError::InvalidAccessToken)?;
+
+	let jwk = jwk_keys
+		.iter()
+		.enumerate()
+		.find(|jwk| jwk.1.kid == header.to_owned().kid.unwrap());
+
+	let decoding_key = match jwk {
+		Some(jwk) => {
+			let JWK { n, e, .. } = jwk.1;
+			match DecodingKey::from_rsa_components(n, e) {
+				Ok(decoding_key) => decoding_key,
+				Err(_) => {
+					return Err(Report::new(JWTError::InvalidJsonWebKey));
+				}
+			}
+		}
+		None => {
+			return Err(Report::new(JWTError::InvalidJsonWebKey));
+		}
+	};
+
+	let decoded = decode::<Payload>(access_token, &decoding_key, &Validation::new(Algorithm::RS256))
+		.into_report()
+		.change_context(JWTError::InvalidAccessToken)?;
+
+	Ok(decoded.claims)
+}
+
+pub async fn get_json_web_tokens(jwk_url: String) -> Result<Vec<JWK>, JWTError> {
+	let mut cache = JWK_CACHE.lock().await;
+	if !cache.contains_key(&jwk_url) {
+		let response: JWKsRes = reqwest
+			::get(&jwk_url).await
+			.into_report()
+			.change_context(JWTError::InvalidJWTUrl)
+			.attach_printable("The JWK Url is not valid url")?
+			.json().await
+			.into_report()
+			.change_context(JWTError::Generic)?;
+		cache.insert(jwk_url.to_owned(), response.keys);
+	}
+	Ok(cache.get(&jwk_url).unwrap().clone())
+}
+
+/**
+ *
+ * Errors
+ *
+ */
+#[derive(Debug)]
+pub enum JWTError {
+	Generic,
+	InvalidJWTUrl,
+	InvalidAccessToken,
+	InvalidJsonWebKey,
+}
+
+impl fmt::Display for JWTError {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		f.write_str("JWT Error: Unable to verify the access token")
+	}
+}
+
+impl Error for JWTError {}
+
+/**
+ *
+ * Types
+ *
+ */
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Payload {
+	pub sub: String,
+	#[serde(rename = "cognito:groups")]
+	pub cognito_groups: Vec<String>,
+	pub iss: String,
+	pub version: u32,
+	pub client_id: String,
+	pub origin_jti: String,
+	pub token_use: String,
+	pub scope: String,
+	pub auth_time: u32,
+	pub exp: u32,
+	pub jti: String,
+	pub username: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct JWK {
+	pub alg: String,
+	pub e: String,
+	pub kid: String,
+	pub kty: String,
+	pub n: String,
+	#[serde(rename = "use")]
+	pub jwk_use: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+struct JWKsRes {
+	keys: Vec<JWK>,
+}

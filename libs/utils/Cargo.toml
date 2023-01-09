@@ -1,0 +1,29 @@
+[package]
+name = "discuz-utils"
+version = "0.1.0"
+authors = ["Ken <ken20206@gmail.com>"]
+rust-version = "1.66.0"
+description = "A set of utils used across the application. "
+edition = "2021"
+license = "ISC"
+keywords = ["discuz", "utils"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+dotenv = "0.15.0"
+error-stack = "0.2.4"
+figment = { version = "0.10.8", features = ["env", "toml"] }
+serde = { version = "1.0.151", features = ["derive"] }
+serde_derive = "1.0.151"
+sea-orm = { version = "0.10.5", features = [
+	"sqlx-mysql",
+	"sqlx-sqlite",
+	"runtime-tokio-native-tls",
+] }
+aws-config = "0.52.0"
+lazy_static = "1.4.0"
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.11.13", features = ["json"] }
+jsonwebtoken = "8.2.0"
+async-trait = "0.1.60"

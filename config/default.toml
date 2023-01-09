@@ -1,0 +1,21 @@
+# Default settings
+run_mode = "testing"
+
+[database]
+hostname = "localhost"
+username = "discuz"
+password = "discuz"
+port = 3306
+database = "discuz"
+
+[app]
+port = 3100
+
+[amazon]
+region = "ca-central-1"
+
+[cognito]
+user_pool_id = ""
+domain = ""
+client_id = ""
+redirect_uri = "http://localhost:3000"

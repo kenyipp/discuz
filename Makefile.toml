@@ -1,0 +1,24 @@
+[env]
+CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
+
+[tasks.lint]
+command = "cargo"
+args = ["clippy", "--tests", "--examples", "--all-targets", "--workspace"]
+
+[tasks.test]
+env = { RUN_MODE = "testing" }
+command = "cargo"
+args = ["nextest", "run"]
+
+[tasks.dev]
+workspace = false
+cwd = "./apps/server"
+env = { RUN_MODE = "development", RUST_BACKTRACE = "0" }
+command = "cargo"
+args = ["watch", "-x run"]
+
+[tasks.db-migrate]
+workspace = false
+cwd = "./apps/db-migration"
+command = "cargo"
+args = ["run"]

@@ -1,0 +1,14 @@
+# Default settings
+run_mode = "testing"
+
+[database]
+url = "sqlite::memory:" # Using Sqlite for unit testing
+
+[amazon]
+region = "ca-central-1"
+
+[cognito]
+user_pool_id = ""
+domain = ""
+client_id = ""
+redirect_uri = "http://localhost:3000"
