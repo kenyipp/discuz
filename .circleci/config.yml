@@ -1,0 +1,44 @@
+version: 2.1
+
+workflows:
+  Main:
+    jobs:
+      - Linting
+      - Testing
+      - Migration Test
+
+jobs:
+  Linting:
+    docker:
+      - image: cimg/rust:1.65.0
+    steps:
+      - checkout
+      - run:
+          name: Install Clippy
+          command: rustup component add clippy
+      - run:
+          command: cargo clippy --tests --examples --all-targets --workspace
+  Testing:
+    docker:
+      - image: cimg/rust:1.65.0
+    environment:
+      RUN_MODE: testing
+    steps:
+      - checkout
+      - run:
+          command: cargo test
+  Migration Test:
+    docker:
+      - image: cimg/rust:1.65.0
+      - image: cimg/mysql:5.7
+        environment:
+          MYSQL_ROOT_PASSWORD: mysql
+          MYSQL_PASSWORD: mysql
+          MYSQL_USER: mysql
+          MYSQL_DATABASE: discuz
+    environment:
+      RUN_MODE: ci
+    steps:
+      - checkout
+      - run:
+          command: cargo run --bin db-migration

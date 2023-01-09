@@ -1,0 +1,6 @@
+[database]
+hostname = "localhost"
+username = "mysql"
+password = "mysql"
+port = 3306
+database = "discuz"

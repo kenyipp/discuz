@@ -2,7 +2,7 @@
 name = "discuz-layers"
 version = "0.1.0"
 authors = ["Ken <ken20206@gmail.com>"]
-rust-version = "1.66.0"
+rust-version = "1.65.0"
 description = "The main business logic of this application"
 edition = "2021"
 license = "ISC"

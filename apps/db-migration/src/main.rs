@@ -10,9 +10,10 @@ async fn main() -> Result<(), ()> {
 	let config = get_config();
 	let Config { run_mode, database: database_config, .. } = config;
 
-	assert_eq!(
-		run_mode.to_owned(),
-		"production",
+	let run_mode = run_mode.to_owned();
+
+	assert!(
+		run_mode == "production" || run_mode == "ci",
 		"Only allow running database migration on the production environment"
 	);
 
