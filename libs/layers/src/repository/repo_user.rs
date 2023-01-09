@@ -1,8 +1,12 @@
-use std::{ fmt, error::Error };
-pub use super::database::db_user::{ CreateUserInput, InputUserList, UpdateUserInput, User };
-use super::database::db_user::{ DbUser, DbUserTrait };
+use std::{error::Error, fmt};
+
 use async_trait::async_trait;
-use error_stack::{ Result, IntoReport, ResultExt };
+use error_stack::{IntoReport, Result, ResultExt};
+
+pub use crate::repository::database::db_user::{
+	CreateUserInput, InputUserList, UpdateUserInput, User,
+};
+use crate::repository::database::db_user::{DbUser, DbUserTrait};
 
 #[derive(Debug, Clone)]
 pub struct RepoUser {
@@ -27,23 +31,43 @@ impl RepoUser {
 #[async_trait]
 impl RepoUserTrait for RepoUser {
 	async fn create(&self, input: &CreateUserInput) -> Result<String, RepoError> {
-		self.db_user.create(input).await.into_report().change_context(RepoError::Generic)
+		self.db_user
+			.create(input)
+			.await
+			.into_report()
+			.change_context(RepoError::Generic)
 	}
 
 	async fn update(&self, input: &UpdateUserInput) -> Result<(), RepoError> {
-		self.db_user.update(input).await.into_report().change_context(RepoError::Generic)
+		self.db_user
+			.update(input)
+			.await
+			.into_report()
+			.change_context(RepoError::Generic)
 	}
 
 	async fn list(&self, input: &InputUserList) -> Result<Vec<User>, RepoError> {
-		self.db_user.list(input).await.into_report().change_context(RepoError::Generic)
+		self.db_user
+			.list(input)
+			.await
+			.into_report()
+			.change_context(RepoError::Generic)
 	}
 
 	async fn find_by_id(&self, id: &str) -> Result<Option<User>, RepoError> {
-		self.db_user.find_by_id(id).await.into_report().change_context(RepoError::Generic)
+		self.db_user
+			.find_by_id(id)
+			.await
+			.into_report()
+			.change_context(RepoError::Generic)
 	}
 
 	async fn find_by_sub(&self, sub: &str) -> Result<Option<User>, RepoError> {
-		self.db_user.find_by_sub(sub).await.into_report().change_context(RepoError::Generic)
+		self.db_user
+			.find_by_sub(sub)
+			.await
+			.into_report()
+			.change_context(RepoError::Generic)
 	}
 }
 

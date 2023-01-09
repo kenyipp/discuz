@@ -1,9 +1,11 @@
 use std::pin::Pin;
+
+use actix_web::{dev, Error, FromRequest, HttpRequest, Result};
+use discuz_layers::service::user::user_service::{User, UserServiceTrait};
 use futures::Future;
 use serde::Deserialize;
-use actix_web::{ Result, Error, HttpRequest, FromRequest, dev };
-use discuz_layers::service::user::user_service::{ User, UserServiceTrait };
 use tracing::trace;
+
 use crate::utils::app_state::AppState;
 
 #[derive(Debug, Deserialize)]
@@ -19,13 +21,12 @@ impl FromRequest for Auth {
 		let user_service = req
 			.app_data::<actix_web::web::Data<AppState>>()
 			.expect("The user service is not set up in the app state")
-			.user_service.clone();
+			.user_service
+			.clone();
 		Box::pin(async move {
 			if let Some(access_token) = access_token {
 				match user_service.get_profile(&access_token).await {
-					Ok(user) => {
-						Ok(Auth { user: Some(user) })
-					}
+					Ok(user) => Ok(Auth { user: Some(user) }),
 					Err(error) => {
 						trace!("Unable to create profile by the access token\n{:#?}", error);
 						Ok(Auth { user: None })

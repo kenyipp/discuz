@@ -5,6 +5,7 @@ workflows:
     jobs:
       - Linting
       - Testing
+      - Formatting
       - Migration Test
 
 jobs:
@@ -42,3 +43,12 @@ jobs:
       - checkout
       - run:
           command: cargo run --bin db-migration
+  Formatting:
+    docker:
+      - image: cimg/rust:1.65.0
+    steps:
+      - checkout
+      - run:
+          command: rustup component add rustfmt
+      - run:
+          command: cargo fmt --all -- --check

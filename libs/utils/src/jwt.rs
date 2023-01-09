@@ -1,11 +1,11 @@
-use reqwest;
+use std::{collections::HashMap, error::Error, fmt};
+
+use error_stack::{IntoReport, Report, Result, ResultExt};
+use jsonwebtoken::{decode, decode_header, Algorithm, DecodingKey, Validation};
 use lazy_static::lazy_static;
-use std::collections::HashMap;
-use std::{ fmt, error::Error };
+use reqwest;
+use serde::{Deserialize, Serialize};
 use tokio::sync::Mutex;
-use serde::{ Serialize, Deserialize };
-use jsonwebtoken::{ decode, decode_header, DecodingKey, Validation, Algorithm };
-use error_stack::{ IntoReport, Report, Result, ResultExt };
 
 lazy_static! {
 	static ref JWK_CACHE: Mutex<HashMap<String, Vec<JWK>>> = Mutex::new(HashMap::new());
@@ -13,7 +13,7 @@ lazy_static! {
 
 pub async fn validate_cognito_access_token(
 	jwk_url: &str,
-	access_token: &str
+	access_token: &str,
 ) -> Result<Payload, JWTError> {
 	let jwk_keys = get_json_web_tokens(jwk_url.to_owned()).await?;
 
@@ -41,9 +41,13 @@ pub async fn validate_cognito_access_token(
 		}
 	};
 
-	let decoded = decode::<Payload>(access_token, &decoding_key, &Validation::new(Algorithm::RS256))
-		.into_report()
-		.change_context(JWTError::InvalidAccessToken)?;
+	let decoded = decode::<Payload>(
+		access_token,
+		&decoding_key,
+		&Validation::new(Algorithm::RS256),
+	)
+	.into_report()
+	.change_context(JWTError::InvalidAccessToken)?;
 
 	Ok(decoded.claims)
 }
@@ -51,12 +55,13 @@ pub async fn validate_cognito_access_token(
 pub async fn get_json_web_tokens(jwk_url: String) -> Result<Vec<JWK>, JWTError> {
 	let mut cache = JWK_CACHE.lock().await;
 	if !cache.contains_key(&jwk_url) {
-		let response: JWKsRes = reqwest
-			::get(&jwk_url).await
+		let response: JWKsRes = reqwest::get(&jwk_url)
+			.await
 			.into_report()
 			.change_context(JWTError::InvalidJWTUrl)
 			.attach_printable("The JWK Url is not valid url")?
-			.json().await
+			.json()
+			.await
 			.into_report()
 			.change_context(JWTError::Generic)?;
 		cache.insert(jwk_url.to_owned(), response.keys);

@@ -1,14 +1,14 @@
 use std::sync::Arc;
+
+use actix_web::{middleware, web, App, HttpResponse, HttpServer, Responder};
 use discuz_layers::service::factory::Factory;
+use discuz_utils::{amazon::get_aws_sdk_config, config::get_config, get_db_connection};
 use dotenv::dotenv;
-use discuz_utils::{ config::get_config, get_db_connection, amazon::get_aws_sdk_config };
-use actix_web::{ middleware, web, App, HttpResponse, HttpServer, Responder };
 use futures::join;
 use tracing::info;
+
 use crate::{
-	utils::app_state::AppState,
-	auth::auth_route::auth_route,
-	user::user_route::user_route,
+	auth::auth_route::auth_route, user::user_route::user_route, utils::app_state::AppState,
 };
 
 pub async fn listen() -> Result<(), ()> {
@@ -18,7 +18,9 @@ pub async fn listen() -> Result<(), ()> {
 	// App shared configs
 	let config = get_config();
 	let db_connection = Arc::new(
-		get_db_connection().await.expect("Unable to connect the database")
+		get_db_connection()
+			.await
+			.expect("Unable to connect the database"),
 	);
 	let sdk_config = Arc::new(get_aws_sdk_config().await);
 
@@ -44,9 +46,9 @@ pub async fn listen() -> Result<(), ()> {
 			// .route("/api/health-check", web::get().to(health_check))
 			.service(web::scope("/api").configure(api_routes))
 	})
-		.bind(("127.0.0.1", port))
-		.unwrap()
-		.run();
+	.bind(("127.0.0.1", port))
+	.unwrap()
+	.run();
 
 	let (server_result, ..) = join!(server, async { info!("Server is listened at port {port}") });
 	server_result.expect("Unable to start the server");

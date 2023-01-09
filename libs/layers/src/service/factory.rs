@@ -1,25 +1,18 @@
 use std::sync::Arc;
+
 use aws_config::SdkConfig;
 use sea_orm::DatabaseConnection;
 
-/**
- *
- * Auth related modules
- *
- */
-use crate::service::auth::auth_service::AuthService;
-use crate::service::auth::provider::api_provider::ApiCognito;
-
-/**
- *
- * User related modules
- *
- */
-use crate::repository::database::db_user::DbUser;
-use crate::repository::repo_user::RepoUser;
-use crate::service::user::user_service::UserService;
-
-use super::auth::auth_service::AuthServiceTrait;
+use crate::{
+	repository::{database::db_user::DbUser, repo_user::RepoUser},
+	service::{
+		auth::{
+			auth_service::{AuthService, AuthServiceTrait},
+			provider::api_provider::ApiCognito,
+		},
+		user::user_service::UserService,
+	},
+};
 
 pub struct Factory {
 	db_connection: Arc<DatabaseConnection>,

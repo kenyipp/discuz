@@ -1,8 +1,10 @@
-use tokio::sync::Mutex;
 use std::collections::HashMap;
-use error_stack::{ IntoReport, Report, Result, ResultExt };
+
+use error_stack::{IntoReport, Report, Result, ResultExt};
+use jsonwebtoken::{decode, decode_header, Algorithm, DecodingKey, Validation};
+use tokio::sync::Mutex;
+
 use crate::service::auth::provider::errors::ProviderError;
-use jsonwebtoken::{ decode, decode_header, DecodingKey, Validation, Algorithm };
 
 lazy_static! {
 	static ref JWK_CACHE: Mutex<HashMap<String, Vec<Jwk>>> = Mutex::new(HashMap::new());
@@ -11,7 +13,7 @@ lazy_static! {
 pub async fn validate_access_token(
 	region: &str,
 	user_pool_id: &str,
-	access_token: &str
+	access_token: &str,
 ) -> Result<String, ProviderError> {
 	// Download the Jwk keys by the region and user pool id
 	let jwk_url = get_jwk_url(region, user_pool_id);
@@ -32,21 +34,17 @@ pub async fn validate_access_token(
 			match DecodingKey::from_rsa_components(n, e) {
 				Ok(decoding_key) => decoding_key,
 				Err(_) => {
-					return Err(
-						Report::new(
-							ProviderError::Generic(
-								"Unable to create decoding key from the selected Jwk".to_string()
-							)
-						)
-					);
+					return Err(Report::new(ProviderError::Generic(
+						"Unable to create decoding key from the selected Jwk".to_string(),
+					)));
 				}
 			}
 		}
 		None => {
 			return Err(
 				Report::new(ProviderError::InvalidAccessToken).attach_printable(
-					"Unable to retrieve the associated json web key for this access token"
-				)
+					"Unable to retrieve the associated json web key for this access token",
+				),
 			);
 		}
 	};
@@ -54,10 +52,10 @@ pub async fn validate_access_token(
 	let decoded = decode::<CognitoPayload>(
 		access_token,
 		&decoding_key,
-		&Validation::new(Algorithm::RS256)
+		&Validation::new(Algorithm::RS256),
 	)
-		.into_report()
-		.change_context(ProviderError::InvalidAccessToken)?;
+	.into_report()
+	.change_context(ProviderError::InvalidAccessToken)?;
 
 	Ok(decoded.claims.sub)
 }
@@ -65,25 +63,27 @@ pub async fn validate_access_token(
 async fn get_json_web_tokens(jwk_url: &str) -> Result<Vec<Jwk>, ProviderError> {
 	let mut cache = JWK_CACHE.lock().await;
 	if !cache.contains_key(jwk_url) {
-		let response: GetJsonWebTokensResponse = reqwest
-			::get(jwk_url).await
+		let response: GetJsonWebTokensResponse = reqwest::get(jwk_url)
+			.await
 			.into_report()
 			.change_context(ProviderError::InvalidCredentials)
 			.attach_printable("The JWK Url is not valid url")?
-			.json().await
+			.json()
+			.await
 			.into_report()
-			.change_context(
-				ProviderError::Generic(
-					"Unable to convert the API response to json object".to_string()
-				)
-			)?;
+			.change_context(ProviderError::Generic(
+				"Unable to convert the API response to json object".to_string(),
+			))?;
 		cache.insert(jwk_url.to_owned(), response.keys);
 	}
 	Ok(cache.get(jwk_url).unwrap().clone())
 }
 
 fn get_jwk_url(region: &str, user_pool_id: &str) -> String {
-	format!("https://cognito-idp.{}.amazonaws.com/{}/.well-known/jwks.json", region, user_pool_id)
+	format!(
+		"https://cognito-idp.{}.amazonaws.com/{}/.well-known/jwks.json",
+		region, user_pool_id
+	)
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

@@ -1,20 +1,20 @@
-use serde::{ Serialize, Deserialize };
-use actix_web::{ web, HttpResponse };
+use actix_web::{web, HttpResponse};
+use discuz_layers::service::user::user_service::{UpdateUserInput, UserServiceTrait};
+use serde::{Deserialize, Serialize};
 use tracing::trace;
-use discuz_layers::service::user::user_service::{ UpdateUserInput, UserServiceTrait };
+
 use crate::{
+	auth::errors::AuthError,
 	errors::AppError,
 	user::dto::user::DtoUser,
-	utils::auth::Auth,
-	utils::app_state::AppState,
-	auth::errors::AuthError,
+	utils::{app_state::AppState, auth::Auth},
 };
 
 pub async fn update_user(
 	params: web::Path<Params>,
 	body: web::Json<Body>,
 	app_state: web::Data<AppState>,
-	auth: Auth
+	auth: Auth,
 ) -> Result<HttpResponse, AppError> {
 	let user = auth.user.ok_or(AuthError::InvalidAccessToken)?;
 	let id = params.id.to_owned();
@@ -37,7 +37,8 @@ pub async fn update_user(
 	})?;
 
 	let user = user_service
-		.find_by_id(&id).await
+		.find_by_id(&id)
+		.await
 		.map_err(|error| {
 			trace!("{:#?}", error);
 			AppError::internal_server_error()

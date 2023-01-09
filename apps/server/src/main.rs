@@ -2,6 +2,7 @@
 extern crate tracing;
 
 use std::env;
+
 use dotenv::dotenv;
 
 #[tokio::main]

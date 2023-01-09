@@ -1,7 +1,8 @@
 use std::sync::Arc;
-use sea_orm::DatabaseConnection;
+
 use aws_config::SdkConfig;
-use discuz_layers::service::{ auth::auth_service::AuthService, user::user_service::UserService };
+use discuz_layers::service::{auth::auth_service::AuthService, user::user_service::UserService};
+use sea_orm::DatabaseConnection;
 
 #[derive(Debug, Clone)]
 pub struct AppState {

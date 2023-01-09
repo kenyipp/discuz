@@ -1,6 +1,6 @@
-pub mod config;
 pub mod amazon;
-pub mod jwt;
+pub mod config;
 mod db_connection;
+pub mod jwt;
 
 pub use db_connection::*;

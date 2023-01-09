@@ -1,8 +1,10 @@
-use crate::{ auth::errors::AuthError };
-use serde::{ Serialize };
+use std::{convert::From, fmt};
+
+use actix_web::{error::ResponseError, http::StatusCode, HttpResponse};
+use serde::Serialize;
 use uuid::Uuid;
-use std::{ fmt, convert::From };
-use actix_web::{ error::ResponseError, http::StatusCode, HttpResponse };
+
+use crate::auth::errors::AuthError;
 
 #[derive(Debug, Serialize, Clone)]
 pub struct AppError {

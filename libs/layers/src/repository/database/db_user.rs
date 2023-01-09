@@ -1,10 +1,11 @@
-use super::entities::user;
+use std::sync::Arc;
+
 use async_trait::async_trait;
 use chrono;
-use sea_orm::DatabaseConnection;
-use sea_orm::*;
-use std::sync::Arc;
+use sea_orm::{DatabaseConnection, *};
 use uuid::Uuid;
+
+use super::entities::user;
 pub use super::entities::user::User;
 
 #[derive(Debug, Clone)]
@@ -45,13 +46,14 @@ impl DbUserTrait for DbUser {
 			updated_at: Set(now),
 			..Default::default()
 		};
-		user::Entity::insert(user).exec(&*self.db_connection).await?;
+		user::Entity::insert(user)
+			.exec(&*self.db_connection)
+			.await?;
 		Ok(user_id)
 	}
 
 	async fn list(&self, input: &InputUserList) -> Result<Vec<User>, DbErr> {
-		let mut builder = user::Entity
-			::find()
+		let mut builder = user::Entity::find()
 			.order_by_desc(user::Column::CreatedAt)
 			.filter(user::Column::StatusId.eq("A"))
 			.limit(input.limit)
@@ -67,18 +69,20 @@ impl DbUserTrait for DbUser {
 
 	async fn update(&self, input: &UpdateUserInput) -> Result<(), DbErr> {
 		let mut user: user::ActiveModel = match self.find_by_id(&input.id).await {
-			Ok(user_result) => {
-				match user_result {
-					Some(user) => user.into(),
-					None => {
-						return Err(DbErr::Custom(format!("User with id #{} not exist", input.id)));
-					}
+			Ok(user_result) => match user_result {
+				Some(user) => user.into(),
+				None => {
+					return Err(DbErr::Custom(format!(
+						"User with id #{} not exist",
+						input.id
+					)));
 				}
-			}
+			},
 			Err(_) => {
-				return Err(
-					DbErr::Custom(format!("Unable to retrieve user with user id: {} ", input.id))
-				);
+				return Err(DbErr::Custom(format!(
+					"Unable to retrieve user with user id: {} ",
+					input.id
+				)));
 			}
 		};
 
@@ -90,18 +94,18 @@ impl DbUserTrait for DbUser {
 	}
 
 	async fn find_by_id(&self, id: &str) -> Result<Option<User>, DbErr> {
-		let user = user::Entity
-			::find()
+		let user = user::Entity::find()
 			.filter(user::Column::Id.eq(id))
-			.one(&*self.db_connection).await;
+			.one(&*self.db_connection)
+			.await;
 		user
 	}
 
 	async fn find_by_sub(&self, sub: &str) -> Result<Option<User>, DbErr> {
-		let user = user::Entity
-			::find()
+		let user = user::Entity::find()
 			.filter(user::Column::Sub.eq(sub))
-			.one(&*self.db_connection).await;
+			.one(&*self.db_connection)
+			.await;
 		user
 	}
 }

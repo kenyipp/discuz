@@ -1,10 +1,8 @@
-use serde::Serialize;
 use actix_web::HttpResponse;
+use serde::Serialize;
+
 use crate::{
-	auth::errors::AuthError,
-	user::dto::user::DtoUser,
-	utils::auth::Auth,
-	errors::AppError,
+	auth::errors::AuthError, errors::AppError, user::dto::user::DtoUser, utils::auth::Auth,
 };
 
 pub async fn get_me(auth: Auth) -> Result<HttpResponse, AppError> {

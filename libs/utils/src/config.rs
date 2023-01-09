@@ -1,10 +1,14 @@
-use std::{ env, sync::Arc, fmt, error::Error };
+use std::{env, error::Error, fmt, sync::Arc};
+
+use dotenv::dotenv;
+use error_stack::{IntoReport, Result, ResultExt};
+use figment::{
+	providers::{Env, Format, Toml},
+	Figment,
+};
+use lazy_static::lazy_static;
 use serde::Serialize;
 use serde_derive::Deserialize;
-use lazy_static::lazy_static;
-use dotenv::dotenv;
-use error_stack::{ Result, IntoReport, ResultExt };
-use figment::{ providers::{ Env, Format, Toml }, Figment };
 
 lazy_static! {
 	static ref CONFIG: Arc<Config> = Arc::new(Config::new().unwrap());
@@ -61,20 +65,18 @@ impl Config {
 		Figment::new()
 			.merge(Toml::file("config/default.toml"))
 			.merge(Toml::file(format!("config/{}.toml", run_mode)))
-			.merge(
-				Env::raw().map(|key| {
-					let key_string = key.as_str();
-					if key_string.starts_with("DATABASE_") {
-						key_string.replace("DATABASE_", "DATABASE.").into()
-					} else if key_string.starts_with("AWS_") {
-						key_string.replace("AWS_", "AMAZON.").into()
-					} else if key_string.starts_with("COGNITO_") {
-						key_string.replace("COGNITO_", "COGNITO.").into()
-					} else {
-						key_string.into()
-					}
-				})
-			)
+			.merge(Env::raw().map(|key| {
+				let key_string = key.as_str();
+				if key_string.starts_with("DATABASE_") {
+					key_string.replace("DATABASE_", "DATABASE.").into()
+				} else if key_string.starts_with("AWS_") {
+					key_string.replace("AWS_", "AMAZON.").into()
+				} else if key_string.starts_with("COGNITO_") {
+					key_string.replace("COGNITO_", "COGNITO.").into()
+				} else {
+					key_string.into()
+				}
+			}))
 			.extract()
 			.into_report()
 			.change_context(ConfigError::Generic)

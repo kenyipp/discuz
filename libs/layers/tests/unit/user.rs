@@ -1,24 +1,28 @@
 use std::sync::Arc;
-use error_stack::Result;
-use discuz_utils::get_db_connection;
+
 use discuz_layers::{
-	repository::{ repo_user::RepoUser, database::db_user::DbUser },
+	migration::{Migrator, MigratorTrait},
+	repository::{database::db_user::DbUser, repo_user::RepoUser},
 	service::{
 		auth::{
+			auth_service::{AuthServiceTrait, AuthUser},
 			errors::AuthError,
-			auth_service::{ AuthUser, AuthServiceTrait },
 			provider::utils::GetTokensOutput,
 		},
-		user::user_service::{ UserService, UserServiceTrait, UpdateUserInput },
+		user::user_service::{UpdateUserInput, UserService, UserServiceTrait},
 	},
-	migration::{ Migrator, MigratorTrait },
 };
+use discuz_utils::get_db_connection;
+use error_stack::Result;
 
 #[tokio::test]
 async fn user_get_profile() {
 	let user_service = setup().await;
 	let auth_service = user_service.auth_service.to_owned();
-	let auth_user = auth_service.get_auth_user_by_access_token("FAKE_ACCESS_TOKEN").await.unwrap();
+	let auth_user = auth_service
+		.get_auth_user_by_access_token("FAKE_ACCESS_TOKEN")
+		.await
+		.unwrap();
 	let user = user_service.get_profile("FAKE_SUB").await.unwrap();
 
 	assert_eq!(auth_user.sub, user.sub);
@@ -50,7 +54,10 @@ async fn setup() -> UserService {
 	let auth_service = Arc::new(MockAuthService);
 	let db_user = DbUser::new(&db_connection);
 	let repo_user = RepoUser::new(db_user);
-	UserService { repo_user, auth_service }
+	UserService {
+		repo_user,
+		auth_service,
+	}
 }
 
 #[derive(Debug)]
@@ -63,7 +70,7 @@ impl AuthServiceTrait for MockAuthService {
 	}
 	async fn get_auth_user_by_access_token(
 		&self,
-		_access_token: &str
+		_access_token: &str,
 	) -> Result<AuthUser, AuthError> {
 		Ok(AuthUser {
 			username: "USERNAME".to_owned(),
