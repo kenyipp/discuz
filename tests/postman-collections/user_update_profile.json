@@ -1,0 +1,153 @@
+{
+	"info": {
+		"_postman_id": "4f87534a-ecaf-4642-9724-2f36028bbf14",
+		"name": "Discuz",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "870623"
+	},
+	"item": [
+		{
+			"name": "User update profile",
+			"item": [
+				{
+					"name": "Get user profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The API should return a success status code of 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"let jsonData = pm.response.json();",
+									"",
+									"pm.test(\"The API should return a user response\", function () {",
+									"    pm.expect(jsonData.data).is.not.null;    ",
+									"    pm.expect(jsonData.data.id).is.not.null;",
+									"    pm.expect(jsonData.data.email).equals(\"fake@user.com\");",
+									"});",
+									"",
+									"pm.environment.set(\"user_id\", jsonData.data.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{domain}}/api/user/me",
+							"protocol": "http",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The API should return a success status code of 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"let jsonData = pm.response.json();",
+									"",
+									"pm.test(\"The API should return a user response\", function () {",
+									"    pm.expect(jsonData.data).is.not.null;    ",
+									"    pm.expect(jsonData.data.name).equal(\"New User Name\")",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New User Name\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{domain}}/api/user/{{user_id}}",
+							"protocol": "http",
+							"host": [
+								"{{domain}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "domain",
+			"value": "localhost:3100",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "FAKE_ACCESS_TOKEN"
+		}
+	]
+}

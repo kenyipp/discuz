@@ -8,6 +8,13 @@ workflows:
       - Formatting
       - Migration Test
       - Spell Check
+      - Integration Test:
+          requires:
+            - Linting
+            - Testing
+            - Formatting
+            - Migration Test
+            - Spell Check
 
 jobs:
   Linting:
@@ -66,3 +73,24 @@ jobs:
           command: sudo npm install -g cspell@latest
       - run:
           command: cspell "**"
+
+  Integration Test:
+    docker:
+      - image: cimg/rust:1.65.0
+      - image: cimg/mysql:5.7
+        environment:
+          MYSQL_ROOT_PASSWORD: mysql
+          MYSQL_PASSWORD: mysql
+          MYSQL_USER: mysql
+          MYSQL_DATABASE: discuz
+    environment:
+      RUN_MODE: ci
+    steps:
+      - checkout
+      - run: cargo run --bin db-migration
+      - run: curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash - && sudo apt-get install -y nodejs
+      - run: sudo npm i -g newman
+      # - run:
+      #     working_directory: ./tests
+      #     command: ./api-test.sh
+

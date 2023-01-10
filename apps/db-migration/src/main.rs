@@ -9,17 +9,9 @@ async fn main() -> Result<(), ()> {
 	// Get the database connection information
 	let config = get_config();
 	let Config {
-		run_mode,
 		database: database_config,
 		..
 	} = config;
-
-	let run_mode = run_mode.to_owned();
-
-	assert!(
-		run_mode == "production" || run_mode == "ci",
-		"Only allow running database migration on the production environment"
-	);
 
 	let DatabaseConfig {
 		username,
