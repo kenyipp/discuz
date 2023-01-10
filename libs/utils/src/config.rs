@@ -1,12 +1,12 @@
-use std::{env, error::Error, fmt, sync::Arc};
+use std::{env, sync::Arc};
 
+use derive_more::{Display, Error};
 use dotenv::dotenv;
 use error_stack::{IntoReport, Result, ResultExt};
 use figment::{
 	providers::{Env, Format, Toml},
 	Figment,
 };
-use lazy_static::lazy_static;
 use serde::Serialize;
 use serde_derive::Deserialize;
 
@@ -87,15 +87,8 @@ impl Config {
 	}
 }
 
-#[derive(Debug)]
+#[derive(Debug, Error, Display)]
 pub enum ConfigError {
+	#[display(fmt = "Generic Error")]
 	Generic,
 }
-
-impl fmt::Display for ConfigError {
-	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-		f.write_str("Config Error")
-	}
-}
-
-impl Error for ConfigError {}

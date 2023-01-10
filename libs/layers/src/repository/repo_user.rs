@@ -4,9 +4,8 @@ use async_trait::async_trait;
 use error_stack::{IntoReport, Result, ResultExt};
 
 pub use crate::repository::database::db_user::{
-	CreateUserInput, InputUserList, UpdateUserInput, User,
+	CreateUserInput, DbUser, DbUserTrait, InputUserList, UpdateUserInput, User,
 };
-use crate::repository::database::db_user::{DbUser, DbUserTrait};
 
 #[derive(Debug, Clone)]
 pub struct RepoUser {

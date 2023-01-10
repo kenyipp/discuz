@@ -8,16 +8,17 @@ edition = "2021"
 license = "ISC"
 keywords = ["discuz", "layers"]
 
-
 [dependencies]
-discuz-utils = { path = "../utils" }
 async-trait = "0.1.60"
 aws-config = "0.52.0"
 aws-sdk-cognitoidentityprovider = "0.22.0"
 chrono = "0.4.23"
-dotenv = "0.15.0"
 derive_more = "0.99.17"
+discuz-utils = { path = "../utils" }
+dotenv = "0.15.0"
 error-stack = "0.2.4"
+jsonwebtoken = "8.2.0"
+lazy_static = "1.4.0"
 reqwest = { version = "0.11.13", features = ["json"] }
 sea-orm = { version = "0.10.5", features = [
 	"sqlx-mysql",
@@ -28,8 +29,7 @@ sea-orm-migration = "0.10.5"
 serde = { version = "1.0.150", features = ["derive"] }
 serde_json = "1.0.89"
 tokio = { version = "1", features = ["full"] }
+tracing = "0.1.37"
 uuid = "1.2.2"
-jsonwebtoken = "8.2.0"
-lazy_static = "1.4.0"
 
 [dev-dependencies]

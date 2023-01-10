@@ -7,6 +7,7 @@ workflows:
       - Testing
       - Formatting
       - Migration Test
+      - Spell Check
 
 jobs:
   Linting:
@@ -19,6 +20,7 @@ jobs:
           command: rustup component add clippy
       - run:
           command: cargo clippy --tests --examples --all-targets --workspace
+
   Testing:
     docker:
       - image: cimg/rust:1.65.0
@@ -28,6 +30,7 @@ jobs:
       - checkout
       - run:
           command: cargo test
+
   Migration Test:
     docker:
       - image: cimg/rust:1.65.0
@@ -43,6 +46,7 @@ jobs:
       - checkout
       - run:
           command: cargo run --bin db-migration
+
   Formatting:
     docker:
       - image: cimg/rust:1.65.0
@@ -52,3 +56,13 @@ jobs:
           command: rustup component add rustfmt
       - run:
           command: cargo fmt --all -- --check
+
+  Spell Check:
+    docker:
+      - image: cimg/node:14.17.0
+    steps:
+      - checkout
+      - run:
+          command: sudo npm install -g cspell@latest
+      - run:
+          command: cspell "**"

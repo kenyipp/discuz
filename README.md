@@ -9,6 +9,9 @@ There are five types of logging levels (list from low priority to high priority)
 Trace -> Debug -> Info -> Warn -> Error
 
 ### Reference Projects
+ - [Real world example app](https://github.com/TatriX/realworld-rust-rocket)  
+Rust implementation of [Real world](https://github.com/gothinkster/realworld)
+
  - [Rust Async-GraphQL Example: Caster Api](https://github.com/bkonkle/rust-example-caster-api)  
 A sample project that use SeaORM as the database ORM and Axum as the server framework
 

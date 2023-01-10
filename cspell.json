@@ -1,6 +1,8 @@
 {
 	"version": "0.2",
-	"ignorePaths": [],
+	"ignorePaths": [
+		"./target"
+	],
 	"dictionaryDefinitions": [],
 	"dictionaries": [],
 	"words": [
@@ -10,7 +12,18 @@
 		"discuz",
 		"jsonwebtoken",
 		"reqwest",
-		"thiserror"
+		"thiserror",
+		"dotenv",
+		"sqlx",
+		"serde",
+		"clippy",
+		"nextest",
+		"opensource",
+		"codegen",
+		"iden",
+		"whatsoo",
+		"artix",
+		"alkonost"
 	],
 	"ignoreWords": [],
 	"import": []

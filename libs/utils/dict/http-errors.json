@@ -1,0 +1,236 @@
+[
+	{
+		"name": "Bad Request",
+		"code": 400,
+		"message": "The request could not be understood by the server due to malformed syntax.",
+		"type": "BadRequest"
+	},
+	{
+		"name": "Unauthorized",
+		"code": 401,
+		"message": "The request requires user authentication.",
+		"type": "Unauthorized"
+	},
+	{
+		"name": "Payment Required",
+		"code": 402,
+		"message": "The request can not be processed until the client makes a payment.",
+		"type": "PaymentRequired"
+	},
+	{
+		"name": "Forbidden",
+		"code": 403,
+		"message": "The server understood the request, but is refusing to fulfill it.",
+		"type": "Forbidden"
+	},
+	{
+		"name": "Not Found",
+		"code": 404,
+		"message": "The server has not found anything matching the Request-URI.",
+		"type": "NotFound"
+	},
+	{
+		"name": "Method Not Allowed",
+		"code": 405,
+		"message": "The method specified in the Request-Line is not allowed for the resource identified by the Request-URI.",
+		"type": "MethodNotAllowed"
+	},
+	{
+		"name": "Not Acceptable",
+		"code": 406,
+		"message": "The resource identified by the request is only capable of generating response entities which have content characteristics not acceptable according to the accept headers sent in the request.",
+		"type": "NotAcceptable"
+	},
+	{
+		"name": "Proxy Authentication Required",
+		"code": 407,
+		"message": "The client must first authenticate itself with the proxy.",
+		"type": "ProxyAuthenticationRequired"
+	},
+	{
+		"name": "Request Timeout",
+		"code": 408,
+		"message": "The client did not produce a request within the time that the server was prepared to wait.",
+		"type": "RequestTimeout"
+	},
+	{
+		"name": "Conflict",
+		"code": 409,
+		"message": "The request could not be completed due to a conflict with the current state of the resource.",
+		"type": "Conflict"
+	},
+	{
+		"name": "Gone",
+		"code": 410,
+		"message": "The requested resource is no longer available at the server and no forwarding address is known.",
+		"type": "Gone"
+	},
+	{
+		"name": "Length Required",
+		"code": 411,
+		"message": "The server refuses to accept the request without a defined Content-Length.",
+		"type": "LengthRequired"
+	},
+	{
+		"name": "Precondition Failed",
+		"code": 412,
+		"message": "The precondition given in one or more of the request-header fields evaluated to false when it was tested on the server.",
+		"type": "PreconditionFailed"
+	},
+	{
+		"name": "Payload Too Large",
+		"code": 413,
+		"message": "The server is refusing to process a request because the request entity is larger than the server is willing or able to process.",
+		"type": "RequestEntityTooLarge"
+	},
+	{
+		"name": "URI Too Long",
+		"code": 414,
+		"message": "The server is refusing to service the request because the request-target is longer than the server is willing to interpret.",
+		"type": "URITooLong"
+	},
+	{
+		"name": "Unsupported Media Type",
+		"code": 415,
+		"message": "The server is refusing to service the request because the entity of the request is in a format not supported by the requested resource for the requested method.",
+		"type": "UnsupportedMediaType"
+	},
+	{
+		"name": "Range Not Satisfiable",
+		"code": 416,
+		"message": "The request included a Range request-header field, and none of the range-specifier values in this field overlap the current extent of the selected resource, and the request did not include an If-Range request-header field.",
+		"type": "RequestedRangeNotSatisfiable"
+	},
+	{
+		"name": "Expectation Failed",
+		"code": 417,
+		"message": "The expectation given in an Expect request-header field could not be met by this server.",
+		"type": "ExpectationFailed"
+	},
+	{
+		"name": "Misdirected Request",
+		"code": 421,
+		"message": "The request was directed at a server that is not able to produce a response.",
+		"type": "MisdirectedRequest"
+	},
+	{
+		"name": "Unprocessable Entity",
+		"code": 422,
+		"message": "The the server understands the content type of the request entity, and the syntax of the request entity is correct but was unable to process the contained instructions.",
+		"type": "UnprocessableEntity"
+	},
+	{
+		"name": "Locked",
+		"code": 423,
+		"message": "The source or destination resource of a method is locked.",
+		"type": "Locked"
+	},
+	{
+		"name": "Failed Dependency",
+		"code": 424,
+		"message": "The method could not be performed on the resource because the requested action depended on another action and that action failed.",
+		"type": "FailedDependency"
+	},
+	{
+		"name": "Unordered Collection",
+		"code": 425,
+		"message": "The server is unwilling to risk processing a request that might be replayed.",
+		"type": "TooEarly"
+	},
+	{
+		"name": "Upgrade Required",
+		"code": 426,
+		"message": "The server refuses to perform the request using the current protocol but might be willing to do so after the client upgrades to a different protocol.",
+		"type": "UpgradeRequired"
+	},
+	{
+		"name": "Precondition Required",
+		"code": 428,
+		"message": "The origin server requires the request to be conditional.",
+		"type": "PreconditionRequired"
+	},
+	{
+		"name": "Too Many Requests",
+		"code": 429,
+		"message": "The user has sent too many requests in a given amount of time.",
+		"type": "TooManyRequests"
+	},
+	{
+		"name": "Request Header Fields Too Large",
+		"code": 431,
+		"message": "The server is unwilling to process the request because its header fields are too large.",
+		"type": "RequestHeaderFieldsTooLarge"
+	},
+	{
+		"code": 451,
+		"name": "Unavailable For Legal Reasons",
+		"message": "The server is denying access to the resource as a consequence of a legal demand.",
+		"type": "UnavailableForLegalReasons"
+	},
+	{
+		"name": "Internal Server Error",
+		"code": 500,
+		"message": "The server encountered an unexpected condition which prevented it from fulfilling the request.",
+		"type": "InternalServerError"
+	},
+	{
+		"name": "Not Implemented",
+		"code": 501,
+		"message": "The server does not support the functionality required to fulfill the request.",
+		"type": "NotImplemented"
+	},
+	{
+		"name": "Bad Gateway",
+		"code": 502,
+		"message": "The server, while acting as a gateway or proxy, received an invalid response from the upstream server it accessed in attempting to fulfill the request.",
+		"type": "BadGateway"
+	},
+	{
+		"name": "Service Unavailable",
+		"code": 503,
+		"message": "The server is currently unable to handle the request due to a temporary overloading or maintenance of the server.",
+		"type": "ServiceUnavailable"
+	},
+	{
+		"name": "Gateway Timeout",
+		"code": 504,
+		"message": "The server, while acting as a gateway or proxy, did not receive a timely response from the upstream server it accessed in attempting to fulfill the request.",
+		"type": "GatewayTimeout"
+	},
+	{
+		"name": "HTTP Version Not Supported",
+		"code": 505,
+		"message": "The server does not support, or refuses to support, the HTTP protocol version that was used in the request message.",
+		"type": "HTTPVersionNotSupported"
+	},
+	{
+		"name": "Variant Also Negotiates",
+		"code": 506,
+		"message": "The server has an internal configuration error: the chosen variant resource is configured to engage in transparent content negotiation itself, and is therefore not a proper end point in the negotiation process.",
+		"type": "VariantAlsoNegotiates"
+	},
+	{
+		"name": "Insufficient Storage",
+		"code": 507,
+		"message": "The method could not be performed on the resource because the server is unable to store the representation needed to successfully complete the request.",
+		"type": "InsufficientStorage"
+	},
+	{
+		"name": "Loop Detected",
+		"code": 508,
+		"message": "The server terminated an operation because it encountered an infinite loop while processing a request with \"Depth: infinity\".",
+		"type": "LoopDetected"
+	},
+	{
+		"name": "Not Extended",
+		"code": 510,
+		"message": "The policy for accessing the resource has not been met in the request.",
+		"type": "NotExtended"
+	},
+	{
+		"name": "Network Authentication Required",
+		"code": 511,
+		"message": "The client needs to authenticate to gain network access.",
+		"type": "NetworkAuthenticationRequired"
+	}
+]

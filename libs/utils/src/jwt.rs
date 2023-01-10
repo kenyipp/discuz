@@ -2,7 +2,6 @@ use std::{collections::HashMap, error::Error, fmt};
 
 use error_stack::{IntoReport, Report, Result, ResultExt};
 use jsonwebtoken::{decode, decode_header, Algorithm, DecodingKey, Validation};
-use lazy_static::lazy_static;
 use reqwest;
 use serde::{Deserialize, Serialize};
 use tokio::sync::Mutex;

@@ -1,4 +1,5 @@
 [env]
+RUN_MODE = "testing"
 CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
 
 [tasks.lint]
