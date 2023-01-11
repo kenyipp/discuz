@@ -11,6 +11,10 @@ env = { RUN_MODE = "testing" }
 command = "cargo"
 args = ["nextest", "run"]
 
+[tasks.spell]
+command = "cspell"
+args = ["**"]
+
 [tasks.dev]
 workspace = false
 cwd = "./apps/server"

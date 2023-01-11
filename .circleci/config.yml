@@ -1,23 +1,34 @@
 version: 2.1
 
 workflows:
+
   Main:
+      # - Database Migration Test
     jobs:
-      - Linting
-      - Testing
-      - Formatting
-      - Migration Test
-      - Spell Check
+      - Build Binary
+      - Unit Test:
+          requires:
+            - Build Binary
+      - Database Migration Test:
+          requires:
+            - Build Binary
       - Integration Test:
           requires:
-            - Linting
-            - Testing
-            - Formatting
-            - Migration Test
-            - Spell Check
+            - Build Binary
+            - Unit Test
+            - Database Migration Test
+
+  Code Style Check:
+    jobs:
+      - Lint
+      - Spell Check
+      - Format
 
 jobs:
-  Linting:
+
+  # Linting and Formatting related
+
+  Lint:
     docker:
       - image: cimg/rust:1.65.0
     steps:
@@ -28,33 +39,7 @@ jobs:
       - run:
           command: cargo clippy --tests --examples --all-targets --workspace
 
-  Testing:
-    docker:
-      - image: cimg/rust:1.65.0
-    environment:
-      RUN_MODE: testing
-    steps:
-      - checkout
-      - run:
-          command: cargo test
-
-  Migration Test:
-    docker:
-      - image: cimg/rust:1.65.0
-      - image: cimg/mysql:5.7
-        environment:
-          MYSQL_ROOT_PASSWORD: mysql
-          MYSQL_PASSWORD: mysql
-          MYSQL_USER: mysql
-          MYSQL_DATABASE: discuz
-    environment:
-      RUN_MODE: ci
-    steps:
-      - checkout
-      - run:
-          command: cargo run --bin db-migration
-
-  Formatting:
+  Format:
     docker:
       - image: cimg/rust:1.65.0
     steps:
@@ -74,6 +59,54 @@ jobs:
       - run:
           command: cspell "**"
 
+  # Build and save the binary into the workspace
+
+  Build Binary:
+    docker:
+      - image: cimg/rust:1.65.0
+    steps:
+      - checkout
+      - run: cargo build --bin discuz-server
+      - run: cargo build --bin db-migration
+      - persist_to_workspace:
+          root: .
+          paths:
+            - target/*
+
+  # Testing
+
+  Unit Test:
+    docker:
+      - image: cimg/rust:1.65.0
+    environment:
+      RUN_MODE: testing
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - run:
+          command: cargo test
+
+  Database Migration Test:
+    docker:
+      - image: cimg/rust:1.65.0
+      - image: cimg/mysql:5.7
+        environment:
+          MYSQL_ROOT_PASSWORD: mysql
+          MYSQL_PASSWORD: mysql
+          MYSQL_USER: mysql
+          MYSQL_DATABASE: discuz
+    environment:
+      RUN_MODE: ci
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - run:
+          command: cargo run --bin db-migration
+
+  #
+
   Integration Test:
     docker:
       - image: cimg/rust:1.65.0
@@ -87,10 +120,14 @@ jobs:
       RUN_MODE: ci
     steps:
       - checkout
+      - attach_workspace:
+          at: ./
       - run: cargo run --bin db-migration
       - run: curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash - && sudo apt-get install -y nodejs
       - run: sudo npm i -g newman
-      # - run:
-      #     working_directory: ./tests
-      #     command: ./api-test.sh
+      - run: nohup ./target/debug/discuz-server ./target/debug/discuz-server
+      - run: ./tests/wait-for-readiness.sh
+      - run:
+          working_directory: ./tests
+          command: ./api-test.sh
 
