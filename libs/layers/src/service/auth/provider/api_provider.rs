@@ -5,7 +5,7 @@ use aws_sdk_cognitoidentityprovider::{output::GetUserOutput, Client};
 use discuz_utils::config::{get_config, Amazon, Cognito};
 use error_stack::Result;
 
-use super::{
+use crate::service::auth::provider::{
 	errors::ProviderError,
 	utils::{get_tokens, get_user_by_access_token, validate_access_token, GetTokensOutput},
 };

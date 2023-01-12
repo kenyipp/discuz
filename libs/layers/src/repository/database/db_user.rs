@@ -1,6 +1,5 @@
 use std::sync::Arc;
 
-use async_trait::async_trait;
 use chrono;
 use sea_orm::{DatabaseConnection, *};
 use uuid::Uuid;
@@ -110,6 +109,8 @@ impl DbUserTrait for DbUser {
 	}
 }
 
+//
+
 pub struct InputUserList {
 	pub offset: u64,
 	pub limit: u64,
@@ -132,12 +133,17 @@ pub struct UserFilter {
 	pub email: Option<String>,
 }
 
+//
+
+#[derive(Debug, Clone)]
 pub struct CreateUserInput {
 	pub name: String,
 	pub email: String,
 	pub sub: String,
 	pub avatar_url: Option<String>,
 }
+
+//
 
 #[derive(Debug, Clone)]
 pub struct UpdateUserInput {

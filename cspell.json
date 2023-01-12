@@ -11,6 +11,7 @@
 		"artix",
 		"chrono",
 		"clippy",
+		"codecov",
 		"codegen",
 		"cognitoidentityprovider",
 		"discuz",
@@ -26,7 +27,10 @@
 		"serde",
 		"sqlx",
 		"thiserror",
-		"whatsoo"
+		"whatsoo",
+		"kenyipp",
+		"msrv",
+		"ulimits"
 	],
 	"ignoreWords": [],
 	"import": []

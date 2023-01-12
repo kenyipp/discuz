@@ -1,36 +1,31 @@
 # Discuz
+
+![kenyipp](https://circleci.com/gh/kenyipp/discuz.svg?style=shield)
+
 This codebase is a sample project building the forum server called Discuz. It built with [Actix-web](https://actix.rs) including CRUD operations, authentication, routing, pagination, and more.
 
+This implementation is not reviewed. See the [Contributing](#contributing) section below.
+
 ## Getting started
-```sh
-# Install rustup
-curl https://sh.rustup.rs -sSf | sh
+ - Install [Rust](https://www.rust-lang.org)
+ - Install [MySql](https://www.mysql.com) if you don't have it already. You can use the [docker-compose.yml](./docker-compose.sample.yml) file to start the mysql instance in docker.
+ - Clone this repo to a folder on your computer.
+ - Setup your database by running `cargo run --bin db-migration`
+ - Start the api server by `cargo run --bin discuz-server`
 
-# Start mysql and seed the database
-cargo run --bin db-migration
+## How it works
+This [Rust](https://www.rust-lang.org) application utilizes Actix to develop the backend web service.
 
-# Start the Discuz server
-cargo run --bin discuz-server
-```
+You can view a full list of crates being used in Cargo.toml, but here are some of the main ones of note:
 
-### Develop dependencies
-This project uses different frameworks to accelerate the development and ensure code quality. 
-
-#### Cargo Make
-This project uses [Cargo Make](https://github.com/sagiegurari/cargo-make) as the task runner. A set of tasks, including unit tests, linting, and formatting, need to be done for each commit. The [Makefile.toml](./Makefile.toml) includes configuration and code snippets to run those tasks. 
-
-#### Nextest (Optional)
-[Nextest](https://nexte.st/) provides a clean interface for the test results for rust. It is faster than using the `cargo test`. Users can choose the test cases to run with by using this framework. It is 100% compatible with `cargo test` so you can use `cargo test` to perform unit testing instead of this framework.
-
+ - [Cargo Make](https://github.com/sagiegurari/cargo-make) - the task runner. A set of tasks, including unit tests, linting, and formatting, need to be done for each commit. The [Makefile.toml](./Makefile.toml) includes configuration and code snippets to run those tasks. 
+ - [Nextest](https://nexte.st/) - rust next generation test framework.It provides a clean interface for the test results for rust. It is faster than using the `cargo test`. Users can choose the test cases to run with by using this framework. It is 100% compatible with `cargo test` so you can use `cargo test` to perform unit testing instead of this framework.
 
 ## Testing
-Simply run:
-```sh
-cargo test
-```
-You can also check postman / newman. See the `/tests` directory
+Simply run `cargo nextest run` or `cargo test` if you don't want to install Nextest.
+You can also check postman / newman. See the `/tests` directory.
 
-### Logging
+## Logging
 I uses the [tracing](https://docs.rs/tracing/latest/tracing/index.html) module for the logging instead of the [env_logger](https://docs.rs/env_logger/latest/env_logger/) module. 
 
 The tracing module provides an additional module called `tracing-subscriber` to allow us to subscribe to the logging information. We can use this module to manipulate the loggings, like sending the logs to the logging monitoring system like `cloudwatch` or `datadog`.
@@ -38,7 +33,7 @@ The tracing module provides an additional module called `tracing-subscriber` to 
 There are five types of logging levels (list from low priority to high priority):  
 Trace -> Debug -> Info -> Warn -> Error
 
-### Reference Projects
+## Reference Projects
  - [Real world example app](https://github.com/TatriX/realworld-rust-rocket)  
 Rust implementation of [Real world](https://github.com/gothinkster/realworld)
  - [Rust Async-GraphQL Example: Caster Api](https://github.com/bkonkle/rust-example-caster-api)  
@@ -53,3 +48,9 @@ A simple opensource community
 An example for creating async middleware
  - [The Rust Programming Language](https://web.mit.edu/rust-lang_v1.25/arch/amd64_ubuntu1404/share/doc/rust/html/book/first-edition/README.html)  
 The git book from MIT
+
+## Contributing
+Feel free to look at the current issues in this repo for anything that needs to improve.
+
+You are also welcome to open a new issue if you see something missing or could be improved.
+

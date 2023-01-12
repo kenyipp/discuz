@@ -1,15 +1,9 @@
-use std::{error::Error, fmt};
+use derive_more::{Display, Error};
 
-#[derive(Debug)]
+#[derive(Debug, Display, Error)]
 pub enum AuthError {
-	Generic(String),
+	#[display(fmt = "Auth Error: Generic {}", _0)]
+	Generic(#[error(not(source))] String),
+	#[display(fmt = "Auth Error: Invalid access token")]
 	InvalidAccessTokenError,
 }
-
-impl fmt::Display for AuthError {
-	fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
-		fmt.write_str("Auth Error")
-	}
-}
-
-impl Error for AuthError {}

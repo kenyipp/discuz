@@ -1,16 +1,11 @@
-use std::{error::Error, fmt};
+use derive_more::{Display, Error};
 
-#[derive(Debug)]
+#[derive(Debug, Display, Error)]
 pub enum UserError {
+	#[display(fmt = "User Error - Generic")]
 	Generic,
+	#[display(fmt = "User Error - Invalid Code")]
 	InvalidCode,
+	#[display(fmt = "User Error - Invalid Credentials")]
 	InvalidCredentials,
 }
-
-impl fmt::Display for UserError {
-	fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
-		fmt.write_str("User Error")
-	}
-}
-
-impl Error for UserError {}

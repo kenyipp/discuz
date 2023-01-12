@@ -2,9 +2,16 @@
 RUN_MODE = "testing"
 CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
 
+[tasks.pre-commit]
+dependencies = ["lint", "spell", "format", "test"]
+
 [tasks.lint]
 command = "cargo"
 args = ["clippy", "--tests", "--examples", "--all-targets", "--workspace"]
+
+[tasks.format]
+command = "cargo"
+args = ["fmt", "--all"]
 
 [tasks.test]
 env = { RUN_MODE = "testing" }

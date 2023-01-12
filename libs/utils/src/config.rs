@@ -32,6 +32,7 @@ pub struct Config {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct App {
 	pub port: u16,
+	pub allowed_origin: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

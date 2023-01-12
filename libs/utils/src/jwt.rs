@@ -1,9 +1,9 @@
-use std::{collections::HashMap, error::Error, fmt};
-
+use derive_more::{Display, Error};
 use error_stack::{IntoReport, Report, Result, ResultExt};
 use jsonwebtoken::{decode, decode_header, Algorithm, DecodingKey, Validation};
 use reqwest;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use tokio::sync::Mutex;
 
 lazy_static! {
@@ -73,21 +73,14 @@ pub async fn get_json_web_tokens(jwk_url: String) -> Result<Vec<JWK>, JWTError> 
  * Errors
  *
  */
-#[derive(Debug)]
+#[derive(Debug, Display, Error)]
 pub enum JWTError {
+	#[display(fmt = "JWT Error: Unable to verify the access token")]
 	Generic,
 	InvalidJWTUrl,
 	InvalidAccessToken,
 	InvalidJsonWebKey,
 }
-
-impl fmt::Display for JWTError {
-	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-		f.write_str("JWT Error: Unable to verify the access token")
-	}
-}
-
-impl Error for JWTError {}
 
 /**
  *

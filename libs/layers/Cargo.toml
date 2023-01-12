@@ -12,6 +12,7 @@ keywords = ["discuz", "layers"]
 async-trait = "0.1.60"
 aws-config = "0.52.0"
 aws-sdk-cognitoidentityprovider = "0.22.0"
+aws-sdk-s3 = "0.22.0"
 chrono = "0.4.23"
 derive_more = "0.99.17"
 discuz-utils = { path = "../utils" }

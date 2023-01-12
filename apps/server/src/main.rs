@@ -1,9 +1,8 @@
 #[macro_use]
 extern crate tracing;
 
-use std::env;
-
 use dotenv::dotenv;
+use std::env;
 
 #[tokio::main]
 async fn main() {
@@ -11,7 +10,7 @@ async fn main() {
 
 	// Set the default value of RUST_LOG if it isn't explicitly defined
 	if env::var("RUST_LOG").is_err() {
-		env::set_var("RUST_LOG", "discuz_server=debug");
+		env::set_var("RUST_LOG", "discuz_server=debug,actix_web=info");
 	}
 	// Set up the default logging subscriber for the logging. Allow the logging to print on the screen
 	tracing_subscriber::fmt::init();

@@ -1,17 +1,20 @@
-use std::sync::Arc;
-
-use actix_web::{middleware, web, App, HttpResponse, HttpServer, Responder};
+use actix_cors::Cors;
+use actix_web::{
+	http::header::{ACCEPT, AUTHORIZATION},
+	middleware, web, App, HttpResponse, HttpServer, Responder,
+};
 use discuz_layers::service::factory::Factory;
 use discuz_utils::{amazon::get_aws_sdk_config, config::get_config, get_db_connection};
 use dotenv::dotenv;
 use futures::join;
+use std::sync::Arc;
 use tracing::info;
 
 use crate::{
 	auth::auth_route::auth_route, user::user_route::user_route, utils::app_state::AppState,
 };
 
-pub async fn listen() -> Result<(), ()> {
+pub async fn listen() -> std::io::Result<()> {
 	// Get the environment variables
 	dotenv().ok();
 
@@ -40,18 +43,30 @@ pub async fn listen() -> Result<(), ()> {
 	let port = config.app.port;
 
 	let server = HttpServer::new(move || {
+		let cors = match config.app.allowed_origin {
+			Some(ref origin) => Cors::default()
+				.allowed_origin(origin)
+				.allowed_headers(vec![AUTHORIZATION, ACCEPT])
+				.max_age(3600),
+			None => Cors::default()
+				.allow_any_origin()
+				.send_wildcard()
+				.allowed_headers(vec![AUTHORIZATION, ACCEPT])
+				.max_age(3600),
+		};
 		App::new()
 			.app_data(web::Data::new(app_state.clone()))
-			.wrap(middleware::Logger::default())
+			.wrap(cors)
+			.wrap(middleware::Logger::new("%a - %r - %s - %Dms"))
 			// .route("/api/health-check", web::get().to(health_check))
 			.service(web::scope("/api").configure(api_routes))
 	})
 	.bind(("127.0.0.1", port))
-	.unwrap()
+	.unwrap_or_else(|_| panic!("Could not bind server to port #{port}"))
 	.run();
 
 	let (server_result, ..) = join!(server, async { info!("Server is listened at port {port}") });
-	server_result.expect("Unable to start the server");
+	server_result?;
 
 	Ok(())
 }
