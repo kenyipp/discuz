@@ -1,4 +1,4 @@
-pub use super::utils::AuthUser;
+pub use crate::service::auth::utils::AuthUser;
 use crate::service::auth::{
 	errors::AuthError,
 	provider::{api_provider::ApiCognitoTrait, utils::GetTokensOutput},
@@ -13,14 +13,6 @@ use std::{fmt::Debug, sync::Arc};
 #[derive(Debug, Clone)]
 pub struct AuthService {
 	pub api_provider: Arc<dyn ApiCognitoTrait>,
-}
-
-impl AuthService {
-	pub fn new(api_provider: &Arc<dyn ApiCognitoTrait>) -> AuthService {
-		AuthService {
-			api_provider: api_provider.clone(),
-		}
-	}
 }
 
 #[async_trait]

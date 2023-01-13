@@ -17,15 +17,6 @@ pub struct UserService {
 	pub auth_service: Arc<dyn AuthServiceTrait>,
 }
 
-impl UserService {
-	pub fn new(repo_user: RepoUser, auth_service: &Arc<dyn AuthServiceTrait>) -> UserService {
-		UserService {
-			repo_user,
-			auth_service: auth_service.clone(),
-		}
-	}
-}
-
 #[async_trait]
 pub trait UserServiceTrait: Sync + Send + Debug {
 	async fn get_profile(&self, access_token: &str) -> Result<User, UserError>;

@@ -1,14 +1,15 @@
 version: 2.1
-orbs:
-  codecov: codecov/codecov@3.2.4
 
 workflows:
   Main:
     jobs:
-      # - Upload Code Coverage
       - Spell Check
       - Format
-      - Build Binary
+      - Build Binary:
+          filters:
+            branches:
+              only:
+                - master
       - Lint:
           requires:
             - Build Binary
@@ -22,9 +23,6 @@ workflows:
           requires:
             - Unit Test
             - Database Migration Test
-      - Upload Code Coverage:
-          requires:
-            - Integration Test
 
 jobs:
   # Linting and Formatting related
@@ -117,6 +115,7 @@ jobs:
           MYSQL_PASSWORD: mysql
           MYSQL_USER: mysql
           MYSQL_DATABASE: discuz
+      # - image: localstack/localstack
     environment:
       RUN_MODE: ci
     steps:
@@ -131,23 +130,3 @@ jobs:
       - run:
           working_directory: ./tests
           command: ./api-test.sh
-
-  #
-  Upload Code Coverage:
-    docker:
-      - image: cimg/rust:1.65.0
-    environment:
-      RUN_MODE: ci
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ./
-      - run:
-            name: Install Tarpaulin
-            command: cargo install cargo-tarpaulin
-            environment:
-              RUSTFLAGS: --cfg procmacro2_semver_exempt
-      - run:
-          name: Generate coverage report
-          command: cargo tarpaulin --out Xml --all-features
-      - codecov/upload

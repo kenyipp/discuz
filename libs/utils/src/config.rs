@@ -25,7 +25,6 @@ pub struct Config {
 	pub run_mode: String,
 	pub app: App,
 	pub database: Database,
-	pub cognito: Cognito,
 	pub amazon: Amazon,
 }
 
@@ -47,6 +46,13 @@ pub struct Database {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Amazon {
+	pub region: String,
+	pub cognito: Cognito,
+	pub s3: S3,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Cognito {
 	pub user_pool_id: String,
 	pub domain: String,
@@ -55,8 +61,8 @@ pub struct Cognito {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Amazon {
-	pub region: String,
+pub struct S3 {
+	pub bucket: String,
 }
 
 impl Config {
@@ -70,10 +76,12 @@ impl Config {
 				let key_string = key.as_str();
 				if key_string.starts_with("DATABASE_") {
 					key_string.replace("DATABASE_", "DATABASE.").into()
+				} else if key_string.starts_with("AWS_COGNITO_") {
+					key_string.replace("AWS_COGNITO_", "AMAZON.COGNITO.").into()
+				} else if key_string.starts_with("AWS_S3_") {
+					key_string.replace("AWS_S3_", "AMAZON.S3.").into()
 				} else if key_string.starts_with("AWS_") {
 					key_string.replace("AWS_", "AMAZON.").into()
-				} else if key_string.starts_with("COGNITO_") {
-					key_string.replace("COGNITO_", "COGNITO.").into()
 				} else {
 					key_string.into()
 				}

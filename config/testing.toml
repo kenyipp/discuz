@@ -7,7 +7,7 @@ url = "sqlite::memory:" # Using Sqlite for unit testing
 [amazon]
 region = "ca-central-1"
 
-[cognito]
+[amazon.cognito]
 user_pool_id = ""
 domain = ""
 client_id = ""

@@ -1,7 +1,8 @@
 {
 	"version": "0.2",
 	"ignorePaths": [
-		"./target"
+		"./target",
+		"./.circleci/config.yml"
 	],
 	"dictionaryDefinitions": [],
 	"dictionaries": [],
@@ -16,21 +17,23 @@
 		"cognitoidentityprovider",
 		"discuz",
 		"dotenv",
+		"grcov",
 		"iden",
 		"jsonwebtoken",
+		"kenyipp",
+		"msrv",
 		"nextest",
 		"opensource",
 		"prerequest",
+		"presigning",
 		"remaning",
 		"reqwest",
 		"rustup",
 		"serde",
 		"sqlx",
 		"thiserror",
-		"whatsoo",
-		"kenyipp",
-		"msrv",
-		"ulimits"
+		"ulimits",
+		"whatsoo"
 	],
 	"ignoreWords": [],
 	"import": []

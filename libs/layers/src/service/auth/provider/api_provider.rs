@@ -28,7 +28,7 @@ impl ApiCognito {
 			domain,
 			client_id,
 			redirect_uri,
-		} = config.cognito;
+		} = config.amazon.cognito;
 		ApiCognito {
 			domain,
 			user_pool_id,
@@ -49,7 +49,7 @@ pub trait ApiCognitoTrait: Sync + Send + Debug {
 	async fn get_tokens(&self, code: &str) -> Result<GetTokensOutput, ProviderError>;
 }
 
-#[async_trait::async_trait]
+#[async_trait]
 impl ApiCognitoTrait for ApiCognito {
 	async fn get_user_by_access_token(
 		&self,
@@ -59,7 +59,7 @@ impl ApiCognitoTrait for ApiCognito {
 	}
 	async fn validate_access_token(&self, access_token: &str) -> Result<String, ProviderError> {
 		let config = get_config();
-		let Amazon { region } = config.amazon.clone();
+		let Amazon { region, .. } = config.amazon.clone();
 		validate_access_token(&region, &self.user_pool_id, access_token).await
 	}
 	async fn get_tokens(&self, code: &str) -> Result<GetTokensOutput, ProviderError> {

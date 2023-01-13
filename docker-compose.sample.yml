@@ -6,6 +6,8 @@ services:
     container_name: discuz_server
     build: ./
     restart: unless-stopped
+    ports:
+      - 3100:7800
     command: cargo run --release --bin discuz-server
     logging:
       driver: "json-file"

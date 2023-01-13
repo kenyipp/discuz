@@ -11,7 +11,8 @@ use std::sync::Arc;
 use tracing::info;
 
 use crate::{
-	auth::auth_route::auth_route, user::user_route::user_route, utils::app_state::AppState,
+	auth::auth_route::auth_route, file::file_route::file_route, user::user_route::user_route,
+	utils::app_state::AppState,
 };
 
 pub async fn listen() -> std::io::Result<()> {
@@ -27,10 +28,12 @@ pub async fn listen() -> std::io::Result<()> {
 	);
 	let sdk_config = Arc::new(get_aws_sdk_config().await);
 
+	// Build the services which share
 	let factory = Factory::new(&db_connection, &sdk_config);
 
 	let auth_service = Arc::new(factory.new_auth_service());
 	let user_service = Arc::new(factory.new_user_service(auth_service.clone()));
+	let file_service = Arc::new(factory.new_file_service());
 
 	// Building the app state which is then pushed to the whole api server
 	let app_state = AppState {
@@ -38,6 +41,7 @@ pub async fn listen() -> std::io::Result<()> {
 		sdk_config,
 		auth_service,
 		user_service,
+		file_service,
 	};
 
 	let port = config.app.port;
@@ -78,5 +82,6 @@ async fn health_check() -> impl Responder {
 fn api_routes(cfg: &mut web::ServiceConfig) {
 	cfg.route("/health-check", web::get().to(health_check));
 	cfg.service(web::scope("/auth").configure(auth_route));
+	cfg.service(web::scope("/file").configure(file_route));
 	cfg.service(web::scope("/user").configure(user_route));
 }

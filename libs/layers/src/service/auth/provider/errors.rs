@@ -1,17 +1,13 @@
-use std::{error::Error, fmt};
+use derive_more::{Display, Error};
 
-#[derive(Debug)]
+#[derive(Debug, Display, Error)]
 pub enum ProviderError {
-	Generic(String),
+	#[display(fmt = "Provider Error: Generic {}", _0)]
+	Generic(#[error(not(source))] String),
+	#[display(fmt = "Provider Error: Invalid Credentials")]
 	InvalidCredentials,
+	#[display(fmt = "Provider Error: Invalid User Code")]
 	InvalidUserCode,
+	#[display(fmt = "Provider Error: Invalid Access Token")]
 	InvalidAccessToken,
 }
-
-impl fmt::Display for ProviderError {
-	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-		f.write_str("Provider Error")
-	}
-}
-
-impl Error for ProviderError {}

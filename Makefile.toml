@@ -18,6 +18,11 @@ env = { RUN_MODE = "testing" }
 command = "cargo"
 args = ["nextest", "run"]
 
+[tasks.cargo-test]
+env = { RUN_MODE = "testing" }
+command = "cargo"
+args = ["test"]
+
 [tasks.spell]
 command = "cspell"
 args = ["**"]

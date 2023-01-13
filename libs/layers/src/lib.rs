@@ -8,3 +8,5 @@ extern crate serde;
 pub mod migration;
 pub mod repository;
 pub mod service;
+
+pub mod constants;

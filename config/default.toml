@@ -2,11 +2,12 @@
 run_mode = "testing"
 
 [database]
-hostname = "localhost"
-username = "discuz"
-password = "discuz"
+hostname = ""
+username = ""
+password = ""
 port = 3306
-database = "discuz"
+database = ""
+url = "sqlite::memory:"
 
 [app]
 port = 3100
@@ -14,8 +15,11 @@ port = 3100
 [amazon]
 region = "ca-central-1"
 
-[cognito]
+[amazon.cognito]
 user_pool_id = ""
 domain = ""
 client_id = ""
 redirect_uri = "http://localhost:3000"
+
+[amazon.s3]
+bucket = ""
