@@ -18,7 +18,7 @@ impl RepoUser {
 
 #[derive(Debug, Error, Display)]
 pub enum RepoError {
-	#[display(fmt = "Repo User Error - Generic")]
+	#[display(fmt = "Repo User Error: Generic")]
 	Generic,
 }
 

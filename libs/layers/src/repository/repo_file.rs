@@ -1,19 +1,23 @@
-use derive_more::{Display, Error};
-
-use error_stack::{IntoReport, Result, ResultExt};
-
 pub use crate::repository::database::db_file::{
 	CreateFileInput, DbFile, DbFileTrait, File, UpdateFileInput,
 };
+use derive_more::{Display, Error};
+use error_stack::{IntoReport, Result, ResultExt};
 
 #[derive(Debug, Clone)]
 pub struct RepoFile {
 	db_file: DbFile,
 }
 
+impl RepoFile {
+	pub fn new(db_file: DbFile) -> RepoFile {
+		RepoFile { db_file }
+	}
+}
+
 #[derive(Debug, Error, Display)]
 pub enum RepoError {
-	#[display(fmt = "Repo File Error - Generic")]
+	#[display(fmt = "Repo File Error: Generic")]
 	Generic,
 }
 
@@ -57,11 +61,5 @@ impl RepoFileTrait for RepoFile {
 			.await
 			.into_report()
 			.change_context(RepoError::Generic)
-	}
-}
-
-impl RepoFile {
-	pub fn new(db_file: DbFile) -> RepoFile {
-		RepoFile { db_file }
 	}
 }

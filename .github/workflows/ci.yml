@@ -1,0 +1,308 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - "**.md"
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  #
+  spell-check:
+    name: Spell Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install CSpell
+        run: npm install -g cspell@latest
+      - name: Check Spelling
+        run: cspell "**"
+
+  install-rust:
+    name: Install Rust
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checking Cache of Rust
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-Rust-Stable
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          components: rustfmt, clippy
+
+  #
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+    needs: [install-rust]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache Rust
+        id: rust-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-Rust-Stable
+
+      - name: Formatting
+        run: cargo fmt --all -- --check
+
+  #
+  build-binary:
+    name: Build Binary
+    runs-on: ubuntu-latest
+    needs: [install-rust]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache Rust
+        id: rust-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-Rust-Stable
+
+      - name: Cache Build Folders
+        uses: actions/cache@v3
+        with:
+          path: ./target/
+          key: Binary-Cache
+
+      - name: Build Server Program
+        run: cargo build --bin discuz-server
+
+      - name: Build Db Migration Program
+        run: cargo build --bin db-migration
+
+  #
+  unit-test:
+    name: Unit Test
+    runs-on: ubuntu-latest
+    env:
+      RUN_MODE: testing
+    needs: [build-binary]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache Rust
+        id: rust-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-Rust-Stable
+
+      - name: Cache Build Folders
+        uses: actions/cache@v3
+        with:
+          path: ./target/
+          key: Binary-Cache
+
+      - name: Unit Test
+        run: cargo test
+
+  #
+  clippy-lint:
+    name: Lint with Clippy
+    runs-on: ubuntu-latest
+    needs: [build-binary]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache Rust
+        id: rust-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-Rust-Stable
+
+      - name: Cache Build Folders
+        uses: actions/cache@v3
+        with:
+          path: ./target/
+          key: Binary-Cache
+
+      - name: Lint program with clippy
+        run: cargo clippy --tests --examples --all-targets --workspace
+
+  #
+  db-migration-test:
+    name: Database Integration Test
+    runs-on: ubuntu-latest
+    env:
+      RUN_MODE: ci
+    needs: [build-binary]
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: mysql
+          MYSQL_PASSWORD: mysql
+          MYSQL_USER: mysql
+          MYSQL_DATABASE: discuz
+        ports:
+          - 3306:3306
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache Rust
+        id: rust-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-Rust-Stable
+
+      - name: Cache Build Folders
+        uses: actions/cache@v3
+        with:
+          path: ./target/
+          key: Binary-Cache
+
+      - name: Database Migration Test
+        run: cargo run --bin db-migration
+
+  #
+  integration-test:
+    name: Integration Test
+    runs-on: ubuntu-latest
+    env:
+      RUN_MODE: ci
+    needs: [unit-test, db-migration-test]
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: mysql
+          MYSQL_PASSWORD: mysql
+          MYSQL_USER: mysql
+          MYSQL_DATABASE: discuz
+        ports:
+          - 3306:3306
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache Rust
+        id: rust-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-Rust-Stable
+
+      - name: Cache Build Folders
+        uses: actions/cache@v3
+        with:
+          path: ./target/
+          key: Binary-Cache
+
+      - name: Migrate Database
+        run: cargo run --bin db-migration
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Start Server at the background
+        run: nohup ./target/debug/discuz-server < /dev/null & > /dev/null &
+
+      - name: Wait for the server to start
+        working-directory: ./tests
+        run: ./wait-for-readiness.sh
+
+      - name: Run Integration Test
+        working-directory: ./tests
+        run: ./api-test.sh
+
+  #
+  upload-code-coverage:
+    name: Upload Code Coverage
+    runs-on: ubuntu-latest
+    needs: [integration-test]
+    env:
+      RUN_MODE: testing
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache Rust
+        id: rust-cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-Rust-Stable
+
+      - name: Cache Build Folders
+        uses: actions/cache@v3
+        with:
+          path: ./target/
+          key: Binary-Cache
+
+      - name: Install nextest
+        uses: taiki-e/install-action@nextest
+
+      - name: Install cargo-llvm-cov
+        uses: taiki-e/install-action@cargo-llvm-cov
+
+      - name: Run Unit Tests
+        run: cargo llvm-cov nextest --lcov --output-path lcov.info
+
+      - name: Upload to codecov.io
+        uses: codecov/codecov-action@v3
+        with:
+          files: lcov.info
+          token: ${{ secrets.CODECOV_TOKEN }}

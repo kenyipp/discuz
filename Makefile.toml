@@ -14,7 +14,7 @@ command = "cargo"
 args = ["fmt", "--all"]
 
 [tasks.test]
-env = { RUN_MODE = "testing" }
+env = { RUN_MODE = "testing", RUST_BACKTRACE = "0" }
 command = "cargo"
 args = ["nextest", "run"]
 
@@ -39,3 +39,13 @@ workspace = false
 cwd = "./apps/db-migration"
 command = "cargo"
 args = ["run"]
+
+[tasks.cov]
+command = "cargo"
+env = { RUN_MODE = "testing" }
+args = ["llvm-cov", "nextest", "${@}"]
+
+[tasks.cov-ci]
+command = "cargo"
+env = { RUN_MODE = "ci" }
+args = ["llvm-cov", "nextest", "--lcov", "--output-path", "lcov.info"]

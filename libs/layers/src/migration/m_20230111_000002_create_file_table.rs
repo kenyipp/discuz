@@ -1,11 +1,11 @@
-use sea_orm::DatabaseBackend;
+use crate::utils::db::on_update_current_timestamp;
 use sea_orm_migration::prelude::*;
 
 pub struct Migration;
 
 impl MigrationName for Migration {
 	fn name(&self) -> &str {
-		"m_20221217-m_20230111_000002_create_file_table"
+		"m_20230111_000002_create_file_table"
 	}
 }
 
@@ -22,13 +22,6 @@ impl MigrationTrait for Migration {
 							.string_len(64)
 							.not_null()
 							.primary_key(),
-					)
-					.col(
-						ColumnDef::new(File::StatusId)
-							.string()
-							.string_len(1)
-							.not_null()
-							.default("A"),
 					)
 					.col(
 						ColumnDef::new(File::Name)
@@ -54,19 +47,22 @@ impl MigrationTrait for Migration {
 					)
 					.col(ColumnDef::new(File::PublicUri).text().null())
 					.col(
+						ColumnDef::new(File::StatusId)
+							.string()
+							.string_len(1)
+							.not_null()
+							.default("A"),
+					)
+					.col(
 						ColumnDef::new(File::CreatedAt)
 							.timestamp()
 							.extra("DEFAULT CURRENT_TIMESTAMP".to_owned()),
 					)
-					.col(ColumnDef::new(File::UpdatedAt).timestamp().extra(
-						match manager.get_database_backend() {
-							DatabaseBackend::MySql => {
-								"DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP".to_owned()
-							}
-							DatabaseBackend::Sqlite => "DEFAULT CURRENT_TIMESTAMP".to_owned(),
-							_ => todo!("Database migration isn't implemented for current driver"),
-						},
-					))
+					.col(
+						ColumnDef::new(File::UpdatedAt)
+							.timestamp()
+							.extra(on_update_current_timestamp(manager)),
+					)
 					.foreign_key(
 						ForeignKey::create()
 							.name("FK-file-user_id-user-user_id")

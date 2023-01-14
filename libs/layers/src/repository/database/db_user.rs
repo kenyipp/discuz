@@ -67,23 +67,14 @@ impl DbUserTrait for DbUser {
 	}
 
 	async fn update(&self, input: &UpdateUserInput) -> Result<(), DbErr> {
-		let mut user: user::ActiveModel = match self.find_by_id(&input.id).await {
-			Ok(user_result) => match user_result {
-				Some(user) => user.into(),
-				None => {
-					return Err(DbErr::Custom(format!(
-						"User with id #{} not exist",
-						input.id
-					)));
-				}
-			},
-			Err(_) => {
-				return Err(DbErr::Custom(format!(
-					"Unable to retrieve user with user id: {} ",
-					input.id
-				)));
-			}
-		};
+		let mut user: user::ActiveModel = self
+			.find_by_id(&input.id)
+			.await?
+			.ok_or(DbErr::Custom(format!(
+				"User with id #{} not exist",
+				input.id
+			)))?
+			.into();
 
 		user.name = Set(input.name.to_owned());
 		user.avatar_url = Set(input.avatar_url.to_owned());

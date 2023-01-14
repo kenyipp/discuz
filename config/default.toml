@@ -7,7 +7,6 @@ username = ""
 password = ""
 port = 3306
 database = ""
-url = "sqlite::memory:"
 
 [app]
 port = 3100

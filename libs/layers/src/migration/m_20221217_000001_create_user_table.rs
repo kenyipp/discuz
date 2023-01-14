@@ -1,4 +1,4 @@
-use sea_orm::DatabaseBackend;
+use crate::utils::db::on_update_current_timestamp;
 use sea_orm_migration::prelude::*;
 
 pub struct Migration;
@@ -53,15 +53,11 @@ impl MigrationTrait for Migration {
 							.timestamp()
 							.extra("DEFAULT CURRENT_TIMESTAMP".to_owned()),
 					)
-					.col(ColumnDef::new(User::UpdatedAt).timestamp().extra(
-						match manager.get_database_backend() {
-							DatabaseBackend::MySql => {
-								"DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP".to_owned()
-							}
-							DatabaseBackend::Sqlite => "DEFAULT CURRENT_TIMESTAMP".to_owned(),
-							_ => todo!("Database migration isn't implemented for current driver"),
-						},
-					))
+					.col(
+						ColumnDef::new(User::UpdatedAt)
+							.timestamp()
+							.extra(on_update_current_timestamp(manager)),
+					)
 					.to_owned(),
 			)
 			.await?;

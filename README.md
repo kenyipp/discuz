@@ -1,6 +1,6 @@
 # Discuz
 
-![kenyipp](https://circleci.com/gh/kenyipp/discuz.svg?style=shield)
+[![Actions Status](https://github.com/kenyipp/discuz/workflows/CI/badge.svg)](https://github.com/kenyipp/discuz/actions/workflows/ci.yml)
 
 This codebase is a sample project building the forum server called Discuz. It built with [Actix-web](https://actix.rs) including CRUD operations, authentication, routing, pagination, and more.
 
