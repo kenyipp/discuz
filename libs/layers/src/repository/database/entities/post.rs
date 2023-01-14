@@ -11,7 +11,7 @@ pub struct Model {
 	pub post_category_id: String,
 	pub content: String,
 	pub excerpt: String,
-	pub user_id: String,
+	pub user_id: Option<String>,
 	pub status_id: String,
 	pub created_at: DateTimeUtc,
 	pub updated_at: DateTimeUtc,

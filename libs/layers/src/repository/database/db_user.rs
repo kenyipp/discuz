@@ -37,6 +37,7 @@ impl DbUserTrait for DbUser {
 		let user = user::ActiveModel {
 			id: Set(user_id.clone()),
 			sub: Set(input.sub.to_owned()),
+			role: Set("user".to_owned()),
 			name: Set(input.name.to_owned()),
 			email: Set(input.email.to_owned()),
 			avatar_url: Set(input.avatar_url.to_owned()),
@@ -78,6 +79,7 @@ impl DbUserTrait for DbUser {
 
 		user.name = Set(input.name.to_owned());
 		user.avatar_url = Set(input.avatar_url.to_owned());
+		user.updated_at = Set(chrono::offset::Utc::now());
 
 		user.update(&*self.db_connection).await?;
 		Ok(())

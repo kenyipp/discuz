@@ -8,6 +8,7 @@ pub struct Model {
 	pub id: String,
 	#[sea_orm(unique)]
 	pub sub: String,
+	pub role: String,
 	pub name: String,
 	#[sea_orm(unique)]
 	pub email: String,

@@ -1,4 +1,4 @@
-use crate::utils::db::on_update_current_timestamp;
+use crate::utils::db_tools::on_update_current_timestamp;
 use sea_orm_migration::prelude::*;
 
 pub struct Migration;

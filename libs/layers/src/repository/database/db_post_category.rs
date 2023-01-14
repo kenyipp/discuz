@@ -1,6 +1,5 @@
 use chrono;
 use sea_orm::{DatabaseConnection, *};
-use slugify::slugify;
 use std::sync::Arc;
 use uuid::Uuid;
 
@@ -69,7 +68,7 @@ impl DbPostCategoryTrait for DbPostCategory {
 			.into();
 
 		post_category.name = Set(input.name.to_owned());
-		post_category.slug = Set(slugify!(&input.name));
+		post_category.slug = Set(input.slug.to_owned());
 		post_category.description = Set(input.description.to_owned());
 		post_category.user_id = Set(input.user_id.to_owned());
 

@@ -1,12 +1,20 @@
 pub use crate::service::auth::utils::AuthUser;
-use crate::service::auth::{
-	errors::AuthError,
-	provider::{api_provider::ApiCognitoTrait, utils::GetTokensOutput},
-	utils::{
-		get_auth_user_by_access_token,
-		mock_data::{get_fake_sub, get_mock_auth_user, should_return_mock_user_by_access_token},
+use crate::service::{
+	auth::{
+		constants::UserRole,
+		errors::AuthError,
+		provider::{api_provider::ApiCognitoTrait, utils::GetTokensOutput},
+		utils::{
+			get_auth_user_by_access_token,
+			mock_data::{
+				get_fake_sub, get_mock_auth_user, should_return_mock_user_by_access_token,
+			},
+			validate_permission,
+		},
 	},
+	user::user_service::User,
 };
+
 use error_stack::{Result, ResultExt};
 use std::{fmt::Debug, sync::Arc};
 
@@ -23,6 +31,10 @@ pub trait AuthServiceTrait: Sync + Send + Debug {
 		access_token: &str,
 	) -> Result<AuthUser, AuthError>;
 	async fn get_tokens(&self, code: &str) -> Result<GetTokensOutput, AuthError>;
+	fn validate_permission(&self, user: &User, roles: &Vec<UserRole>) -> Result<(), AuthError> {
+		validate_permission::execute(user, roles)?;
+		Ok(())
+	}
 }
 
 #[async_trait]

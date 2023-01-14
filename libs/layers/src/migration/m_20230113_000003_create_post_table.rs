@@ -1,6 +1,5 @@
-use crate::{constants::UNCLASSIFIED_CATEGORY_ID, utils::db::on_update_current_timestamp};
+use crate::{constants::UNCLASSIFIED_CATEGORY_ID, utils::db_tools::on_update_current_timestamp};
 use sea_orm_migration::prelude::*;
-use slugify::slugify;
 
 pub struct Migration;
 
@@ -41,7 +40,6 @@ impl MigrationTrait for Migration {
 }
 
 fn seed_default_category() -> InsertStatement {
-	let default_category = "Unclassified";
 	Query::insert()
 		.into_table(DefPostCategory::Table)
 		.columns([
@@ -51,8 +49,8 @@ fn seed_default_category() -> InsertStatement {
 		])
 		.values_panic([
 			UNCLASSIFIED_CATEGORY_ID.into(),
-			default_category.into(),
-			slugify!(default_category).into(),
+			"Unclassified".into(),
+			"unclassified".into(),
 		])
 		.to_owned()
 }

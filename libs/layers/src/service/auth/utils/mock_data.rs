@@ -1,7 +1,8 @@
-use crate::service::auth::utils::AuthUser;
+use crate::{
+	constants::{FAKE_ACCESS_TOKEN, FAKE_SUB},
+	service::auth::utils::AuthUser,
+};
 use std::env;
-pub const FAKE_SUB: &str = "FAKE_SUB";
-pub const FAKE_ACCESS_TOKEN: &str = "FAKE_ACCESS_TOKEN";
 
 pub fn should_return_mock_user_by_access_token(access_token: &str) -> bool {
 	access_token == FAKE_ACCESS_TOKEN && is_development_mode()

@@ -10,7 +10,7 @@ pub struct Model {
 	pub slug: String,
 	pub description: String,
 	pub count: i64,
-	pub user_id: String,
+	pub user_id: Option<String>,
 	#[sea_orm(default_value = "A")]
 	pub status_id: String,
 	pub created_at: DateTimeUtc,

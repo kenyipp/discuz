@@ -1,0 +1,14 @@
+[env]
+RUN_MODE = "testing"
+CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
+
+[tasks.dev]
+workspace = false
+env = { RUN_MODE = "development", RUST_BACKTRACE = "0" }
+command = "cargo"
+args = ["watch", "-x run"]
+
+[tasks.test]
+env = { RUN_MODE = "testing", RUST_BACKTRACE = "0" }
+command = "cargo"
+args = ["nextest", "run"]

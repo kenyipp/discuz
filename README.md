@@ -1,6 +1,6 @@
 # Discuz
 
-[![Actions Status](https://github.com/kenyipp/discuz/workflows/CI/badge.svg)](https://github.com/kenyipp/discuz/actions/workflows/ci.yml)
+[![Actions Status](https://github.com/kenyipp/discuz/workflows/CI/badge.svg)](https://github.com/kenyipp/discuz/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/kenyipp/discuz/branch/master/graph/badge.svg?token=AMBNXM57T8)](https://codecov.io/gh/kenyipp/discuz)
 
 This codebase is a sample project building the forum server called Discuz. It built with [Actix-web](https://actix.rs) including CRUD operations, authentication, routing, pagination, and more.
 
@@ -38,7 +38,7 @@ Feel free to look at the current issues in this repo for anything that needs to 
 You are also welcome to open a new issue if you see something missing or could be improved.
 
 ### Before commit
-Before deploying and integrating the application, a set of validations (testing, linting, and formatting) are required. We advise to run `cargo make pre-commit before each commit. 
+Before deploying and integrating the application, a set of validations (testing, linting, and formatting) are required. We advise to run `cargo make pre-commit` before each commit. 
 
 ## Reference Projects
  - [Real world example app](https://github.com/TatriX/realworld-rust-rocket)  
@@ -51,7 +51,5 @@ Simple console spam detector for YouTube chats.
 Integrate the Sea Orm with Actix
  - [Whatsoo](https://github.com/Whatsoo/whatsoo)  
 A simple opensource community
- - [Artix-web async middleware example](https://github.com/actix/examples/blob/344bcfce/middleware/middleware/src/read_request_body.rs)  
-An example for creating async middleware
  - [The Rust Programming Language](https://web.mit.edu/rust-lang_v1.25/arch/amd64_ubuntu1404/share/doc/rust/html/book/first-edition/README.html)  
 The git book from MIT

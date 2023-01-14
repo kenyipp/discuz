@@ -54,39 +54,29 @@ impl DbFileTrait for DbFile {
 	}
 
 	async fn find_by_id(&self, id: &str) -> Result<Option<File>, DbErr> {
-		let file = file::Entity::find()
+		file::Entity::find()
 			.filter(file::Column::Id.eq(id))
 			.one(&*self.db_connection)
-			.await;
-		file
+			.await
 	}
 
 	async fn update(&self, input: &UpdateFileInput) -> Result<(), DbErr> {
-		let mut file: file::ActiveModel = match self.find_by_id(&input.id).await {
-			Ok(file_result) => match file_result {
-				Some(file) => file.into(),
-				None => {
-					return Err(DbErr::Custom(format!(
-						"File with id #{} not exist",
-						input.id
-					)));
-				}
-			},
-			Err(_) => {
-				return Err(DbErr::Custom(format!(
-					"Unable to retrieve file with file id: {} ",
-					input.id
-				)));
-			}
-		};
+		let mut file: file::ActiveModel = self
+			.find_by_id(&input.id)
+			.await?
+			.ok_or(DbErr::Custom(format!(
+				"File with id #{} not exist",
+				input.id
+			)))?
+			.into();
 
 		file.name = Set(input.name.to_owned());
 		file.alternative_text = Set(input.alternative_text.to_owned());
 		file.caption = Set(input.caption.to_owned());
 		file.description = Set(input.description.to_owned());
+		file.updated_at = Set(chrono::offset::Utc::now());
 
 		file.update(&*self.db_connection).await?;
-
 		Ok(())
 	}
 
@@ -95,19 +85,11 @@ impl DbFileTrait for DbFile {
 			return Err(DbErr::Custom("Invalid file status".to_string()));
 		}
 
-		let mut file: file::ActiveModel = match self.find_by_id(id).await {
-			Ok(file_result) => match file_result {
-				Some(file) => file.into(),
-				None => {
-					return Err(DbErr::Custom(format!("File with id #{id} not exist")));
-				}
-			},
-			Err(_) => {
-				return Err(DbErr::Custom(format!(
-					"Unable to retrieve file with file id: {id} "
-				)));
-			}
-		};
+		let mut file: file::ActiveModel = self
+			.find_by_id(id)
+			.await?
+			.ok_or(DbErr::Custom(format!("File with id #{} not exist", id)))?
+			.into();
 
 		file.status_id = Set(status_id.to_owned());
 
