@@ -2,9 +2,9 @@ use std::convert::From;
 
 use chrono::{DateTime, Utc};
 use discuz_layers::repository::repo_user::User;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct DtoUser {
 	pub id: String,
 	pub name: String,

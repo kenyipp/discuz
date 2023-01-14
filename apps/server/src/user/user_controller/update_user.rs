@@ -10,7 +10,7 @@ use crate::{
 	utils::{app_state::AppState, auth::Auth},
 };
 
-pub async fn update_user(
+pub async fn execute(
 	params: web::Path<Params>,
 	body: web::Json<Body>,
 	app_state: web::Data<AppState>,
@@ -53,13 +53,13 @@ pub struct Params {
 	pub id: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Body {
 	pub name: String,
 	pub avatar_url: Option<String>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Response {
 	pub data: DtoUser,
 }

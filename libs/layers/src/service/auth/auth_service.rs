@@ -31,7 +31,7 @@ pub trait AuthServiceTrait: Sync + Send + Debug {
 		access_token: &str,
 	) -> Result<AuthUser, AuthError>;
 	async fn get_tokens(&self, code: &str) -> Result<GetTokensOutput, AuthError>;
-	fn validate_permission(&self, user: &User, roles: &Vec<UserRole>) -> Result<(), AuthError> {
+	fn validate_permission(&self, user: &User, roles: &[UserRole]) -> Result<(), AuthError> {
 		validate_permission::execute(user, roles)?;
 		Ok(())
 	}

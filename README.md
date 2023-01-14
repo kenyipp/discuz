@@ -28,10 +28,10 @@ You can also check postman / newman. See the `/tests` directory.
 ## Logging
 I uses the [tracing](https://docs.rs/tracing/latest/tracing/index.html) module for the logging instead of the [env_logger](https://docs.rs/env_logger/latest/env_logger/) module. 
 
-The tracing module provides an additional module called `tracing-subscriber` to allow us to subscribe to the logging information. We can use this module to manipulate the loggings, like sending the logs to the logging monitoring system like `cloudwatch` or `datadog`.
+The tracing module provides an additional module called `tracing-subscriber` to allow us to subscribe to the logging information. We can use this module to manipulate the loggings, like sending the logs to the logging monitoring system like [cloudwatch](https://aws.amazon.com/tw/cloudwatch) or [datadog](https://www.datadoghq.com).
 
 There are five types of logging levels (list from low priority to high priority):  
-Trace -> Debug -> Info -> Warn -> Error
+`Trace` -> `Debug` -> `Info` -> `Warn` -> `Error`
 
 ## Contributing
 Feel free to look at the current issues in this repo for anything that needs to improve.  

@@ -47,7 +47,7 @@ async fn should_reject_if_user_is_not_permitted() {
 
 	let user = user_service.get_profile(FAKE_ACCESS_TOKEN).await.unwrap();
 	assert_eq!(user.role, UserRole::User.to_string());
-	let is_permitted = auth_service.validate_permission(&user, &vec![UserRole::Admin]);
+	let is_permitted = auth_service.validate_permission(&user, &[UserRole::Admin]);
 	assert!(is_permitted.is_err());
 }
 
@@ -61,8 +61,7 @@ async fn should_accept_if_user_is_permitted() {
 
 	let user = user_service.get_profile(FAKE_ACCESS_TOKEN).await.unwrap();
 	assert_eq!(user.role, UserRole::User.to_string());
-	let is_permitted =
-		auth_service.validate_permission(&user, &vec![UserRole::Admin, UserRole::User]);
+	let is_permitted = auth_service.validate_permission(&user, &[UserRole::Admin, UserRole::User]);
 	assert!(is_permitted.is_ok());
 }
 
