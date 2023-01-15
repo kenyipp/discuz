@@ -60,6 +60,8 @@ impl RepoPostCategoryTrait for RepoPostCategory {
 			.delete(id)
 			.await
 			.into_report()
-			.change_context(RepoError::Generic)
+			.change_context(RepoError::Generic)?;
+
+		Ok(())
 	}
 }

@@ -5,6 +5,5 @@ pub mod amazon;
 pub mod config;
 mod db_connection;
 pub mod http_errors;
-pub mod jwt;
 
 pub use db_connection::*;

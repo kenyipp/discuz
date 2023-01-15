@@ -1,8 +1,7 @@
-use std::convert::From;
-
 use chrono::{DateTime, Utc};
 use discuz_layers::repository::repo_user::User;
 use serde::{Deserialize, Serialize};
+use std::convert::From;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct DtoUser {

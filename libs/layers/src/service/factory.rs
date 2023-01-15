@@ -5,8 +5,12 @@ use sea_orm::DatabaseConnection;
 
 use crate::{
 	repository::{
-		database::{db_file::DbFile, db_user::DbUser},
+		database::{
+			db_file::DbFile, db_post::DbPost, db_post_category::DbPostCategory, db_user::DbUser,
+		},
 		repo_file::RepoFile,
+		repo_post::RepoPost,
+		repo_post_category::RepoPostCategory,
 		repo_user::RepoUser,
 	},
 	service::{
@@ -15,6 +19,8 @@ use crate::{
 			provider::api_provider::ApiCognito,
 		},
 		file::{file_service::FileService, provider::api_provider::ApiS3},
+		post::post_service::PostService,
+		post_category::post_category_service::PostCategoryService,
 		user::user_service::UserService,
 	},
 };
@@ -34,9 +40,28 @@ impl Factory {
 		}
 	}
 
-	pub fn new_auth_service(&self) -> AuthService {
-		let api_provider = Arc::new(ApiCognito::new(&self.sdk_config));
-		AuthService { api_provider }
+	pub fn new_file_service(&self) -> FileService {
+		let config = get_config();
+		let db_file = DbFile::new(&self.db_connection);
+		let repo_file = RepoFile::new(db_file);
+		let api_provider = Arc::new(ApiS3::new(&self.sdk_config));
+		FileService {
+			repo_file,
+			api_provider,
+			bucket: config.amazon.s3.bucket.to_owned(),
+		}
+	}
+
+	pub fn new_post_service(&self) -> PostService {
+		let db_post = DbPost::new(&self.db_connection);
+		let repo_post = RepoPost::new(db_post);
+		PostService { repo_post }
+	}
+
+	pub fn new_post_category_service(&self) -> PostCategoryService {
+		let db_post_category = DbPostCategory::new(&self.db_connection);
+		let repo_post_category = RepoPostCategory::new(db_post_category);
+		PostCategoryService { repo_post_category }
 	}
 
 	pub fn new_user_service(&self, auth_service: Arc<dyn AuthServiceTrait>) -> UserService {
@@ -48,15 +73,8 @@ impl Factory {
 		}
 	}
 
-	pub fn new_file_service(&self) -> FileService {
-		let config = get_config();
-		let db_file = DbFile::new(&self.db_connection);
-		let repo_file = RepoFile::new(db_file);
-		let api_provider = Arc::new(ApiS3::new(&self.sdk_config));
-		FileService {
-			repo_file,
-			api_provider,
-			bucket: config.amazon.s3.bucket.to_owned(),
-		}
+	pub fn new_auth_service(&self) -> AuthService {
+		let api_provider = Arc::new(ApiCognito::new(&self.sdk_config));
+		AuthService { api_provider }
 	}
 }

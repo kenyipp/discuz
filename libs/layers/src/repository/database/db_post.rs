@@ -132,7 +132,7 @@ impl DbPostTrait for DbPost {
 			.find_post_tag_by_id(&input.id)
 			.await?
 			.ok_or(DbErr::Custom(format!(
-				"Post with id #{} not exist",
+				"Post tag with id #{} not exist",
 				input.id
 			)))?
 			.into();

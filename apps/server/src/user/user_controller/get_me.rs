@@ -6,7 +6,7 @@ use crate::{
 };
 
 pub async fn execute(auth: Auth) -> Result<HttpResponse, AppError> {
-	let user = auth.user.ok_or(AuthError::InvalidAccessToken)?;
+	let user = auth.user.ok_or(AuthError::MissingAuthorization)?;
 	Ok(HttpResponse::Ok().json(Response { data: user.into() }))
 }
 

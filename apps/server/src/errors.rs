@@ -1,10 +1,11 @@
-use std::{convert::From, fmt};
-
 use actix_web::{error::ResponseError, http::StatusCode, HttpResponse};
 use serde::Serialize;
+use std::{convert::From, fmt};
 use uuid::Uuid;
 
-use crate::{auth::errors::AuthError, file::errors::FileError};
+use crate::{
+	auth::errors::AuthError, file::errors::FileError, post_category::errors::PostCategoryError,
+};
 
 #[derive(Debug, Serialize, Clone)]
 pub struct AppError {
@@ -69,6 +70,19 @@ impl From<AuthError> for AppError {
 
 impl From<FileError> for AppError {
 	fn from(error: FileError) -> Self {
+		let detail = error.get_error_detail();
+		AppError {
+			id: Uuid::new_v4().to_string(),
+			code: detail.code,
+			status: detail.status,
+			message: detail.message,
+			detail: detail.detail,
+		}
+	}
+}
+
+impl From<PostCategoryError> for AppError {
+	fn from(error: PostCategoryError) -> Self {
 		let detail = error.get_error_detail();
 		AppError {
 			id: Uuid::new_v4().to_string(),

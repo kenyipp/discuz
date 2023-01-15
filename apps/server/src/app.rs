@@ -3,15 +3,16 @@ use actix_web::{
 	http::header::{ACCEPT, AUTHORIZATION},
 	middleware, web, App, HttpResponse, HttpServer, Responder,
 };
-use discuz_layers::service::factory::Factory;
-use discuz_utils::{amazon::get_aws_sdk_config, config::get_config, get_db_connection};
 use dotenv::dotenv;
 use futures::join;
 use std::sync::Arc;
 use tracing::info;
 
+use discuz_layers::service::factory::Factory;
+use discuz_utils::{amazon::get_aws_sdk_config, config::get_config, get_db_connection};
+
 use crate::{
-	auth::auth_route::auth_route, file::file_route::file_route, user::user_route::user_route,
+	auth::auth_route, file::file_route, post_category::post_category_route, user::user_route,
 	utils::app_state::AppState,
 };
 
@@ -62,6 +63,8 @@ pub async fn get_app_state() -> AppState {
 	let auth_service = Arc::new(factory.new_auth_service());
 	let user_service = Arc::new(factory.new_user_service(auth_service.clone()));
 	let file_service = Arc::new(factory.new_file_service());
+	let post_service = Arc::new(factory.new_post_service());
+	let post_category_service = Arc::new(factory.new_post_category_service());
 
 	// Building the app state which is then pushed to the whole api server
 	AppState {
@@ -70,6 +73,8 @@ pub async fn get_app_state() -> AppState {
 		auth_service,
 		user_service,
 		file_service,
+		post_service,
+		post_category_service,
 	}
 }
 
@@ -94,7 +99,8 @@ async fn health_check() -> impl Responder {
 
 pub fn get_api_routes(cfg: &mut web::ServiceConfig) {
 	cfg.route("/health-check", web::get().to(health_check));
-	cfg.service(web::scope("/auth").configure(auth_route));
-	cfg.service(web::scope("/file").configure(file_route));
-	cfg.service(web::scope("/user").configure(user_route));
+	cfg.service(web::scope("/auth").configure(auth_route::route));
+	cfg.service(web::scope("/file").configure(file_route::route));
+	cfg.service(web::scope("/user").configure(user_route::route));
+	cfg.service(web::scope("/post/category").configure(post_category_route::route));
 }

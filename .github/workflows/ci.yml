@@ -95,7 +95,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ./target/
-          key: Binary-Cache-${{ github.head_ref }}.${{ github.sha }}
+          key: Binary-Cache-${{ github.sha }}
 
       - name: Build Server Program
         run: cargo build --bin discuz-server
@@ -130,7 +130,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ./target/
-          key: Binary-Cache-${{ github.head_ref }}.${{ github.sha }}
+          key: Binary-Cache-${{ github.sha }}
 
       - name: Unit Test
         run: cargo test
@@ -160,7 +160,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ./target/
-          key: Binary-Cache-${{ github.head_ref }}.${{ github.sha }}
+          key: Binary-Cache-${{ github.sha }}
 
       - name: Lint program with clippy
         run: cargo clippy --tests --examples --all-targets --workspace
@@ -202,7 +202,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ./target/
-          key: Binary-Cache-${{ github.head_ref }}.${{ github.sha }}
+          key: Binary-Cache-${{ github.sha }}
 
       - name: Database Migration Test
         run: cargo run --bin db-migration
@@ -244,7 +244,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ./target/
-          key: Binary-Cache-${{ github.head_ref }}.${{ github.sha }}
+          key: Binary-Cache-${{ github.sha }}
 
       - name: Migrate Database
         run: cargo run --bin db-migration
@@ -290,7 +290,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ./target/
-          key: Binary-Cache-${{ github.head_ref }}.${{ github.sha }}
+          key: Binary-Cache-${{ github.sha }}
 
       - name: Install nextest
         uses: taiki-e/install-action@nextest

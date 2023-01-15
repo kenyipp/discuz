@@ -90,10 +90,6 @@ impl Config {
 			.into_report()
 			.change_context(ConfigError::Generic)
 	}
-
-	pub fn is_development(&self) -> bool {
-		self.run_mode == "development"
-	}
 }
 
 #[derive(Debug, Error, Display)]

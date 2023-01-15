@@ -1,10 +1,11 @@
+use crate::constants::UNCLASSIFIED_CATEGORY_ID;
 use chrono;
-use sea_orm::{DatabaseConnection, *};
+use sea_orm::{sea_query::Expr, DatabaseConnection, *};
 use std::sync::Arc;
 use uuid::Uuid;
 
-use super::entities::def_post_category;
 pub use super::entities::def_post_category::DefPostCategory;
+use super::entities::{def_post_category, post};
 
 #[derive(Debug, Clone)]
 pub struct DbPostCategory {
@@ -17,6 +18,7 @@ pub trait DbPostCategoryTrait {
 	async fn create(&self, input: &CreateCategoryInput) -> Result<String, DbErr>;
 	async fn update(&self, input: &UpdateCategoryInput) -> Result<(), DbErr>;
 	async fn delete(&self, id: &str) -> Result<(), DbErr>;
+	async fn count(&self) -> Result<u64, DbErr>;
 }
 
 impl DbPostCategory {
@@ -76,8 +78,40 @@ impl DbPostCategoryTrait for DbPostCategory {
 		Ok(())
 	}
 
-	async fn delete(&self, _id: &str) -> Result<(), DbErr> {
-		todo!()
+	async fn delete(&self, id: &str) -> Result<(), DbErr> {
+		let mut post_category: def_post_category::ActiveModel = self
+			.find_by_id(&id)
+			.await?
+			.ok_or(DbErr::Custom(format!("Invalid post category #{}", id)))?
+			.into();
+
+		if post_category.status_id.take() == Some("D".to_owned()) {
+			return Err(DbErr::Custom(
+				"The post category has been deleted before".to_owned(),
+			));
+		}
+
+		Update::many(post::Entity)
+			.col_expr(
+				post::Column::PostCategoryId,
+				Expr::value(UNCLASSIFIED_CATEGORY_ID),
+			)
+			.filter(post::Column::PostCategoryId.eq(id))
+			.exec(&*self.db_connection)
+			.await?;
+
+		post_category.status_id = Set("D".to_owned());
+		post_category.update(&*self.db_connection).await?;
+
+		Ok(())
+	}
+
+	async fn count(&self) -> Result<u64, DbErr> {
+		let count = def_post_category::Entity::find()
+			.filter(def_post_category::Column::StatusId.eq("A"))
+			.count(&*self.db_connection)
+			.await?;
+		Ok(count)
 	}
 }
 
