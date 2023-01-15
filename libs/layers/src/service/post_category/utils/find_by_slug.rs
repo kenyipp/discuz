@@ -7,11 +7,20 @@ use tracing::error;
 
 pub async fn execute(
 	repo_post_category: &RepoPostCategory,
-	id: &str,
+	slug: &str,
 ) -> Result<Option<DefPostCategory>, PostCategoryError> {
-	let post_category = repo_post_category.find_by_id(id).await.map_err(|error| {
-		error!("{:#?}", error);
-		PostCategoryError::InternalServerError
-	})?;
-	Ok(post_category)
+	let post_category = repo_post_category
+		.find_by_slug(slug)
+		.await
+		.map_err(|error| {
+			error!("{:#?}", error);
+			PostCategoryError::InternalServerError
+		})?;
+
+	if let Some(post_category) = post_category {
+		if post_category.status_id == "A" {
+			return Ok(Some(post_category));
+		}
+	}
+	Ok(None)
 }

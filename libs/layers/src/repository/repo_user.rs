@@ -4,6 +4,7 @@ use error_stack::{IntoReport, Result, ResultExt};
 pub use crate::repository::database::db_user::{
 	CreateUserInput, DbUser, DbUserTrait, InputUserList, UpdateUserInput, User,
 };
+use crate::service::auth::constants::UserRole;
 
 #[derive(Debug, Clone)]
 pub struct RepoUser {
@@ -26,6 +27,7 @@ pub enum RepoError {
 pub trait RepoUserTrait {
 	async fn create(&self, input: &CreateUserInput) -> Result<String, RepoError>;
 	async fn update(&self, input: &UpdateUserInput) -> Result<(), RepoError>;
+	async fn update_role(&self, id: &str, role: &UserRole) -> Result<(), RepoError>;
 	async fn list(&self, input: &InputUserList) -> Result<Vec<User>, RepoError>;
 	async fn find_by_id(&self, id: &str) -> Result<Option<User>, RepoError>;
 	async fn find_by_sub(&self, sub: &str) -> Result<Option<User>, RepoError>;
@@ -44,6 +46,14 @@ impl RepoUserTrait for RepoUser {
 	async fn update(&self, input: &UpdateUserInput) -> Result<(), RepoError> {
 		self.db_user
 			.update(input)
+			.await
+			.into_report()
+			.change_context(RepoError::Generic)
+	}
+
+	async fn update_role(&self, id: &str, role: &UserRole) -> Result<(), RepoError> {
+		self.db_user
+			.update_role(id, role)
 			.await
 			.into_report()
 			.change_context(RepoError::Generic)

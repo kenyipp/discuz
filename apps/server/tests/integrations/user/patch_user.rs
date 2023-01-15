@@ -3,18 +3,7 @@ use discuz_layers::{
 	constants::FAKE_ACCESS_TOKEN,
 	migration::{Migrator, MigratorTrait},
 };
-use discuz_server::app;
-use discuz_server::user::user_controller;
-
-trait BodyTest {
-	fn as_str(&self) -> &str;
-}
-
-impl BodyTest for web::Bytes {
-	fn as_str(&self) -> &str {
-		std::str::from_utf8(self).unwrap()
-	}
-}
+use discuz_server::{app, user::user_controller};
 
 #[actix_web::test]
 async fn patch_user() {

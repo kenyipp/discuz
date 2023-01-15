@@ -4,8 +4,7 @@ use discuz_layers::{
 	migration::{Migrator, MigratorTrait},
 	service::auth::utils::mock_data,
 };
-use discuz_server::app;
-use discuz_server::user::user_controller;
+use discuz_server::{app, user::user_controller};
 
 trait BodyTest {
 	fn as_str(&self) -> &str;

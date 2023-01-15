@@ -7,6 +7,7 @@
 	"dictionaryDefinitions": [],
 	"dictionaries": [],
 	"words": [
+		"RUSTFLAGS",
 		"actix",
 		"alkonost",
 		"artix",

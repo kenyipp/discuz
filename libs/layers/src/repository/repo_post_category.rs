@@ -24,8 +24,9 @@ pub enum RepoError {
 #[async_trait]
 pub trait RepoPostCategoryTrait {
 	async fn find_by_id(&self, id: &str) -> Result<Option<DefPostCategory>, RepoError>;
+	async fn find_by_slug(&self, slug: &str) -> Result<Option<DefPostCategory>, RepoError>;
 	async fn create(&self, input: &CreateCategoryInput) -> Result<String, RepoError>;
-	async fn update(&self, input: &UpdateCategoryInput) -> Result<(), RepoError>;
+	async fn update(&self, input: &UpdateCategoryInput) -> Result<DefPostCategory, RepoError>;
 	async fn delete(&self, id: &str) -> Result<(), RepoError>;
 }
 
@@ -39,6 +40,14 @@ impl RepoPostCategoryTrait for RepoPostCategory {
 			.change_context(RepoError::Generic)
 	}
 
+	async fn find_by_slug(&self, slug: &str) -> Result<Option<DefPostCategory>, RepoError> {
+		self.db_post_category
+			.find_by_slug(slug)
+			.await
+			.into_report()
+			.change_context(RepoError::Generic)
+	}
+
 	async fn create(&self, input: &CreateCategoryInput) -> Result<String, RepoError> {
 		self.db_post_category
 			.create(input)
@@ -47,7 +56,7 @@ impl RepoPostCategoryTrait for RepoPostCategory {
 			.change_context(RepoError::Generic)
 	}
 
-	async fn update(&self, input: &UpdateCategoryInput) -> Result<(), RepoError> {
+	async fn update(&self, input: &UpdateCategoryInput) -> Result<DefPostCategory, RepoError> {
 		self.db_post_category
 			.update(input)
 			.await

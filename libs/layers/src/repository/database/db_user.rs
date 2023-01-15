@@ -4,6 +4,8 @@ use chrono;
 use sea_orm::{DatabaseConnection, *};
 use uuid::Uuid;
 
+use crate::service::auth::constants::UserRole;
+
 use super::entities::user;
 pub use super::entities::user::User;
 
@@ -19,6 +21,7 @@ pub trait DbUserTrait {
 	async fn update(&self, input: &UpdateUserInput) -> Result<(), DbErr>;
 	async fn find_by_id(&self, id: &str) -> Result<Option<User>, DbErr>;
 	async fn find_by_sub(&self, sub: &str) -> Result<Option<User>, DbErr>;
+	async fn update_role(&self, id: &str, role: &UserRole) -> Result<(), DbErr>;
 }
 
 impl DbUser {
@@ -71,10 +74,7 @@ impl DbUserTrait for DbUser {
 		let mut user: user::ActiveModel = self
 			.find_by_id(&input.id)
 			.await?
-			.ok_or(DbErr::Custom(format!(
-				"User with id #{} not exist",
-				input.id
-			)))?
+			.ok_or_else(|| DbErr::Custom(format!("User with id #{} not exist", input.id)))?
 			.into();
 
 		user.name = Set(input.name.to_owned());
@@ -99,6 +99,18 @@ impl DbUserTrait for DbUser {
 			.one(&*self.db_connection)
 			.await;
 		user
+	}
+
+	async fn update_role(&self, id: &str, role: &UserRole) -> Result<(), DbErr> {
+		let mut user: user::ActiveModel = self
+			.find_by_id(id)
+			.await?
+			.ok_or_else(|| DbErr::Custom(format!("User with id #{} not exist", id)))?
+			.into();
+
+		user.role = Set(role.to_string());
+		user.update(&*self.db_connection).await?;
+		Ok(())
 	}
 }
 

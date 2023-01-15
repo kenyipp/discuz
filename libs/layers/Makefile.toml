@@ -9,6 +9,6 @@ command = "cargo"
 args = ["watch", "-x run"]
 
 [tasks.test]
-env = { RUN_MODE = "testing", RUST_BACKTRACE = "0" }
+env = { RUN_MODE = "testing", RUST_BACKTRACE = "0", RUSTFLAGS  = "-A unused_imports" }
 command = "cargo"
-args = ["nextest", "run"]
+args = ["nextest", "run", "--no-capture"]

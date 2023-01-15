@@ -97,11 +97,8 @@ jobs:
           path: ./target/
           key: Binary-Cache-${{ github.sha }}
 
-      - name: Build Server Program
-        run: cargo build --bin discuz-server
-
-      - name: Build Db Migration Program
-        run: cargo build --bin db-migration
+      - name: Build Program Binary
+        run: cargo build
 
   #
   unit-test:

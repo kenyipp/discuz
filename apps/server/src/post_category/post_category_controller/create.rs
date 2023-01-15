@@ -49,7 +49,7 @@ pub struct Response {
 	pub data: DefPostCategory,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Body {
 	pub name: String,
 	pub description: Option<String>,

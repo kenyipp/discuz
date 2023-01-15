@@ -15,8 +15,9 @@ pub struct DbPostCategory {
 #[async_trait]
 pub trait DbPostCategoryTrait {
 	async fn find_by_id(&self, id: &str) -> Result<Option<DefPostCategory>, DbErr>;
+	async fn find_by_slug(&self, slug: &str) -> Result<Option<DefPostCategory>, DbErr>;
 	async fn create(&self, input: &CreateCategoryInput) -> Result<String, DbErr>;
-	async fn update(&self, input: &UpdateCategoryInput) -> Result<(), DbErr>;
+	async fn update(&self, input: &UpdateCategoryInput) -> Result<DefPostCategory, DbErr>;
 	async fn delete(&self, id: &str) -> Result<(), DbErr>;
 	async fn count(&self) -> Result<u64, DbErr>;
 }
@@ -34,6 +35,14 @@ impl DbPostCategoryTrait for DbPostCategory {
 	async fn find_by_id(&self, id: &str) -> Result<Option<DefPostCategory>, DbErr> {
 		let category = def_post_category::Entity::find()
 			.filter(def_post_category::Column::Id.eq(id))
+			.one(&*self.db_connection)
+			.await;
+		category
+	}
+
+	async fn find_by_slug(&self, slug: &str) -> Result<Option<DefPostCategory>, DbErr> {
+		let category = def_post_category::Entity::find()
+			.filter(def_post_category::Column::Slug.eq(slug))
 			.one(&*self.db_connection)
 			.await;
 		category
@@ -59,30 +68,33 @@ impl DbPostCategoryTrait for DbPostCategory {
 		Ok(category_id)
 	}
 
-	async fn update(&self, input: &UpdateCategoryInput) -> Result<(), DbErr> {
+	async fn update(&self, input: &UpdateCategoryInput) -> Result<DefPostCategory, DbErr> {
 		let mut post_category: def_post_category::ActiveModel = self
 			.find_by_id(&input.id)
 			.await?
-			.ok_or(DbErr::Custom(format!(
-				"Invalid post category #{}",
-				input.id
-			)))?
+			.ok_or_else(|| DbErr::Custom(format!("Invalid post category #{}", input.id)))?
 			.into();
 
 		post_category.name = Set(input.name.to_owned());
 		post_category.slug = Set(input.slug.to_owned());
 		post_category.description = Set(input.description.to_owned());
 		post_category.user_id = Set(input.user_id.to_owned());
+		post_category.status_id = Set(input.status_id.to_owned());
 
 		post_category.update(&*self.db_connection).await?;
-		Ok(())
+
+		let post_category = self.find_by_id(&input.id).await?.ok_or_else(|| {
+			DbErr::Custom("Unable to retrieve the post category after created".to_owned())
+		})?;
+
+		Ok(post_category)
 	}
 
 	async fn delete(&self, id: &str) -> Result<(), DbErr> {
 		let mut post_category: def_post_category::ActiveModel = self
-			.find_by_id(&id)
+			.find_by_id(id)
 			.await?
-			.ok_or(DbErr::Custom(format!("Invalid post category #{}", id)))?
+			.ok_or_else(|| DbErr::Custom(format!("Invalid post category #{}", id)))?
 			.into();
 
 		if post_category.status_id.take() == Some("D".to_owned()) {
@@ -130,4 +142,5 @@ pub struct UpdateCategoryInput {
 	pub slug: String,
 	pub description: Option<String>,
 	pub user_id: Option<String>,
+	pub status_id: String,
 }

@@ -70,10 +70,7 @@ impl DbPostTrait for DbPost {
 		let mut post: post::ActiveModel = self
 			.find_by_id(&input.id)
 			.await?
-			.ok_or(DbErr::Custom(format!(
-				"Post with id #{} not exist",
-				input.id
-			)))?
+			.ok_or_else(|| DbErr::Custom(format!("Post with id #{} not exist", input.id)))?
 			.into();
 
 		post.title = Set(input.title.clone());
@@ -131,10 +128,7 @@ impl DbPostTrait for DbPost {
 		let mut post_tag: def_post_tag::ActiveModel = self
 			.find_post_tag_by_id(&input.id)
 			.await?
-			.ok_or(DbErr::Custom(format!(
-				"Post tag with id #{} not exist",
-				input.id
-			)))?
+			.ok_or_else(|| DbErr::Custom(format!("Post tag with id #{} not exist", input.id)))?
 			.into();
 
 		post_tag.name = Set(input.name.to_owned());
