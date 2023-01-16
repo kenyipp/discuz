@@ -60,8 +60,9 @@ fn create_post_tag(manager: &SchemaManager) -> TableCreateStatement {
 		.table(PostTag::Table)
 		.col(
 			ColumnDef::new(PostTag::PostId)
-				.string()
-				.string_len(64)
+				.integer()
+				.integer_len(11)
+				.unsigned()
 				.not_null(),
 		)
 		.col(
@@ -102,16 +103,17 @@ fn create_post(manager: &SchemaManager) -> TableCreateStatement {
 		.table(Post::Table)
 		.col(
 			ColumnDef::new(Post::PostId)
-				.string()
-				.string_len(64)
+				.integer()
+				.integer_len(11)
+				.unsigned()
 				.not_null()
-				.primary_key(),
+				.primary_key()
+				.auto_increment(),
 		)
 		.col(
 			ColumnDef::new(Post::Title)
 				.string()
 				.string_len(150)
-				.unique_key()
 				.not_null(),
 		)
 		.col(

@@ -17,7 +17,7 @@ pub enum PostCategoryError {
 		name: String,
 		detail: Option<String>,
 	},
-	#[strum(props(code = "internal_server_error"))]
 	#[display(fmt = "Post Category Error: Internal Server Error")]
+	#[strum(props(code = "internal_server_error"))]
 	InternalServerError,
 }

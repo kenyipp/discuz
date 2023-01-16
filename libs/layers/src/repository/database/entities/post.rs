@@ -4,8 +4,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
 #[sea_orm(table_name = "post")]
 pub struct Model {
-	#[sea_orm(primary_key, column_name = "post_id")]
-	pub id: String,
+	#[sea_orm(primary_key, auto_increment = true, column_name = "post_id")]
+	pub id: i32,
 	pub title: String,
 	pub slug: String,
 	pub post_category_id: String,
