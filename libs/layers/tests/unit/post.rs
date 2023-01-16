@@ -71,7 +71,7 @@ async fn update_post() {
 		title: "Foo Bar".to_owned(),
 		post_category_id: UNCLASSIFIED_CATEGORY_ID.to_owned(),
 		content: "Content".to_owned(),
-		excerpt: "Excerpt".to_owned(),
+		excerpt: None,
 		user_id: None,
 		status_id: None,
 	};
@@ -113,7 +113,7 @@ fn get_create_post_input() -> CreatePostInput {
 		title: "Hello world".to_owned(),
 		post_category_id: UNCLASSIFIED_CATEGORY_ID.to_owned(),
 		content: "Content".to_owned(),
-		excerpt: "Excerpt".to_owned(),
+		excerpt: None,
 		user_id: None,
 	}
 }

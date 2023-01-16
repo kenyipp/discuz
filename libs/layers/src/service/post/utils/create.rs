@@ -43,6 +43,6 @@ pub struct CreatePostInput {
 	pub title: String,
 	pub post_category_id: String,
 	pub content: String,
-	pub excerpt: String,
+	pub excerpt: Option<String>,
 	pub user_id: Option<String>,
 }

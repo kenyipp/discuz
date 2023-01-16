@@ -10,7 +10,7 @@ pub struct Model {
 	pub slug: String,
 	pub post_category_id: String,
 	pub content: String,
-	pub excerpt: String,
+	pub excerpt: Option<String>,
 	pub user_id: Option<String>,
 	pub status_id: String,
 	pub created_at: DateTimeUtc,

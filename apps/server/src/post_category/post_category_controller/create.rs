@@ -9,7 +9,7 @@ use discuz_layers::service::{
 };
 
 use crate::{
-	auth::errors::AuthError, errors::AppError, post_category::errors::PostCategoryError,
+	auth::errors::ApiAuthError, errors::AppError, post_category::errors::ApiPostCategoryError,
 	utils::app_state::AppState, utils::auth::Auth,
 };
 
@@ -18,13 +18,13 @@ pub async fn execute(
 	body: web::Json<Body>,
 	auth: Auth,
 ) -> Result<HttpResponse, AppError> {
-	let user = auth.user.ok_or(AuthError::MissingAuthorization)?;
+	let user = auth.user.ok_or(ApiAuthError::MissingAuthorization)?;
 
 	let auth_service = app_state.auth_service.clone();
 
 	auth_service
 		.validate_permission(&user, &[UserRole::Admin])
-		.map_err(|_| AuthError::InsufficientPrivilege)?;
+		.map_err(|_| ApiAuthError::InsufficientPrivilege)?;
 
 	let input = CreateCategoryInput {
 		name: body.name.to_owned(),
@@ -37,7 +37,7 @@ pub async fn execute(
 	let post_category = post_category_service
 		.create(&input)
 		.await
-		.map_err(|_| PostCategoryError::InternalSeverError)?;
+		.map_err(|_| ApiPostCategoryError::InternalSeverError)?;
 
 	Ok(HttpResponse::Ok().json(Response {
 		data: post_category,

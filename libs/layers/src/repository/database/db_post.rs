@@ -194,7 +194,7 @@ pub struct CreatePostInput {
 	pub slug: String,
 	pub post_category_id: String,
 	pub content: String,
-	pub excerpt: String,
+	pub excerpt: Option<String>,
 	pub user_id: Option<String>,
 }
 
@@ -205,7 +205,7 @@ pub struct UpdatePostInput {
 	pub slug: String,
 	pub post_category_id: String,
 	pub content: String,
-	pub excerpt: String,
+	pub excerpt: Option<String>,
 	pub user_id: Option<String>,
 	pub status_id: String,
 }

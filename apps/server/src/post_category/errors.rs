@@ -1,21 +1,21 @@
 use crate::errors::{ErrorDetail, GetErrorDetailTrait};
 
 #[derive(Debug, Clone)]
-pub enum PostCategoryError {
+pub enum ApiPostCategoryError {
 	Generic,
 	InternalSeverError,
 }
 
-impl GetErrorDetailTrait for PostCategoryError {
+impl GetErrorDetailTrait for ApiPostCategoryError {
 	fn get_error_detail(&self) -> ErrorDetail {
 		match self {
-			PostCategoryError::Generic => ErrorDetail {
+			ApiPostCategoryError::Generic => ErrorDetail {
 				code: "post_category_generic".to_owned(),
 				status: 400,
 				message: None,
 				detail: None,
 			},
-			PostCategoryError::InternalSeverError => ErrorDetail {
+			ApiPostCategoryError::InternalSeverError => ErrorDetail {
 				code: "post_internal_server_error".to_owned(),
 				status: 500,
 				message: Some("Internal Server Error".to_owned()),

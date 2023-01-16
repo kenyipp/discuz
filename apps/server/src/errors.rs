@@ -4,7 +4,8 @@ use std::{convert::From, fmt};
 use uuid::Uuid;
 
 use crate::{
-	auth::errors::AuthError, file::errors::FileError, post_category::errors::PostCategoryError,
+	auth::errors::ApiAuthError, file::errors::ApiFileError, post::errors::ApiPostError,
+	post_category::errors::ApiPostCategoryError,
 };
 
 #[derive(Debug, Serialize, Clone)]
@@ -55,8 +56,8 @@ impl AppError {
 	}
 }
 
-impl From<AuthError> for AppError {
-	fn from(error: AuthError) -> Self {
+impl From<ApiAuthError> for AppError {
+	fn from(error: ApiAuthError) -> Self {
 		let detail = error.get_error_detail();
 		AppError {
 			id: Uuid::new_v4().to_string(),
@@ -68,8 +69,8 @@ impl From<AuthError> for AppError {
 	}
 }
 
-impl From<FileError> for AppError {
-	fn from(error: FileError) -> Self {
+impl From<ApiFileError> for AppError {
+	fn from(error: ApiFileError) -> Self {
 		let detail = error.get_error_detail();
 		AppError {
 			id: Uuid::new_v4().to_string(),
@@ -81,8 +82,21 @@ impl From<FileError> for AppError {
 	}
 }
 
-impl From<PostCategoryError> for AppError {
-	fn from(error: PostCategoryError) -> Self {
+impl From<ApiPostError> for AppError {
+	fn from(error: ApiPostError) -> Self {
+		let detail = error.get_error_detail();
+		AppError {
+			id: Uuid::new_v4().to_string(),
+			code: detail.code,
+			status: detail.status,
+			message: detail.message,
+			detail: detail.detail,
+		}
+	}
+}
+
+impl From<ApiPostCategoryError> for AppError {
+	fn from(error: ApiPostCategoryError) -> Self {
 		let detail = error.get_error_detail();
 		AppError {
 			id: Uuid::new_v4().to_string(),

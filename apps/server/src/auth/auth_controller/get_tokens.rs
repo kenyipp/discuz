@@ -4,19 +4,19 @@ use discuz_layers::service::auth::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::{auth::errors::AuthError, errors::AppError, utils::app_state::AppState};
+use crate::{auth::errors::ApiAuthError, errors::AppError, utils::app_state::AppState};
 
 pub async fn get_tokens(
-	data: web::Data<AppState>,
+	app_state: web::Data<AppState>,
 	body: web::Json<Body>,
 ) -> Result<HttpResponse, AppError> {
-	let tokens = data
+	let tokens = app_state
 		.auth_service
 		.get_tokens(&body.code)
 		.await
 		.map_err(|error| {
 			println!("{:#?}", error);
-			AuthError::InvalidAuthCode
+			ApiAuthError::InvalidAuthCode
 		})?;
 	Ok(HttpResponse::Ok().json(Response { data: tokens }))
 }

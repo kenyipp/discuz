@@ -1,14 +1,14 @@
 use crate::errors::{ErrorDetail, GetErrorDetailTrait};
 
 #[derive(Debug, Clone)]
-pub enum FileError {
+pub enum ApiFileError {
 	InvalidFileType { detail: Option<String> },
 }
 
-impl GetErrorDetailTrait for FileError {
+impl GetErrorDetailTrait for ApiFileError {
 	fn get_error_detail(&self) -> ErrorDetail {
 		match self {
-			FileError::InvalidFileType { detail } => ErrorDetail {
+			ApiFileError::InvalidFileType { detail } => ErrorDetail {
 				code: "file_invalid_file_type".to_owned(),
 				status: 400,
 				message: Some("Invalid File Type".to_owned()),

@@ -12,8 +12,8 @@ use discuz_layers::service::factory::Factory;
 use discuz_utils::{amazon::get_aws_sdk_config, config::get_config, get_db_connection};
 
 use crate::{
-	auth::auth_route, file::file_route, post_category::post_category_route, user::user_route,
-	utils::app_state::AppState,
+	auth::auth_route, file::file_route, post::post_route, post_category::post_category_route,
+	user::user_route, utils::app_state::AppState,
 };
 
 pub async fn listen() -> std::io::Result<()> {
@@ -103,4 +103,5 @@ pub fn get_api_routes(cfg: &mut web::ServiceConfig) {
 	cfg.service(web::scope("/file").configure(file_route::route));
 	cfg.service(web::scope("/user").configure(user_route::route));
 	cfg.service(web::scope("/post/category").configure(post_category_route::route));
+	cfg.service(web::scope("/post").configure(post_route::route));
 }

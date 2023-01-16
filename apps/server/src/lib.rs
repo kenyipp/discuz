@@ -1,5 +1,6 @@
 pub mod auth;
 pub mod file;
+pub mod post;
 pub mod post_category;
 pub mod user;
 

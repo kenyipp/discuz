@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use tracing::trace;
 
 use crate::{
-	auth::errors::AuthError,
+	auth::errors::ApiAuthError,
 	errors::AppError,
 	user::dto::user::DtoUser,
 	utils::{app_state::AppState, auth::Auth},
@@ -16,11 +16,11 @@ pub async fn execute(
 	app_state: web::Data<AppState>,
 	auth: Auth,
 ) -> Result<HttpResponse, AppError> {
-	let user = auth.user.ok_or(AuthError::InvalidAccessToken)?;
+	let user = auth.user.ok_or(ApiAuthError::InvalidAccessToken)?;
 	let id = params.id.to_owned();
 
 	if user.id != id {
-		return Err(AuthError::InsufficientPrivilege.into());
+		return Err(ApiAuthError::InsufficientPrivilege.into());
 	}
 
 	let updates = UpdateUserInput {
