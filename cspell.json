@@ -2,7 +2,8 @@
 	"version": "0.2",
 	"ignorePaths": [
 		"./target",
-		"./.circleci/config.yml"
+		"./.circleci/config.yml",
+		"./libs/layers/src/utils/mock_data"
 	],
 	"dictionaryDefinitions": [],
 	"dictionaries": [],

@@ -10,7 +10,7 @@ pub async fn execute(
 ) -> Result<(), PostCategoryError> {
 	find_by_id(repo_post_category, id)
 		.await?
-		.ok_or_else(|| PostCategoryError::CategoryNotExistError)?;
+		.ok_or(PostCategoryError::CategoryNotExistError)?;
 
 	repo_post_category
 		.delete(id)

@@ -9,7 +9,7 @@ use slugify::slugify;
 pub async fn execute(repo_post: &RepoPost, input: &UpdatePostInput) -> Result<Post, PostError> {
 	let post = find_by_id(repo_post, input.id)
 		.await?
-		.ok_or_else(|| PostError::PostNotExistError)?;
+		.ok_or(PostError::PostNotExistError)?;
 
 	let input = repo_post::UpdatePostInput {
 		id: input.id.to_owned(),
@@ -17,7 +17,6 @@ pub async fn execute(repo_post: &RepoPost, input: &UpdatePostInput) -> Result<Po
 		slug: slugify!(&input.title),
 		post_category_id: input.post_category_id.to_owned(),
 		content: input.content.to_owned(),
-		excerpt: input.excerpt.to_owned(),
 		user_id: input.user_id.to_owned(),
 		status_id: input.status_id.to_owned().unwrap_or(post.status_id),
 	};
@@ -29,7 +28,7 @@ pub async fn execute(repo_post: &RepoPost, input: &UpdatePostInput) -> Result<Po
 
 	let post = find_by_id(repo_post, input.id)
 		.await?
-		.ok_or_else(|| PostError::InternalServerError)?;
+		.ok_or(PostError::InternalServerError)?;
 	Ok(post)
 }
 
@@ -39,7 +38,6 @@ pub struct UpdatePostInput {
 	pub title: String,
 	pub post_category_id: String,
 	pub content: String,
-	pub excerpt: Option<String>,
 	pub user_id: Option<String>,
 	pub status_id: Option<String>,
 }

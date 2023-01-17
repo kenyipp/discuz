@@ -3,13 +3,19 @@ RUN_MODE = "testing"
 CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
 
 [tasks.pre-commit]
+workspace = false
 dependencies = ["lint", "spell", "format", "test"]
 
 [tasks.lint]
+workspace = false
 command = "cargo"
 args = ["clippy", "--tests", "--examples", "--all-targets", "--workspace"]
 
+[tasks.lint-fix]
+args = ["clippy", "--fix", "--allow-dirty"]
+
 [tasks.format]
+workspace = false
 command = "cargo"
 args = ["fmt", "--all"]
 
@@ -24,6 +30,7 @@ command = "cargo"
 args = ["test"]
 
 [tasks.spell]
+workspace = false
 command = "cspell"
 args = ["**"]
 
@@ -41,11 +48,19 @@ command = "cargo"
 args = ["run"]
 
 [tasks.cov]
+workspace = false
 command = "cargo"
 env = { RUN_MODE = "testing" }
 args = ["llvm-cov", "nextest", "${@}"]
 
 [tasks.cov-ci]
+workspace = false
 command = "cargo"
 env = { RUN_MODE = "ci" }
 args = ["llvm-cov", "nextest", "--lcov", "--output-path", "lcov.info"]
+
+[tasks.cov-check]
+command = "curl"
+workspace = false
+description = "Validate the repository codecov YAML"
+args = ["--data-binary", "@codecov.yml", "https://codecov.io/validate"]

@@ -39,7 +39,6 @@ pub async fn execute(
 		title: body.title.to_owned(),
 		post_category_id: body.post_category_id.to_owned(),
 		content: body.content.to_owned(),
-		excerpt: body.excerpt.to_owned(),
 		user_id: Some(user.id.to_owned()),
 		status_id: None,
 	};
@@ -72,5 +71,4 @@ pub struct Body {
 	pub title: String,
 	pub post_category_id: String,
 	pub content: String,
-	pub excerpt: Option<String>,
 }

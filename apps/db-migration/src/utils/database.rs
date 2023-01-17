@@ -28,7 +28,7 @@ pub async fn get_db_connection() -> DatabaseConnection {
 	db_connection
 		.execute(Statement::from_string(
 			DbBackend::MySql,
-			format!("CREATE DATABASE IF NOT EXISTS `{}`;", database_name),
+			format!("CREATE DATABASE IF NOT EXISTS `{}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;", database_name),
 		))
 		.await
 		.expect("Unable to create database");

@@ -13,7 +13,7 @@ pub async fn execute(
 ) -> Result<DefPostCategory, PostCategoryError> {
 	let post_category = find_by_id(repo_post_category, &input.id)
 		.await?
-		.ok_or_else(|| PostCategoryError::CategoryNotExistError)?;
+		.ok_or(PostCategoryError::CategoryNotExistError)?;
 
 	let input = repo_post_category::UpdateCategoryInput {
 		id: input.id.to_owned(),

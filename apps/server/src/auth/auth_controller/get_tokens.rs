@@ -3,6 +3,7 @@ use discuz_layers::service::auth::{
 	auth_service::AuthServiceTrait, provider::utils::GetTokensOutput,
 };
 use serde::{Deserialize, Serialize};
+use tracing::trace;
 
 use crate::{auth::errors::ApiAuthError, errors::AppError, utils::app_state::AppState};
 
@@ -15,7 +16,7 @@ pub async fn get_tokens(
 		.get_tokens(&body.code)
 		.await
 		.map_err(|error| {
-			println!("{:#?}", error);
+			trace!("{:#?}", error);
 			ApiAuthError::InvalidAuthCode
 		})?;
 	Ok(HttpResponse::Ok().json(Response { data: tokens }))

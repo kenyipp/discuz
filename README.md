@@ -21,6 +21,11 @@ You can view a full list of crates being used in Cargo.toml, but here are some o
  - [Cargo Make](https://github.com/sagiegurari/cargo-make) - the task runner. A set of tasks, including unit tests, linting, and formatting, need to be done for each commit. The [Makefile.toml](./Makefile.toml) includes configuration and code snippets to run those tasks. 
  - [Nextest](https://nexte.st/) - rust next generation test framework.It provides a clean interface for the test results for rust. It is faster than using the `cargo test`. Users can choose the test cases to run with by using this framework. It is 100% compatible with `cargo test` so you can use `cargo test` to perform unit testing instead of this framework.
 
+## Database Design
+This repository has three types of tables: Entity Tables, Definition Tables, and Relation Tables. 
+
+The format of the foreign keys is `FK-{Table name}-{Table column}-{Target table name}-{Target table column}`, and index is `IDX-{Table name}-{Column name}`.
+
 ## Testing
 Simply run `cargo nextest run` or `cargo test` if you don't want to install Nextest.  
 You can also check postman / newman. See the `/tests` directory.  
@@ -41,6 +46,8 @@ You are also welcome to open a new issue if you see something missing or could b
 Before deploying and integrating the application, a set of validations (testing, linting, and formatting) are required. We advise to run `cargo make pre-commit` before each commit. 
 
 ## Reference Projects
+ - [Actix Examples](https://github.com/actix/examples)  
+A list of actix web examples
  - [Real world example app](https://github.com/TatriX/realworld-rust-rocket)  
 Rust implementation of [Real world](https://github.com/gothinkster/realworld)
  - [Rust Async-GraphQL Example: Caster Api](https://github.com/bkonkle/rust-example-caster-api)  

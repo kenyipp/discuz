@@ -34,7 +34,7 @@ slugify = "0.1.0"
 strum = "0.24.1"
 strum_macros = "0.24.3"
 tokio = { version = "1", features = ["full"] }
-tracing = "0.1.37"
+tracing = "0.1"
 uuid = "1.2.2"
 
 [dev-dependencies]

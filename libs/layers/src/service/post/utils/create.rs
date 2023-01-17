@@ -14,7 +14,6 @@ pub async fn execute(repo_post: &RepoPost, input: &CreatePostInput) -> Result<Po
 		title,
 		post_category_id,
 		content,
-		excerpt,
 		user_id,
 	} = input;
 
@@ -23,7 +22,6 @@ pub async fn execute(repo_post: &RepoPost, input: &CreatePostInput) -> Result<Po
 		slug,
 		post_category_id: post_category_id.to_owned(),
 		content: content.to_owned(),
-		excerpt: excerpt.to_owned(),
 		user_id: user_id.to_owned(),
 	};
 
@@ -33,7 +31,7 @@ pub async fn execute(repo_post: &RepoPost, input: &CreatePostInput) -> Result<Po
 		.change_context(PostError::InternalServerError)?;
 	let post = find_by_id(repo_post, post_id)
 		.await?
-		.ok_or_else(|| PostError::InternalServerError)?;
+		.ok_or(PostError::InternalServerError)?;
 
 	Ok(post)
 }
@@ -43,6 +41,5 @@ pub struct CreatePostInput {
 	pub title: String,
 	pub post_category_id: String,
 	pub content: String,
-	pub excerpt: Option<String>,
 	pub user_id: Option<String>,
 }

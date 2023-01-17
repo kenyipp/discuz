@@ -5,4 +5,9 @@ CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
 [tasks.test]
 env = { RUN_MODE = "testing", RUST_BACKTRACE = "0", RUST_LOG = "discuz-server=trace,discuz-layers=trace" }
 command = "cargo"
+args = ["test", "--","--show-output"]
+
+[tasks.nextest]
+env = { RUN_MODE = "testing", RUST_BACKTRACE = "0", RUST_LOG = "discuz-server=trace,discuz-layers=trace" }
+command = "cargo"
 args = ["nextest", "run", "--no-capture"]

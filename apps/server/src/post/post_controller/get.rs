@@ -18,10 +18,12 @@ pub async fn execute(
 	})?;
 
 	if let Some(post) = post {
-		Ok(HttpResponse::Ok().json(Response { data: post }))
-	} else {
-		Ok(HttpResponse::NotFound().finish())
+		if post.status_id == *"A" {
+			return Ok(HttpResponse::Ok().json(Response { data: post }));
+		}
 	}
+
+	Ok(HttpResponse::NotFound().finish())
 }
 
 #[derive(Debug, Serialize, Deserialize)]

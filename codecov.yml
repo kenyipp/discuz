@@ -1,0 +1,15 @@
+codecov:
+  branch: master
+ignore:
+  # Db migration allowed for production only
+  - "apps/db-migration"
+  # Disable on project entry point
+  - "**/main.rs"
+
+  #
+  #
+  # Program specific
+  #
+  #
+  # It never used in testing environment
+  - "apps/server/src/auth/auth_controller/get_tokens.rs"

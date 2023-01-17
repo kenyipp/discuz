@@ -25,11 +25,7 @@ pub async fn get_http_errors() -> Result<Vec<HttpError>, GetHttpError> {
 		.into_report()
 		.change_context(GetHttpError::IOError("Unable to get the path".to_string()))?;
 
-	println!("{}", path.display());
-
 	path.push("dict/http-errors.json");
-
-	println!("{}", path.display());
 
 	File::open(path)
 		.into_report()

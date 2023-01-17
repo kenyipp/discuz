@@ -52,7 +52,6 @@ impl DbPostTrait for DbPost {
 			slug: Set(input.slug.clone()),
 			post_category_id: Set(input.post_category_id.clone()),
 			content: Set(input.content.clone()),
-			excerpt: Set(input.excerpt.clone()),
 			user_id: Set(input.user_id.clone()),
 			status_id: Set("A".to_owned()),
 			created_at: Set(now),
@@ -73,8 +72,6 @@ impl DbPostTrait for DbPost {
 			.exec(&*self.db_connection)
 			.await?;
 
-		println!("{:#?}", post);
-
 		let result = post::Entity::insert(post)
 			.exec(&*self.db_connection)
 			.await?;
@@ -93,10 +90,9 @@ impl DbPostTrait for DbPost {
 		post.slug = Set(input.slug.clone());
 		post.post_category_id = Set(input.post_category_id.clone());
 		post.content = Set(input.content.clone());
-		post.excerpt = Set(input.excerpt.clone());
 		post.user_id = Set(input.user_id.clone());
-		post.updated_at = Set(chrono::offset::Utc::now());
 		post.status_id = Set(input.status_id.clone());
+		post.updated_at = Set(chrono::offset::Utc::now());
 
 		post.update(&*self.db_connection).await?;
 		Ok(())
@@ -127,6 +123,7 @@ impl DbPostTrait for DbPost {
 			.await?;
 
 		post.status_id = Set("D".to_owned());
+		post.updated_at = Set(chrono::offset::Utc::now());
 		post.update(&*self.db_connection).await?;
 
 		Ok(())
@@ -194,7 +191,6 @@ pub struct CreatePostInput {
 	pub slug: String,
 	pub post_category_id: String,
 	pub content: String,
-	pub excerpt: Option<String>,
 	pub user_id: Option<String>,
 }
 
@@ -205,7 +201,6 @@ pub struct UpdatePostInput {
 	pub slug: String,
 	pub post_category_id: String,
 	pub content: String,
-	pub excerpt: Option<String>,
 	pub user_id: Option<String>,
 	pub status_id: String,
 }

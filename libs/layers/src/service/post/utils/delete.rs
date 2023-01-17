@@ -7,7 +7,7 @@ use error_stack::{Result, ResultExt};
 pub async fn execute(repo_post: &RepoPost, id: i32) -> Result<(), PostError> {
 	find_by_id(repo_post, id)
 		.await?
-		.ok_or_else(|| PostError::PostNotExistError)?;
+		.ok_or(PostError::PostNotExistError)?;
 
 	repo_post
 		.delete(id)

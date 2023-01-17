@@ -4,6 +4,7 @@ mod m_20221217_000001_create_user_table;
 mod m_20230111_000002_create_file_table;
 mod m_20230113_000003_create_post_table;
 mod m_20230114_000004_create_user_role_column;
+mod m_20230116_000005_create_post_comment;
 
 pub struct Migrator;
 pub use sea_orm_migration::MigratorTrait;
@@ -16,6 +17,7 @@ impl MigratorTrait for Migrator {
 			Box::new(m_20230111_000002_create_file_table::Migration),
 			Box::new(m_20230113_000003_create_post_table::Migration),
 			Box::new(m_20230114_000004_create_user_role_column::Migration),
+			Box::new(m_20230116_000005_create_post_comment::Migration),
 		]
 	}
 }

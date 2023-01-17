@@ -57,7 +57,7 @@ pub async fn create_post_category(
 		.find_by_id(&id)
 		.await
 		.change_context(PostCategoryError::InternalServerError)?
-		.ok_or_else(|| PostCategoryError::InternalServerError)?;
+		.ok_or(PostCategoryError::InternalServerError)?;
 
 	Ok(post_category)
 }
