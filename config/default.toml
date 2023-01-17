@@ -22,3 +22,6 @@ redirect_uri = "http://localhost:3000"
 
 [amazon.s3]
 bucket = ""
+
+[redis]
+enable = false

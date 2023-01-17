@@ -1,10 +1,11 @@
-use derive_more::{Display, Error};
-use error_stack::{IntoReport, Result, ResultExt};
-
-pub use crate::repository::database::db_user::{
-	CreateUserInput, DbUser, DbUserTrait, InputUserList, UpdateUserInput, User,
+pub use crate::repository::{
+	database::db_user::{
+		CreateUserInput, DbUser, DbUserTrait, InputUserList, UpdateUserInput, User,
+	},
+	errors::RepoError,
 };
 use crate::service::auth::constants::UserRole;
+use error_stack::{IntoReport, Result, ResultExt};
 
 #[derive(Debug, Clone)]
 pub struct RepoUser {
@@ -15,12 +16,6 @@ impl RepoUser {
 	pub fn new(db_user: DbUser) -> RepoUser {
 		RepoUser { db_user }
 	}
-}
-
-#[derive(Debug, Error, Display)]
-pub enum RepoError {
-	#[display(fmt = "Repo User Error: Generic")]
-	Generic,
 }
 
 #[async_trait]

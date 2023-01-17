@@ -1,7 +1,10 @@
-pub use crate::repository::database::db_post_category::{
-	CreateCategoryInput, DbPostCategory, DbPostCategoryTrait, DefPostCategory, UpdateCategoryInput,
+pub use crate::repository::{
+	database::db_post_category::{
+		CreateCategoryInput, DbPostCategory, DbPostCategoryTrait, DefPostCategory,
+		UpdateCategoryInput,
+	},
+	errors::RepoError,
 };
-use derive_more::{Display, Error};
 use error_stack::{IntoReport, Result, ResultExt};
 
 #[derive(Debug, Clone)]
@@ -15,14 +18,9 @@ impl RepoPostCategory {
 	}
 }
 
-#[derive(Debug, Error, Display)]
-pub enum RepoError {
-	#[display(fmt = "Repo Post Category Error: Generic")]
-	Generic,
-}
-
 #[async_trait]
 pub trait RepoPostCategoryTrait {
+	async fn list(&self) -> Result<Vec<DefPostCategory>, RepoError>;
 	async fn find_by_id(&self, id: &str) -> Result<Option<DefPostCategory>, RepoError>;
 	async fn find_by_slug(&self, slug: &str) -> Result<Option<DefPostCategory>, RepoError>;
 	async fn create(&self, input: &CreateCategoryInput) -> Result<String, RepoError>;
@@ -32,6 +30,14 @@ pub trait RepoPostCategoryTrait {
 
 #[async_trait]
 impl RepoPostCategoryTrait for RepoPostCategory {
+	async fn list(&self) -> Result<Vec<DefPostCategory>, RepoError> {
+		self.db_post_category
+			.list()
+			.await
+			.into_report()
+			.change_context(RepoError::Generic)
+	}
+
 	async fn find_by_id(&self, id: &str) -> Result<Option<DefPostCategory>, RepoError> {
 		self.db_post_category
 			.find_by_id(id)
@@ -70,7 +76,6 @@ impl RepoPostCategoryTrait for RepoPostCategory {
 			.await
 			.into_report()
 			.change_context(RepoError::Generic)?;
-
 		Ok(())
 	}
 }

@@ -1,4 +1,5 @@
 use aws_config::SdkConfig;
+use fred::clients::RedisClient;
 use sea_orm::DatabaseConnection;
 use std::sync::Arc;
 
@@ -8,10 +9,11 @@ use discuz_layers::service::{
 	user::user_service::UserService,
 };
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct AppState {
 	pub db_connection: Arc<DatabaseConnection>,
 	pub sdk_config: Arc<SdkConfig>,
+	pub redis_client: Arc<Option<RedisClient>>,
 	pub auth_service: Arc<AuthService>,
 	pub file_service: Arc<FileService>,
 	pub post_service: Arc<PostService>,

@@ -9,7 +9,7 @@ use std::sync::Arc;
 use tracing::info;
 
 use discuz_layers::service::factory::Factory;
-use discuz_utils::{amazon::get_aws_sdk_config, config::get_config, get_db_connection};
+use discuz_utils::{amazon::get_aws_sdk_config, config::get_config, get_db_connection, redis};
 
 use crate::{
 	auth::auth_route, file::file_route, post::post_route, post_category::post_category_route,
@@ -65,6 +65,11 @@ pub async fn get_app_state() -> AppState {
 	let file_service = Arc::new(factory.new_file_service());
 	let post_service = Arc::new(factory.new_post_service());
 	let post_category_service = Arc::new(factory.new_post_category_service());
+	let redis_client = Arc::new(
+		redis::get_redis_connection()
+			.await
+			.expect("Unable to connect the redis server"),
+	);
 
 	// Building the app state which is then pushed to the whole api server
 	AppState {
@@ -75,6 +80,7 @@ pub async fn get_app_state() -> AppState {
 		file_service,
 		post_service,
 		post_category_service,
+		redis_client,
 	}
 }
 

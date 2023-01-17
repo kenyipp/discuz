@@ -61,8 +61,6 @@ impl MigrationTrait for Migration {
 				)
 				.await?;
 		}
-
-		// todo!();
 		Ok(())
 	}
 

@@ -1,10 +1,11 @@
-use derive_more::{Display, Error};
-use error_stack::{IntoReport, Result, ResultExt};
-
-pub use crate::repository::database::db_post::{
-	CreatePostInput, CreatePostTagInput, DbPost, DbPostTrait, DefPostTag, Post, PostTag,
-	UpdatePostInput, UpdatePostTagInput,
+pub use crate::repository::{
+	database::db_post::{
+		CreatePostInput, CreatePostTagInput, DbPost, DbPostTrait, DefPostTag, Post, PostTag,
+		UpdatePostInput, UpdatePostTagInput,
+	},
+	errors::RepoError,
 };
+use error_stack::{IntoReport, Result, ResultExt};
 
 #[derive(Debug, Clone)]
 pub struct RepoPost {
@@ -99,10 +100,4 @@ impl RepoPostTrait for RepoPost {
 			.into_report()
 			.change_context(RepoError::Generic)
 	}
-}
-
-#[derive(Debug, Error, Display)]
-pub enum RepoError {
-	#[display(fmt = "Repo Post Error: Generic")]
-	Generic,
 }

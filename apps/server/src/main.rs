@@ -13,7 +13,7 @@ async fn main() {
 		env::set_var("RUST_LOG", "discuz_server=debug,actix_web=info");
 	}
 	// Set up the default logging subscriber for the logging. Allow the logging to print on the screen
-	tracing_subscriber::fmt().init();
+	tracing_subscriber::fmt::init();
 
 	let result = discuz_server::app::listen().await;
 	if let Some(error) = result.err() {

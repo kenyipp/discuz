@@ -1,6 +1,7 @@
 {
 	"version": "0.2",
 	"ignorePaths": [
+		"**/main.rs",
 		"./target",
 		"./.circleci/config.yml",
 		"./libs/layers/src/utils/mock_data"

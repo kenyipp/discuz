@@ -17,6 +17,7 @@ discuz-layers = { path = "../../libs/layers" }
 discuz-utils = { path = "../../libs/utils" }
 dotenv = "0.15.0"
 error-stack = "0.2.4"
+fred = "5.2.0"
 futures = "0.3.25"
 futures-util = "0.3.25"
 sea-orm = { version = "0.10.5", features = [

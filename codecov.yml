@@ -11,5 +11,9 @@ ignore:
   # Program specific
   #
   #
-  # It never used in testing environment
+
+  #
+  # Those scripts are never used in non-production environments, so the code coverage never runs it.
+  #
   - "apps/server/src/auth/auth_controller/get_tokens.rs"
+  - "libs/utils/src/redis.rs"

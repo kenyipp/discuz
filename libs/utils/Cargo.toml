@@ -16,6 +16,7 @@ derive_more = "0.99.17"
 dotenv = "0.15.0"
 error-stack = "0.2.4"
 figment = { version = "0.10.8", features = ["env", "toml"] }
+fred = "5.2.0"
 jsonwebtoken = "8.2.0"
 lazy_static = "1.4.0"
 reqwest = { version = "0.11.13", features = ["json"] }

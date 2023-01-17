@@ -1,7 +1,7 @@
-pub use crate::repository::database::db_file::{
-	CreateFileInput, DbFile, DbFileTrait, File, UpdateFileInput,
+pub use crate::repository::{
+	database::db_file::{CreateFileInput, DbFile, DbFileTrait, File, UpdateFileInput},
+	errors::RepoError,
 };
-use derive_more::{Display, Error};
 use error_stack::{IntoReport, Result, ResultExt};
 
 #[derive(Debug, Clone)]
@@ -13,12 +13,6 @@ impl RepoFile {
 	pub fn new(db_file: DbFile) -> RepoFile {
 		RepoFile { db_file }
 	}
-}
-
-#[derive(Debug, Error, Display)]
-pub enum RepoError {
-	#[display(fmt = "Repo File Error: Generic")]
-	Generic,
 }
 
 #[async_trait]

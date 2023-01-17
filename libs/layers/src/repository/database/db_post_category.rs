@@ -22,6 +22,7 @@ impl DbPostCategory {
 
 #[async_trait]
 pub trait DbPostCategoryTrait {
+	async fn list(&self) -> Result<Vec<DefPostCategory>, DbErr>;
 	async fn find_by_id(&self, id: &str) -> Result<Option<DefPostCategory>, DbErr>;
 	async fn find_by_slug(&self, slug: &str) -> Result<Option<DefPostCategory>, DbErr>;
 	async fn create(&self, input: &CreateCategoryInput) -> Result<String, DbErr>;
@@ -32,6 +33,13 @@ pub trait DbPostCategoryTrait {
 
 #[async_trait]
 impl DbPostCategoryTrait for DbPostCategory {
+	async fn list(&self) -> Result<Vec<DefPostCategory>, DbErr> {
+		def_post_category::Entity::find()
+			.filter(def_post_category::Column::StatusId.eq("A"))
+			.all(&*self.db_connection)
+			.await
+	}
+
 	async fn find_by_id(&self, id: &str) -> Result<Option<DefPostCategory>, DbErr> {
 		def_post_category::Entity::find()
 			.filter(def_post_category::Column::Id.eq(id))

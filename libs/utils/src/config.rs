@@ -24,8 +24,15 @@ pub fn get_config() -> &'static Config {
 pub struct Config {
 	pub run_mode: String,
 	pub app: App,
-	pub database: Database,
 	pub amazon: Amazon,
+	pub database: Database,
+	pub redis: Redis,
+}
+
+impl Config {
+	pub fn is_production(&self) -> bool {
+		!(self.run_mode == "development" || self.run_mode == "ci" || self.run_mode == "testing")
+	}
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -43,6 +50,31 @@ pub struct Database {
 	pub database: String,
 	// We will override the database connection if the URL property is specified
 	pub url: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Default, Clone)]
+pub struct Redis {
+	pub enable: bool,
+	pub username: Option<String>,
+	pub password: Option<String>,
+	pub host: Option<String>,
+	pub port: Option<i32>,
+	pub database: Option<i32>,
+}
+
+impl Redis {
+	pub fn get_connection_string(&self) -> String {
+		let username = self.username.to_owned().unwrap_or("".to_owned());
+		let password = self.password.to_owned().unwrap_or("".to_owned());
+		let database = self.database.unwrap_or(0);
+		let host = self.host.to_owned().unwrap_or("localhost".to_owned());
+		let port = self.port.unwrap_or(6379);
+		if username == "" && password == "" {
+			format!("redis://{host}:{port}/{database}")
+		} else {
+			format!("redis://{username}:{password}@{host}:{port}/{database}")
+		}
+	}
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -74,7 +106,9 @@ impl Config {
 			.merge(Toml::file(format!("config/{}.toml", run_mode)))
 			.merge(Env::raw().map(|key| {
 				let key_string = key.as_str();
-				if key_string.starts_with("DATABASE_") {
+				if key_string.starts_with("REDIS_") {
+					key_string.replace("REDIS_", "REDIS.").into()
+				} else if key_string.starts_with("DATABASE_") {
 					key_string.replace("DATABASE_", "DATABASE.").into()
 				} else if key_string.starts_with("AWS_COGNITO_") {
 					key_string.replace("AWS_COGNITO_", "AMAZON.COGNITO.").into()

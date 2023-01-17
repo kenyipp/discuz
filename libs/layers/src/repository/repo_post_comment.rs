@@ -1,7 +1,9 @@
-pub use crate::repository::database::db_post_comment::{
-	CreateCommentInput, DbPostComment, DbPostCommentTrait, PostComment,
+pub use crate::repository::{
+	database::db_post_comment::{
+		CreateCommentInput, DbPostComment, DbPostCommentTrait, PostComment,
+	},
+	errors::RepoError,
 };
-use derive_more::{Display, Error};
 use error_stack::{IntoReport, Result, ResultExt};
 
 #[derive(Debug, Clone)]
@@ -13,12 +15,6 @@ impl RepoPostComment {
 	pub fn new(db_post_comment: DbPostComment) -> RepoPostComment {
 		RepoPostComment { db_post_comment }
 	}
-}
-
-#[derive(Debug, Error, Display)]
-pub enum RepoError {
-	#[display(fmt = "Repo Post Category Error: Generic")]
-	Generic,
 }
 
 #[async_trait]
