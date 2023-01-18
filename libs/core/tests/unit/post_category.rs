@@ -40,6 +40,7 @@ async fn create_new_category() {
 		name: category_name.to_owned(),
 		description: None,
 		user_id: None,
+		parent_id: None,
 	};
 	let post_category = post_category_service.create(&input).await.unwrap();
 	assert_eq!(post_category.name, category_name);
@@ -56,6 +57,7 @@ async fn create_duplicated_category() {
 		name: category_name.to_owned(),
 		description: None,
 		user_id: None,
+		parent_id: None,
 	};
 
 	let post_category = post_category_service.create(&input).await;
@@ -87,6 +89,7 @@ async fn update_category() {
 		name: category_name.to_owned(),
 		description: Some(category_description.to_owned()),
 		user_id: None,
+		parent_id: None,
 		status_id: None,
 	};
 	let post_category = post_category_service.update(&input).await.unwrap();
@@ -108,6 +111,7 @@ async fn update_not_exist_category() {
 		description: Some(category_description.to_owned()),
 		user_id: None,
 		status_id: None,
+		parent_id: None,
 	};
 	let post_category = post_category_service.update(&input).await;
 	assert!(post_category.is_err());
@@ -181,6 +185,7 @@ async fn create_category_after_deleted() {
 
 	let input = CreateCategoryInput {
 		name: "Unclassified".to_owned(),
+		parent_id: None,
 		description: None,
 		user_id: None,
 	};

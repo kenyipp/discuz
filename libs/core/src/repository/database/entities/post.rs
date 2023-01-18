@@ -18,8 +18,24 @@ pub struct Model {
 	pub updated_at: DateTimeUtc,
 }
 
-#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-pub enum Relation {}
+#[derive(Copy, Clone, Debug, EnumIter)]
+pub enum Relation {
+	PostReply,
+}
+
+impl RelationTrait for Relation {
+	fn def(&self) -> RelationDef {
+		match self {
+			Relation::PostReply => Entity::has_many(super::post_reply::Entity).into(),
+		}
+	}
+}
+
+impl Related<super::post_reply::Entity> for Entity {
+	fn to() -> RelationDef {
+		Relation::PostReply.def()
+	}
+}
 
 impl ActiveModelBehavior for ActiveModel {}
 

@@ -38,6 +38,7 @@ pub async fn execute(
 		id: params.id.to_owned(),
 		title: body.title.to_owned(),
 		post_category_id: body.post_category_id.to_owned(),
+		max_comment_count: None,
 		content: body.content.to_owned(),
 		user_id: Some(user.id.to_owned()),
 		status_id: None,

@@ -10,6 +10,7 @@ pub struct Model {
 	pub slug: String,
 	#[sea_orm(nullable)]
 	pub description: Option<String>,
+	pub parent_id: Option<String>,
 	#[sea_orm(default_value = 0)]
 	pub count: i64,
 	#[sea_orm(nullable)]
@@ -20,8 +21,32 @@ pub struct Model {
 	pub updated_at: DateTimeUtc,
 }
 
-#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-pub enum Relation {}
+#[derive(Copy, Clone, Debug, EnumIter)]
+pub enum Relation {
+	ParentCategory,
+	User,
+}
+
+impl RelationTrait for Relation {
+	fn def(&self) -> RelationDef {
+		match self {
+			Relation::ParentCategory => Entity::has_one(Entity).into(),
+			Relation::User => Entity::has_one(super::user::Entity).into(),
+		}
+	}
+}
+
+impl Related<Entity> for Entity {
+	fn to() -> RelationDef {
+		Relation::ParentCategory.def()
+	}
+}
+
+impl Related<super::user::Entity> for Entity {
+	fn to() -> RelationDef {
+		Relation::User.def()
+	}
+}
 
 impl ActiveModelBehavior for ActiveModel {}
 

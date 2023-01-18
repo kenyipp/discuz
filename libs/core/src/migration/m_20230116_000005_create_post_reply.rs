@@ -6,7 +6,7 @@ pub struct Migration;
 
 impl MigrationName for Migration {
 	fn name(&self) -> &str {
-		"m_20230116_000005_create_post_comment"
+		"m_20230116_000005_create_post_reply"
 	}
 }
 
@@ -14,7 +14,7 @@ impl MigrationName for Migration {
 impl MigrationTrait for Migration {
 	async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
 		manager
-			.create_table(create_post_comment_table(manager))
+			.create_table(create_post_reply_table(manager))
 			.await?;
 
 		// Since the Sqlite does not support modification of foreign key constraints to existing tables
@@ -23,10 +23,10 @@ impl MigrationTrait for Migration {
 			manager
 				.create_index(
 					Index::create()
-						.table(PostComment::Table)
-						.name("IDX-post_comment-status_id")
+						.table(PostReply::Table)
+						.name("IDX-post_reply-status_id")
 						.index_type(IndexType::BTree)
-						.col(PostComment::StatusId)
+						.col(PostReply::StatusId)
 						.to_owned(),
 				)
 				.await?;
@@ -34,8 +34,8 @@ impl MigrationTrait for Migration {
 			manager
 				.create_foreign_key(
 					ForeignKey::create()
-						.name("FK-post_comment-post_id-post-post_id")
-						.from(PostComment::Table, PostComment::PostId)
+						.name("FK-post_reply-post_id-post-post_id")
+						.from(PostReply::Table, PostReply::PostId)
 						.to(Post::Table, Post::PostId)
 						.to_owned(),
 				)
@@ -44,8 +44,8 @@ impl MigrationTrait for Migration {
 			manager
 				.create_foreign_key(
 					ForeignKey::create()
-						.name("FK-post_comment-user_id-user-user_id")
-						.from(PostComment::Table, PostComment::UserId)
+						.name("FK-post_reply-user_id-user-user_id")
+						.from(PostReply::Table, PostReply::UserId)
 						.to(User::Table, User::UserId)
 						.to_owned(),
 				)
@@ -54,9 +54,9 @@ impl MigrationTrait for Migration {
 			manager
 				.create_foreign_key(
 					ForeignKey::create()
-						.name("FK-post_comment-quote_comment_id-post_comment-post_comment_id")
-						.from(PostComment::Table, PostComment::QuoteCommentId)
-						.to(PostComment::Table, PostComment::PostCommentId)
+						.name("FK-post_reply-quote_reply_id-post_reply-post_reply_id")
+						.from(PostReply::Table, PostReply::QuoteReplyId)
+						.to(PostReply::Table, PostReply::PostReplyId)
 						.to_owned(),
 				)
 				.await?;
@@ -66,17 +66,17 @@ impl MigrationTrait for Migration {
 
 	async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
 		manager
-			.drop_table(Table::drop().table(PostComment::Table).to_owned())
+			.drop_table(Table::drop().table(PostReply::Table).to_owned())
 			.await?;
 		Ok(())
 	}
 }
 
-fn create_post_comment_table(manager: &SchemaManager) -> TableCreateStatement {
+fn create_post_reply_table(manager: &SchemaManager) -> TableCreateStatement {
 	Table::create()
-		.table(PostComment::Table)
+		.table(PostReply::Table)
 		.col(
-			ColumnDef::new(PostComment::PostCommentId)
+			ColumnDef::new(PostReply::PostReplyId)
 				.integer()
 				.integer_len(11)
 				.unsigned()
@@ -84,21 +84,21 @@ fn create_post_comment_table(manager: &SchemaManager) -> TableCreateStatement {
 				.primary_key(),
 		)
 		.col(
-			ColumnDef::new(PostComment::QuoteCommentId)
+			ColumnDef::new(PostReply::QuoteReplyId)
 				.integer()
 				.integer_len(11)
 				.unsigned(),
 		)
 		.col(
-			ColumnDef::new(PostComment::PostId)
+			ColumnDef::new(PostReply::PostId)
 				.integer()
 				.integer_len(11)
 				.unsigned()
 				.not_null(),
 		)
-		.col(ColumnDef::new(PostComment::Content).text().not_null())
+		.col(ColumnDef::new(PostReply::Content).text().not_null())
 		.col(
-			ColumnDef::new(PostComment::LikeCount)
+			ColumnDef::new(PostReply::LikeCount)
 				.integer()
 				.integer_len(11)
 				.unsigned()
@@ -106,7 +106,7 @@ fn create_post_comment_table(manager: &SchemaManager) -> TableCreateStatement {
 				.default(0),
 		)
 		.col(
-			ColumnDef::new(PostComment::DislikeCount)
+			ColumnDef::new(PostReply::DislikeCount)
 				.integer()
 				.integer_len(11)
 				.unsigned()
@@ -114,30 +114,30 @@ fn create_post_comment_table(manager: &SchemaManager) -> TableCreateStatement {
 				.default(0),
 		)
 		.col(
-			ColumnDef::new(PostComment::LowQuality)
+			ColumnDef::new(PostReply::LowQuality)
 				.boolean()
 				.default(false),
 		)
 		.col(
-			ColumnDef::new(PostComment::UserId)
+			ColumnDef::new(PostReply::UserId)
 				.string()
 				.string_len(64)
 				.null(),
 		)
 		.col(
-			ColumnDef::new(PostComment::StatusId)
+			ColumnDef::new(PostReply::StatusId)
 				.string()
 				.string_len(1)
 				.not_null()
 				.default("A"),
 		)
 		.col(
-			ColumnDef::new(PostComment::CreatedAt)
+			ColumnDef::new(PostReply::CreatedAt)
 				.timestamp()
 				.extra("DEFAULT CURRENT_TIMESTAMP".to_owned()),
 		)
 		.col(
-			ColumnDef::new(PostComment::UpdatedAt)
+			ColumnDef::new(PostReply::UpdatedAt)
 				.timestamp()
 				.extra(on_update_current_timestamp(manager)),
 		)
@@ -145,10 +145,10 @@ fn create_post_comment_table(manager: &SchemaManager) -> TableCreateStatement {
 }
 
 #[derive(Iden)]
-pub enum PostComment {
+pub enum PostReply {
 	Table,
-	PostCommentId,
-	QuoteCommentId,
+	PostReplyId,
+	QuoteReplyId,
 	Content,
 	PostId,
 	LikeCount,

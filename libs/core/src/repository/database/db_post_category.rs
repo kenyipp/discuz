@@ -61,6 +61,7 @@ impl DbPostCategoryTrait for DbPostCategory {
 			id: Set(category_id.clone()),
 			name: Set(input.name.to_owned()),
 			slug: Set(input.slug.to_owned()),
+			parent_id: Set(input.parent_id.to_owned()),
 			count: Set(0),
 			description: Set(input.description.to_owned()),
 			user_id: Set(input.user_id.to_owned()),
@@ -84,6 +85,7 @@ impl DbPostCategoryTrait for DbPostCategory {
 		post_category.name = Set(input.name.to_owned());
 		post_category.slug = Set(input.slug.to_owned());
 		post_category.description = Set(input.description.to_owned());
+		post_category.parent_id = Set(input.parent_id.to_owned());
 		post_category.user_id = Set(input.user_id.to_owned());
 		post_category.status_id = Set(input.status_id.to_owned());
 		post_category.updated_at = Set(chrono::offset::Utc::now());
@@ -140,6 +142,7 @@ pub struct CreateCategoryInput {
 	pub name: String,
 	pub slug: String,
 	pub description: Option<String>,
+	pub parent_id: Option<String>,
 	pub user_id: Option<String>,
 }
 
@@ -149,6 +152,7 @@ pub struct UpdateCategoryInput {
 	pub name: String,
 	pub slug: String,
 	pub description: Option<String>,
+	pub parent_id: Option<String>,
 	pub user_id: Option<String>,
 	pub status_id: String,
 }

@@ -30,6 +30,7 @@ pub async fn execute(
 		name: body.name.to_owned(),
 		description: body.description.to_owned(),
 		user_id: Some(user.id.to_owned()),
+		parent_id: body.parent_id.to_owned(),
 	};
 
 	let post_category_service = app_state.post_category_service.clone();
@@ -53,4 +54,5 @@ pub struct Response {
 pub struct Body {
 	pub name: String,
 	pub description: Option<String>,
+	pub parent_id: Option<String>,
 }

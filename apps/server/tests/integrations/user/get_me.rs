@@ -6,16 +6,6 @@ use discuz_core::{
 };
 use discuz_server::{app, user::user_controller};
 
-trait BodyTest {
-	fn as_str(&self) -> &str;
-}
-
-impl BodyTest for web::Bytes {
-	fn as_str(&self) -> &str {
-		std::str::from_utf8(self).unwrap()
-	}
-}
-
 #[actix_web::test]
 async fn get_me() {
 	let app_state = app::get_app_state().await;

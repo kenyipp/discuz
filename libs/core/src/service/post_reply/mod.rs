@@ -1,3 +1,3 @@
 pub mod errors;
-pub mod post_comment_service;
+pub mod post_reply_service;
 pub mod utils;

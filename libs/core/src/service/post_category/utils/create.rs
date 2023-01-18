@@ -45,6 +45,7 @@ pub async fn create_post_category(
 	let input = repo_post_category::CreateCategoryInput {
 		name: input.name.to_owned(),
 		slug: slugify!(&input.name),
+		parent_id: input.parent_id.to_owned(),
 		description: input.description.to_owned(),
 		user_id: input.user_id.to_owned(),
 	};
@@ -70,6 +71,7 @@ pub async fn update_deleted_post_category(
 	let CreateCategoryInput {
 		name,
 		description,
+		parent_id,
 		user_id,
 	} = input;
 
@@ -78,6 +80,7 @@ pub async fn update_deleted_post_category(
 		name: name.to_owned(),
 		description: description.to_owned(),
 		user_id: user_id.to_owned(),
+		parent_id: parent_id.to_owned(),
 		status_id: Some("A".to_owned()),
 	};
 
@@ -89,5 +92,6 @@ pub async fn update_deleted_post_category(
 pub struct CreateCategoryInput {
 	pub name: String,
 	pub description: Option<String>,
+	pub parent_id: Option<String>,
 	pub user_id: Option<String>,
 }

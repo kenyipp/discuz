@@ -1,6 +1,6 @@
 pub use crate::repository::{
 	database::db_post::{
-		CreatePostInput, CreatePostTagInput, DbPost, DbPostTrait, DefPostTag, Post, PostTag,
+		CreatePostInput, CreatePostTagInput, DbPost, DbPostTrait, DefPostTag, Post,
 		UpdatePostInput, UpdatePostTagInput,
 	},
 	errors::RepoError,
@@ -26,11 +26,11 @@ pub trait RepoPostTrait {
 	async fn update(&self, input: &UpdatePostInput) -> Result<(), RepoError>;
 	async fn delete(&self, id: i32) -> Result<(), RepoError>;
 	// Def Post Tag
-	async fn find_post_tag_by_id(&self, id: &str) -> Result<Option<DefPostTag>, RepoError>;
-	async fn create_post_tag(&self, input: &CreatePostTagInput) -> Result<String, RepoError>;
-	async fn update_post_tag(&self, input: &UpdatePostTagInput) -> Result<(), RepoError>;
+	// async fn find_post_tag_by_id(&self, id: &str) -> Result<Option<DefPostTag>, RepoError>;
+	// async fn create_post_tag(&self, input: &CreatePostTagInput) -> Result<String, RepoError>;
+	// async fn update_post_tag(&self, input: &UpdatePostTagInput) -> Result<(), RepoError>;
 	//
-	async fn find_post_tags_by_post_id(&self, id: &str) -> Result<Vec<PostTag>, RepoError>;
+	// async fn find_post_tags_by_post_id(&self, id: &str) -> Result<Vec<PostTag>, RepoError>;
 }
 
 #[async_trait]
@@ -69,35 +69,35 @@ impl RepoPostTrait for RepoPost {
 	}
 
 	// Def Post Tag
-	async fn find_post_tag_by_id(&self, id: &str) -> Result<Option<DefPostTag>, RepoError> {
-		self.db_post
-			.find_post_tag_by_id(id)
-			.await
-			.into_report()
-			.change_context(RepoError::Generic)
-	}
+	// async fn find_post_tag_by_id(&self, id: &str) -> Result<Option<DefPostTag>, RepoError> {
+	// 	self.db_post
+	// 		.find_post_tag_by_id(id)
+	// 		.await
+	// 		.into_report()
+	// 		.change_context(RepoError::Generic)
+	// }
 
-	async fn create_post_tag(&self, input: &CreatePostTagInput) -> Result<String, RepoError> {
-		self.db_post
-			.create_post_tag(input)
-			.await
-			.into_report()
-			.change_context(RepoError::Generic)
-	}
+	// async fn create_post_tag(&self, input: &CreatePostTagInput) -> Result<String, RepoError> {
+	// 	self.db_post
+	// 		.create_post_tag(input)
+	// 		.await
+	// 		.into_report()
+	// 		.change_context(RepoError::Generic)
+	// }
 
-	async fn update_post_tag(&self, input: &UpdatePostTagInput) -> Result<(), RepoError> {
-		self.db_post
-			.update_post_tag(input)
-			.await
-			.into_report()
-			.change_context(RepoError::Generic)
-	}
+	// async fn update_post_tag(&self, input: &UpdatePostTagInput) -> Result<(), RepoError> {
+	// 	self.db_post
+	// 		.update_post_tag(input)
+	// 		.await
+	// 		.into_report()
+	// 		.change_context(RepoError::Generic)
+	// }
 
-	async fn find_post_tags_by_post_id(&self, id: &str) -> Result<Vec<PostTag>, RepoError> {
-		self.db_post
-			.find_post_tags_by_post_id(id)
-			.await
-			.into_report()
-			.change_context(RepoError::Generic)
-	}
+	// async fn find_post_tags_by_post_id(&self, id: &str) -> Result<Vec<PostTag>, RepoError> {
+	// 	self.db_post
+	// 		.find_post_tags_by_post_id(id)
+	// 		.await
+	// 		.into_report()
+	// 		.change_context(RepoError::Generic)
+	// }
 }

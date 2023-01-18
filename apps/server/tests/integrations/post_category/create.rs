@@ -20,6 +20,7 @@ async fn create_post_category() {
 	let body = post_category_controller::create::Body {
 		name: "New Category Id".to_owned(),
 		description: None,
+		parent_id: None,
 	};
 
 	// Get the user id

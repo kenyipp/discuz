@@ -1,7 +1,8 @@
 use crate::{
-	constants::{MAX_POST_COMMENT_COUNT, UNCLASSIFIED_CATEGORY_ID},
+	constants::{MAX_POST_REPLY_COUNT, UNCLASSIFIED_CATEGORY_ID},
 	utils::db_tools::on_update_current_timestamp,
 };
+use sea_orm::DbBackend;
 use sea_orm_migration::prelude::*;
 
 pub struct Migration;
@@ -16,9 +17,23 @@ impl MigrationName for Migration {
 impl MigrationTrait for Migration {
 	async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
 		manager.create_table(create_def_post_tag(manager)).await?;
+
 		manager
 			.create_table(create_def_post_category(manager))
 			.await?;
+
+		if manager.get_database_backend() == DbBackend::MySql {
+			manager
+				.create_foreign_key(
+					ForeignKey::create()
+						.name("FK-post_category-parent_id-post_category-post_category_id")
+						.from(DefPostCategory::Table, DefPostCategory::ParentId)
+						.to(DefPostCategory::Table, DefPostCategory::PostCategoryId)
+						.to_owned(),
+				)
+				.await?;
+		}
+
 		manager.create_table(create_post(manager)).await?;
 		manager.create_table(create_post_tag(manager)).await?;
 		manager.exec_stmt(seed_default_category()).await?;
@@ -89,7 +104,7 @@ fn create_post(manager: &SchemaManager) -> TableCreateStatement {
 				.integer()
 				.integer_len(7)
 				.unsigned()
-				.default(MAX_POST_COMMENT_COUNT)
+				.default(MAX_POST_REPLY_COUNT)
 				.not_null(),
 		)
 		.col(

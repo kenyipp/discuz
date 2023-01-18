@@ -71,6 +71,7 @@ async fn update_post() {
 		title: "Foo Bar".to_owned(),
 		post_category_id: UNCLASSIFIED_CATEGORY_ID.to_owned(),
 		content: "Content".to_owned(),
+		max_comment_count: None,
 		user_id: None,
 		status_id: None,
 	};

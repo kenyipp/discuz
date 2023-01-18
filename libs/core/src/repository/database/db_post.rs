@@ -1,10 +1,11 @@
+use crate::constants::MAX_POST_REPLY_COUNT;
 use chrono;
 use sea_orm::{sea_query::SimpleExpr, DatabaseConnection, *};
 use std::sync::Arc;
-use uuid::Uuid;
+// use uuid::Uuid;
 
-use super::entities::{def_post_category, def_post_tag, post, post_tag};
-pub use super::entities::{def_post_tag::DefPostTag, post::Post, post_tag::PostTag};
+use super::entities::{def_post_category, post};
+pub use super::entities::{def_post_tag::DefPostTag, post::Post};
 
 #[derive(Debug, Clone)]
 pub struct DbPost {
@@ -19,11 +20,11 @@ pub trait DbPostTrait {
 	async fn update(&self, input: &UpdatePostInput) -> Result<(), DbErr>;
 	async fn delete(&self, id: i32) -> Result<(), DbErr>;
 	// Def Post Tag
-	async fn find_post_tag_by_id(&self, id: &str) -> Result<Option<DefPostTag>, DbErr>;
-	async fn create_post_tag(&self, input: &CreatePostTagInput) -> Result<String, DbErr>;
-	async fn update_post_tag(&self, input: &UpdatePostTagInput) -> Result<(), DbErr>;
+	// async fn find_post_tag_by_id(&self, id: &str) -> Result<Option<DefPostTag>, DbErr>;
+	// async fn create_post_tag(&self, input: &CreatePostTagInput) -> Result<String, DbErr>;
+	// async fn update_post_tag(&self, input: &UpdatePostTagInput) -> Result<(), DbErr>;
 	//
-	async fn find_post_tags_by_post_id(&self, id: &str) -> Result<Vec<PostTag>, DbErr>;
+	// async fn find_post_tags_by_post_id(&self, id: &str) -> Result<Vec<PostTag>, DbErr>;
 }
 
 impl DbPost {
@@ -90,6 +91,11 @@ impl DbPostTrait for DbPost {
 		post.slug = Set(input.slug.clone());
 		post.post_category_id = Set(input.post_category_id.clone());
 		post.content = Set(input.content.clone());
+		post.max_comment_count = Set(input.max_comment_count.unwrap_or_else(|| {
+			post.max_comment_count
+				.take()
+				.unwrap_or(MAX_POST_REPLY_COUNT)
+		}));
 		post.user_id = Set(input.user_id.clone());
 		post.status_id = Set(input.status_id.clone());
 		post.updated_at = Set(chrono::offset::Utc::now());
@@ -130,59 +136,59 @@ impl DbPostTrait for DbPost {
 	}
 
 	// Def Post Tag
-	async fn find_post_tag_by_id(&self, id: &str) -> Result<Option<DefPostTag>, DbErr> {
-		def_post_tag::Entity::find()
-			.filter(def_post_tag::Column::Id.eq(id))
-			.one(&*self.db_connection)
-			.await
-	}
+	// async fn find_post_tag_by_id(&self, id: &str) -> Result<Option<DefPostTag>, DbErr> {
+	// 	def_post_tag::Entity::find()
+	// 		.filter(def_post_tag::Column::Id.eq(id))
+	// 		.one(&*self.db_connection)
+	// 		.await
+	// }
 
-	async fn create_post_tag(&self, input: &CreatePostTagInput) -> Result<String, DbErr> {
-		let post_tag_id = Uuid::new_v4().to_string();
-		let now = chrono::offset::Utc::now();
+	// async fn create_post_tag(&self, input: &CreatePostTagInput) -> Result<String, DbErr> {
+	// 	let post_tag_id = Uuid::new_v4().to_string();
+	// 	let now = chrono::offset::Utc::now();
 
-		let post_tag = def_post_tag::ActiveModel {
-			id: Set(post_tag_id.clone()),
-			name: Set(input.name.clone()),
-			slug: Set(input.slug.clone()),
-			description: Set(input.description.clone()),
-			count: Set(0),
-			user_id: Set(input.user_id.clone()),
-			status_id: Set("A".to_owned()),
-			created_at: Set(now),
-			updated_at: Set(now),
-		};
+	// 	let post_tag = def_post_tag::ActiveModel {
+	// 		id: Set(post_tag_id.clone()),
+	// 		name: Set(input.name.clone()),
+	// 		slug: Set(input.slug.clone()),
+	// 		description: Set(input.description.clone()),
+	// 		count: Set(0),
+	// 		user_id: Set(input.user_id.clone()),
+	// 		status_id: Set("A".to_owned()),
+	// 		created_at: Set(now),
+	// 		updated_at: Set(now),
+	// 	};
 
-		def_post_tag::Entity::insert(post_tag)
-			.exec(&*self.db_connection)
-			.await?;
-		Ok(post_tag_id)
-	}
+	// 	def_post_tag::Entity::insert(post_tag)
+	// 		.exec(&*self.db_connection)
+	// 		.await?;
+	// 	Ok(post_tag_id)
+	// }
 
-	async fn update_post_tag(&self, input: &UpdatePostTagInput) -> Result<(), DbErr> {
-		let mut post_tag: def_post_tag::ActiveModel = self
-			.find_post_tag_by_id(&input.id)
-			.await?
-			.ok_or_else(|| DbErr::Custom(format!("Post tag with id #{} not exist", input.id)))?
-			.into();
+	// async fn update_post_tag(&self, input: &UpdatePostTagInput) -> Result<(), DbErr> {
+	// 	let mut post_tag: def_post_tag::ActiveModel = self
+	// 		.find_post_tag_by_id(&input.id)
+	// 		.await?
+	// 		.ok_or_else(|| DbErr::Custom(format!("Post tag with id #{} not exist", input.id)))?
+	// 		.into();
 
-		post_tag.name = Set(input.name.to_owned());
-		post_tag.slug = Set(input.slug.to_owned());
-		post_tag.description = Set(input.description.to_owned());
-		post_tag.user_id = Set(input.user_id.to_owned());
+	// 	post_tag.name = Set(input.name.to_owned());
+	// 	post_tag.slug = Set(input.slug.to_owned());
+	// 	post_tag.description = Set(input.description.to_owned());
+	// 	post_tag.user_id = Set(input.user_id.to_owned());
 
-		post_tag.update(&*self.db_connection).await?;
-		Ok(())
-	}
+	// 	post_tag.update(&*self.db_connection).await?;
+	// 	Ok(())
+	// }
 
 	// Post Tag
-	async fn find_post_tags_by_post_id(&self, id: &str) -> Result<Vec<PostTag>, DbErr> {
-		let post_tags: Vec<PostTag> = post_tag::Entity::find()
-			.filter(post_tag::Column::PostId.eq(id))
-			.all(&*self.db_connection)
-			.await?;
-		Ok(post_tags)
-	}
+	// async fn find_post_tags_by_post_id(&self, id: &str) -> Result<Vec<PostTag>, DbErr> {
+	// 	let post_tags: Vec<PostTag> = post_tag::Entity::find()
+	// 		.filter(post_tag::Column::PostId.eq(id))
+	// 		.all(&*self.db_connection)
+	// 		.await?;
+	// 	Ok(post_tags)
+	// }
 }
 
 #[derive(Debug, Clone)]
@@ -200,6 +206,7 @@ pub struct UpdatePostInput {
 	pub title: String,
 	pub slug: String,
 	pub post_category_id: String,
+	pub max_comment_count: Option<i32>,
 	pub content: String,
 	pub user_id: Option<String>,
 	pub status_id: String,

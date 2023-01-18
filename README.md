@@ -24,13 +24,14 @@ You can view a full list of crates being used in Cargo.toml, but here are some o
 ## Program Design & Features
 This project includes the basic functionalities of the forum. Both users and admins can create a post and comment on it under the pre-defined category. In addition, we apply a list of restrictions to improve the performance of this application and create a fair environment of discussion. 
 
- - [ ] There is a hard [limit](./libs/core/src/constants.rs) on the number of comments on each post. 
+ - [x] There is a hard [limit](./libs/core/src/constants.rs) on the number of comments on each post. 
  - [ ] After the post reaches the maximum limit of comments, the program will archive the post. Users can't leave any comments after the post is archived.
  - [ ] We will cache archived posts so the traffic of archived posts will not go to the database.
- - [ ] Admins can increase the limit of the number of comments for specific topics manually.
+ - [x] Admins can increase the limit of the number of comments for specific topics manually.
  - [ ] Only the admin can update or delete the post and comment. If the user wishes to delete the content they created, they can create the request for admins.
- - [ ] Deleting the comment of the post will not decrease the comment count. 
+ - [x] Deleting the comment of the post will not decrease the comment count. 
  - [ ] Users can't comment on posts if they have been banned.
+ - [ ] A cron job will archive the post if there are no more new comments.
 
 ## Database Design
 
