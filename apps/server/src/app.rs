@@ -8,7 +8,7 @@ use futures::join;
 use std::sync::Arc;
 use tracing::info;
 
-use discuz_layers::service::factory::Factory;
+use discuz_core::service::factory::Factory;
 use discuz_utils::{amazon::get_aws_sdk_config, config::get_config, get_db_connection, redis};
 
 use crate::{

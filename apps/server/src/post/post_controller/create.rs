@@ -2,7 +2,7 @@ use actix_web::{web, HttpResponse, Result};
 use serde::{Deserialize, Serialize};
 use tracing::trace;
 
-use discuz_layers::service::post::post_service::{CreatePostInput, Post, PostServiceTrait};
+use discuz_core::service::post::post_service::{CreatePostInput, Post, PostServiceTrait};
 
 use crate::{
 	auth::errors::ApiAuthError, errors::AppError, post::errors::ApiPostError,

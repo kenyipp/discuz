@@ -3,7 +3,7 @@ use fred::clients::RedisClient;
 use sea_orm::DatabaseConnection;
 use std::sync::Arc;
 
-use discuz_layers::service::{
+use discuz_core::service::{
 	auth::auth_service::AuthService, file::file_service::FileService,
 	post::post_service::PostService, post_category::post_category_service::PostCategoryService,
 	user::user_service::UserService,

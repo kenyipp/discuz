@@ -1,5 +1,5 @@
 use chrono::{DateTime, Utc};
-use discuz_layers::repository::repo_user::User;
+use discuz_core::repository::repo_user::User;
 use serde::{Deserialize, Serialize};
 use std::convert::From;
 

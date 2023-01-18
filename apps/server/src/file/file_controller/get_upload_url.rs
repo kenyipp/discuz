@@ -1,5 +1,5 @@
 use actix_web::{web, HttpResponse};
-use discuz_layers::service::{
+use discuz_core::service::{
 	file::file_service::FileServiceTrait,
 	file::{constants::FileType, utils::get_upload_url::GetUploadUrlResponse},
 };

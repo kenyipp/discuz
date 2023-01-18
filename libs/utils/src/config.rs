@@ -64,12 +64,15 @@ pub struct Redis {
 
 impl Redis {
 	pub fn get_connection_string(&self) -> String {
-		let username = self.username.to_owned().unwrap_or("".to_owned());
-		let password = self.password.to_owned().unwrap_or("".to_owned());
+		let username = self.username.to_owned().unwrap_or_else(|| "".to_owned());
+		let password = self.password.to_owned().unwrap_or_else(|| "".to_owned());
 		let database = self.database.unwrap_or(0);
-		let host = self.host.to_owned().unwrap_or("localhost".to_owned());
+		let host = self
+			.host
+			.to_owned()
+			.unwrap_or_else(|| "localhost".to_owned());
 		let port = self.port.unwrap_or(6379);
-		if username == "" && password == "" {
+		if username.is_empty() && password.is_empty() {
 			format!("redis://{host}:{port}/{database}")
 		} else {
 			format!("redis://{username}:{password}@{host}:{port}/{database}")

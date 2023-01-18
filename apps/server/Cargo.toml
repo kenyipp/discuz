@@ -13,7 +13,7 @@ async-trait = "0.1.60"
 aws-config = "0.52.0"
 chrono = "0.4.23"
 derive_more = "0.99.17"
-discuz-layers = { path = "../../libs/layers" }
+discuz-core = { path = "../../libs/core" }
 discuz-utils = { path = "../../libs/utils" }
 dotenv = "0.15.0"
 error-stack = "0.2.4"

@@ -1,7 +1,7 @@
 use std::pin::Pin;
 
 use actix_web::{dev, Error, FromRequest, HttpRequest, Result};
-use discuz_layers::service::user::user_service::{User, UserServiceTrait};
+use discuz_core::service::user::user_service::{User, UserServiceTrait};
 use futures::Future;
 use serde::Deserialize;
 use tracing::trace;

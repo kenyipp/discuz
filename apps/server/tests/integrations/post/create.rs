@@ -1,5 +1,5 @@
 use actix_web::{test, web, App};
-use discuz_layers::{
+use discuz_core::{
 	constants::{FAKE_ACCESS_TOKEN, UNCLASSIFIED_CATEGORY_ID},
 	migration::{Migrator, MigratorTrait},
 	utils::mock_data,

@@ -21,9 +21,32 @@ You can view a full list of crates being used in Cargo.toml, but here are some o
  - [Cargo Make](https://github.com/sagiegurari/cargo-make) - the task runner. A set of tasks, including unit tests, linting, and formatting, need to be done for each commit. The [Makefile.toml](./Makefile.toml) includes configuration and code snippets to run those tasks. 
  - [Nextest](https://nexte.st/) - rust next generation test framework.It provides a clean interface for the test results for rust. It is faster than using the `cargo test`. Users can choose the test cases to run with by using this framework. It is 100% compatible with `cargo test` so you can use `cargo test` to perform unit testing instead of this framework.
 
+## Program Design & Features
+This project includes the basic functionalities of the forum. Both users and admins can create a post and comment on it under the pre-defined category. In addition, we apply a list of restrictions to improve the performance of this application and create a fair environment of discussion. 
+
+ - [ ] There is a hard [limit](./libs/core/src/constants.rs) on the number of comments on each post. 
+ - [ ] After the post reaches the maximum limit of comments, the program will archive the post. Users can't leave any comments after the post is archived.
+ - [ ] We will cache archived posts so the traffic of archived posts will not go to the database.
+ - [ ] Admins can increase the limit of the number of comments for specific topics manually.
+ - [ ] Only the admin can update or delete the post and comment. If the user wishes to delete the content they created, they can create the request for admins.
+ - [ ] Deleting the comment of the post will not decrease the comment count. 
+ - [ ] Users can't comment on posts if they have been banned.
+
 ## Database Design
+
+### Types of the table
 This repository has three types of tables: Entity Tables, Definition Tables, and Relation Tables. 
 
+- **Entity Table**  
+It is the basic unit of the program. It includes the basic information of different domains, including the post, user, and post comment table.
+- **Definition Table**  
+The definition tables include information on system configs. In most cases, only the admin can modify the content in definition tables. Most of the content in this type of table will be loaded into the application when it starts. All the definition tables start with the `def_` prefix.
+- **Relation Table**  
+The relation tables build the connection between entity table to entity table and the definition table. For example, the `post_tag` table describes the relationship between the post table and the def_post_tag table.
+
+### Naming convention
+
+#### Indexes
 The format of the foreign keys is `FK-{Table name}-{Table column}-{Target table name}-{Target table column}`, and index is `IDX-{Table name}-{Column name}`.
 
 ## Testing

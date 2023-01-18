@@ -2,7 +2,7 @@ use actix_web::{web, HttpResponse, Result};
 use serde::{Deserialize, Serialize};
 use tracing::trace;
 
-use discuz_layers::service::{
+use discuz_core::service::{
 	auth::{auth_service::AuthServiceTrait, constants::UserRole},
 	post::{
 		errors::PostError,

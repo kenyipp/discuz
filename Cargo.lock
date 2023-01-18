@@ -1145,7 +1145,7 @@ dependencies = [
 name = "db-migration"
 version = "0.1.0"
 dependencies = [
- "discuz-layers",
+ "discuz-core",
  "discuz-utils",
  "dotenv",
  "sea-orm",
@@ -1197,7 +1197,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "discuz-layers"
+name = "discuz-core"
 version = "0.1.0"
 dependencies = [
  "async-trait",
@@ -1236,7 +1236,7 @@ dependencies = [
  "aws-config",
  "chrono",
  "derive_more",
- "discuz-layers",
+ "discuz-core",
  "discuz-utils",
  "dotenv",
  "error-stack",

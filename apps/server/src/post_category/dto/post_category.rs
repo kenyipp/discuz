@@ -1,4 +1,4 @@
-use discuz_layers::repository::repo_post_category::DefPostCategory;
+use discuz_core::repository::repo_post_category::DefPostCategory;
 use serde::{Deserialize, Serialize};
 use std::convert::From;
 

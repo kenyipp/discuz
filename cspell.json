@@ -4,7 +4,7 @@
 		"**/main.rs",
 		"./target",
 		"./.circleci/config.yml",
-		"./libs/layers/src/utils/mock_data"
+		"./libs/core/src/utils/mock_data"
 	],
 	"dictionaryDefinitions": [],
 	"dictionaries": [],

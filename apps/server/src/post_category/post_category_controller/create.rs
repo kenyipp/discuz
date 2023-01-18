@@ -1,7 +1,7 @@
 use actix_web::{web, HttpResponse, Result};
 use serde::{Deserialize, Serialize};
 
-use discuz_layers::service::{
+use discuz_core::service::{
 	auth::{auth_service::AuthServiceTrait, constants::UserRole},
 	post_category::post_category_service::{
 		CreateCategoryInput, DefPostCategory, PostCategoryServiceTrait,

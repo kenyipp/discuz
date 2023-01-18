@@ -1,5 +1,5 @@
 use actix_web::{web, HttpResponse};
-use discuz_layers::service::user::user_service::{UpdateUserInput, UserServiceTrait};
+use discuz_core::service::user::user_service::{UpdateUserInput, UserServiceTrait};
 use serde::{Deserialize, Serialize};
 use tracing::trace;
 

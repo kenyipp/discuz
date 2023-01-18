@@ -1,5 +1,5 @@
 use actix_web::{web, HttpResponse, Result};
-use discuz_layers::service::auth::{
+use discuz_core::service::auth::{
 	auth_service::AuthServiceTrait, provider::utils::GetTokensOutput,
 };
 use serde::{Deserialize, Serialize};

@@ -7,7 +7,7 @@ license = "ISC"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-discuz-layers = { path = "../../libs/layers" }
+discuz-core = { path = "../../libs/core" }
 discuz-utils = { path = "../../libs/utils" }
 dotenv = "0.15.0"
 sea-orm = { version = "0.10.5", features = [

@@ -1,5 +1,5 @@
 use db_migration::utils::database::get_db_connection;
-use discuz_layers::migration::{Migrator, MigratorTrait};
+use discuz_core::migration::{Migrator, MigratorTrait};
 use dotenv::dotenv;
 
 #[tokio::main]
