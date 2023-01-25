@@ -39,6 +39,13 @@ impl MigrationTrait for Migration {
 							.unique_key(),
 					)
 					.col(ColumnDef::new(User::Phone).string().string_len(150))
+					.col(
+						ColumnDef::new(User::NumberOfBan)
+							.integer()
+							.unsigned()
+							.not_null()
+							.default(0),
+					)
 					.col(ColumnDef::new(User::AvatarUrl).text())
 					.col(ColumnDef::new(User::Notes).text())
 					.col(
@@ -80,6 +87,7 @@ pub enum User {
 	Name,
 	Email,
 	Phone,
+	NumberOfBan,
 	Notes,
 	AvatarUrl,
 	StatusId,

@@ -1,3 +1,5 @@
+run_mode = "ci"
+
 [database]
 hostname = "localhost"
 username = "mysql"

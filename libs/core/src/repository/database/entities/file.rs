@@ -34,7 +34,7 @@ pub enum Relation {
 impl RelationTrait for Relation {
 	fn def(&self) -> RelationDef {
 		match self {
-			Relation::User => Entity::has_one(super::user::Entity).into(),
+			Relation::User => Entity::belongs_to(super::user::Entity).into(),
 		}
 	}
 }

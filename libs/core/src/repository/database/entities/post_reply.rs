@@ -30,8 +30,8 @@ impl RelationTrait for Relation {
 	fn def(&self) -> RelationDef {
 		match self {
 			Relation::QuoteReply => Entity::has_one(Entity).into(),
-			Relation::Post => Entity::has_one(super::post::Entity).into(),
-			Relation::User => Entity::has_one(super::user::Entity).into(),
+			Relation::Post => Entity::belongs_to(super::post::Entity).into(),
+			Relation::User => Entity::belongs_to(super::user::Entity).into(),
 		}
 	}
 }
