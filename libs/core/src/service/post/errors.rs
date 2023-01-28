@@ -3,7 +3,7 @@ use strum_macros::EnumProperty;
 
 #[derive(Debug, Display, EnumProperty, Error)]
 pub enum PostError {
-	#[display(fmt = "Post Error: Generic {}", _0)]
+	#[display(fmt = "Post Error: Generic {_0}")]
 	#[strum(props(code = "post_generic"))]
 	Generic(#[error(not(source))] String),
 	#[display(fmt = "Post Error: Internal Server Error")]

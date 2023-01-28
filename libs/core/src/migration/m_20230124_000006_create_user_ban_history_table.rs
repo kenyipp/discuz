@@ -82,7 +82,12 @@ fn create_user_ban_history_table(manager: &SchemaManager) -> TableCreateStatemen
 				.string_len(128)
 				.null(),
 		)
-		.col(ColumnDef::new(UserBanHistory::BanTime).integer().unsigned())
+		.col(
+			ColumnDef::new(UserBanHistory::BanTime)
+				.integer()
+				.unsigned()
+				.null(),
+		)
 		.col(
 			ColumnDef::new(UserBanHistory::ReleaseTime)
 				.timestamp()

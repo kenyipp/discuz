@@ -16,14 +16,14 @@ impl RepoPostReply {
 }
 
 #[async_trait]
-pub trait RepoPostCategoryTrait {
+pub trait RepoPostReplyTrait {
 	async fn find_by_id(&self, id: i32) -> Result<Option<PostReply>, RepoError>;
 	async fn create(&self, input: &CreateCommentInput) -> Result<i32, RepoError>;
 	async fn delete(&self, id: i32) -> Result<(), RepoError>;
 }
 
 #[async_trait]
-impl RepoPostCategoryTrait for RepoPostReply {
+impl RepoPostReplyTrait for RepoPostReply {
 	async fn find_by_id(&self, id: i32) -> Result<Option<PostReply>, RepoError> {
 		self.db_post_reply
 			.find_by_id(id)

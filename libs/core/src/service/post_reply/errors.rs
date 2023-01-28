@@ -3,7 +3,7 @@ use strum_macros::EnumProperty;
 
 #[derive(Debug, Display, EnumProperty, Error)]
 pub enum PostReplyError {
-	#[display(fmt = "Post Comment Error: Generic {}", _0)]
+	#[display(fmt = "Post Comment Error: Generic {_0}")]
 	#[strum(props(code = "post_reply_generic"))]
 	Generic(#[error(not(source))] String),
 	#[display(fmt = "Post Comment Error: Invalid Post Id")]

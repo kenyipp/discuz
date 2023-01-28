@@ -86,26 +86,24 @@ impl DbUserTrait for DbUser {
 	}
 
 	async fn find_by_id(&self, id: &str) -> Result<Option<User>, DbErr> {
-		let user = user::Entity::find()
+		user::Entity::find()
 			.filter(user::Column::Id.eq(id))
 			.one(&*self.db_connection)
-			.await;
-		user
+			.await
 	}
 
 	async fn find_by_sub(&self, sub: &str) -> Result<Option<User>, DbErr> {
-		let user = user::Entity::find()
+		user::Entity::find()
 			.filter(user::Column::Sub.eq(sub))
 			.one(&*self.db_connection)
-			.await;
-		user
+			.await
 	}
 
 	async fn update_role(&self, id: &str, role: &UserRole) -> Result<(), DbErr> {
 		let mut user: user::ActiveModel = self
 			.find_by_id(id)
 			.await?
-			.ok_or_else(|| DbErr::Custom(format!("User with id #{} not exist", id)))?
+			.ok_or_else(|| DbErr::Custom(format!("User with id #{id} not exist")))?
 			.into();
 
 		user.role = Set(role.to_string());

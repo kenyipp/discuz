@@ -17,7 +17,7 @@ pub async fn get_tokens(
 		("redirect_uri", redirect_uri),
 	];
 
-	let url = &format!("https://{}/oauth2/token", domain);
+	let url = &format!("https://{domain}/oauth2/token");
 
 	let response: GetTokensOutput = reqwest::Client::new()
 		.post(url)

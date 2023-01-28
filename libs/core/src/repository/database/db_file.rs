@@ -85,7 +85,7 @@ impl DbFileTrait for DbFile {
 		let mut file: file::ActiveModel = self
 			.find_by_id(id)
 			.await?
-			.ok_or_else(|| DbErr::Custom(format!("File with id #{} not exist", id)))?
+			.ok_or_else(|| DbErr::Custom(format!("File with id #{id} not exist")))?
 			.into();
 
 		file.status_id = Set(status_id.to_owned());

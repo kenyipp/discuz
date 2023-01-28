@@ -1,6 +1,6 @@
 pub use crate::repository::repo_post_reply::CreateCommentInput;
 use crate::{
-	repository::repo_post_reply::{PostReply, RepoPostCategoryTrait, RepoPostReply},
+	repository::repo_post_reply::{PostReply, RepoPostReply, RepoPostReplyTrait},
 	service::{
 		post::post_service::PostServiceTrait,
 		post_reply::{errors::PostReplyError, utils::find_by_id},

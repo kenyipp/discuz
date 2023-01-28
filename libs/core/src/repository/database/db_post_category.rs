@@ -103,7 +103,7 @@ impl DbPostCategoryTrait for DbPostCategory {
 		let mut post_category: def_post_category::ActiveModel = self
 			.find_by_id(id)
 			.await?
-			.ok_or_else(|| DbErr::Custom(format!("Invalid post category #{}", id)))?
+			.ok_or_else(|| DbErr::Custom(format!("Invalid post category #{id}")))?
 			.into();
 
 		if post_category.status_id.take() == Some("D".to_owned()) {

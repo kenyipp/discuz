@@ -34,7 +34,7 @@ pub async fn get_upload_url(
 		.to_string();
 
 	let public_uri = if input.is_public {
-		Some(format!("https://{}.s3.amazonaws.com/{}", bucket, file_id))
+		Some(format!("https://{bucket}.s3.amazonaws.com/{file_id}"))
 	} else {
 		None
 	};

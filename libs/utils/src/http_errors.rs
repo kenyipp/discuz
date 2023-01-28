@@ -47,7 +47,7 @@ pub async fn get_http_errors() -> Result<Vec<HttpError>, GetHttpError> {
 pub enum GetHttpError {
 	#[display(fmt = "Generic Error")]
 	GenericError,
-	#[display(fmt = "{}", _0)]
+	#[display(fmt = "{_0}")]
 	IOError(String),
 	#[display(fmt = "Malformed JSON")]
 	ParseError,

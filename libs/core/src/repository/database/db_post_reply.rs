@@ -63,7 +63,7 @@ impl DbPostReplyTrait for DbPostReply {
 		let mut post_reply: post_reply::ActiveModel = self
 			.find_by_id(id)
 			.await?
-			.ok_or_else(|| DbErr::Custom(format!("Invalid post comment #{}", id)))?
+			.ok_or_else(|| DbErr::Custom(format!("Invalid post comment #{id}")))?
 			.into();
 
 		if post_reply.status_id.take() == Some("D".to_owned()) {

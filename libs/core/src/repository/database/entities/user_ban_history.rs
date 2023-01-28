@@ -4,12 +4,16 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
 #[sea_orm(table_name = "user_ban_history")]
 pub struct Model {
-	#[sea_orm(primary_key)]
+	#[sea_orm(
+		primary_key,
+		auto_increment = true,
+		column_name = "user_ban_history_id"
+	)]
 	pub id: i32,
 	pub ban_user_id: String,
 	pub ban_reason: Option<String>,
-	pub ban_time: i32,
-	pub release_time: DateTimeUtc,
+	pub ban_time: Option<i32>,
+	pub release_time: Option<DateTimeUtc>,
 	pub user_id: String,
 	#[sea_orm(default_value = "A")]
 	pub status_id: String,

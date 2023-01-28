@@ -62,6 +62,7 @@ pub async fn get_app_state() -> AppState {
 
 	let auth_service = Arc::new(factory.new_auth_service());
 	let user_service = Arc::new(factory.new_user_service(auth_service.clone()));
+	let user_ban_history_service = Arc::new(factory.new_user_ban_history_service());
 	let file_service = Arc::new(factory.new_file_service());
 	let post_service = Arc::new(factory.new_post_service());
 	let post_category_service = Arc::new(factory.new_post_category_service());
@@ -77,6 +78,7 @@ pub async fn get_app_state() -> AppState {
 		sdk_config,
 		auth_service,
 		user_service,
+		user_ban_history_service,
 		file_service,
 		post_service,
 		post_category_service,

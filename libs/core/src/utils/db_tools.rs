@@ -13,7 +13,7 @@ pub fn on_update_current_timestamp(manager: &SchemaManager) -> String {
 
 pub fn add_column_after(manager: &SchemaManager, column: &str) -> String {
 	match manager.get_database_backend() {
-		DatabaseBackend::MySql => format!("AFTER {}", column),
+		DatabaseBackend::MySql => format!("AFTER {column}"),
 		_ => "".to_owned(),
 	}
 }

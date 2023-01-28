@@ -37,7 +37,7 @@ args = ["**"]
 [tasks.dev]
 workspace = false
 cwd = "./apps/server"
-env = { RUN_MODE = "development", RUST_BACKTRACE = "0" }
+env = { RUN_MODE = "development", RUST_BACKTRACE = "0", RUST_LOG = "discuz-server=trace,discuz-layers=trace" }
 command = "cargo"
 args = ["watch", "-x run"]
 

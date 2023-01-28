@@ -17,7 +17,7 @@ pub async fn get_db_connection() -> DatabaseConnection {
 		database,
 		..
 	} = database_config;
-	let database_url = format!("mysql://{}:{}@{}:{}", username, password, hostname, port);
+	let database_url = format!("mysql://{username}:{password}@{hostname}:{port}");
 	let database_name = database.to_owned();
 
 	let db_connection = Database::connect(&database_url)
@@ -28,7 +28,7 @@ pub async fn get_db_connection() -> DatabaseConnection {
 	db_connection
 		.execute(Statement::from_string(
 			DbBackend::MySql,
-			format!("CREATE DATABASE IF NOT EXISTS `{}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;", database_name),
+			format!("CREATE DATABASE IF NOT EXISTS `{database_name}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"),
 		))
 		.await
 		.expect("Unable to create database");

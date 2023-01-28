@@ -106,7 +106,7 @@ impl Config {
 		let run_mode = env::var("RUN_MODE").unwrap_or_else(|_| "development".to_string());
 		Figment::new()
 			.merge(Toml::file("config/default.toml"))
-			.merge(Toml::file(format!("config/{}.toml", run_mode)))
+			.merge(Toml::file(format!("config/{run_mode}.toml")))
 			.merge(Env::raw().map(|key| {
 				let key_string = key.as_str();
 				if key_string.starts_with("REDIS_") {

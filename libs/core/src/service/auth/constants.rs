@@ -1,6 +1,6 @@
 use strum_macros::{Display, EnumString};
 
-#[derive(Display, EnumString, Debug, PartialEq)]
+#[derive(Display, EnumString, Debug, PartialEq, Eq)]
 pub enum UserRole {
 	#[strum(serialize = "admin")]
 	Admin,

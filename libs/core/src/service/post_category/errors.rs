@@ -3,7 +3,7 @@ use strum_macros::EnumProperty;
 
 #[derive(Debug, Display, EnumProperty, Error)]
 pub enum PostCategoryError {
-	#[display(fmt = "Post Category Error: Generic {}", _0)]
+	#[display(fmt = "Post Category Error: Generic {_0}")]
 	#[strum(props(code = "generic"))]
 	Generic(#[error(not(source))] String),
 	#[display(fmt = "Post Category Error: Target category not exist")]

@@ -80,10 +80,7 @@ async fn get_json_web_tokens(jwk_url: &str) -> Result<Vec<Jwk>, ProviderError> {
 }
 
 fn get_jwk_url(region: &str, user_pool_id: &str) -> String {
-	format!(
-		"https://cognito-idp.{}.amazonaws.com/{}/.well-known/jwks.json",
-		region, user_pool_id
-	)
+	format!("https://cognito-idp.{region}.amazonaws.com/{user_pool_id}/.well-known/jwks.json")
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
