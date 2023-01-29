@@ -2,7 +2,10 @@ use crate::{
 	repository::repo_user_ban_history::{
 		self, RepoUserBanHistory, RepoUserBanHistoryTrait, UserBanHistory,
 	},
-	service::user_ban_history::{errors::UserBanHistoryError, utils::find_by_id},
+	service::{
+		user::constants::UserStatus,
+		user_ban_history::{errors::UserBanHistoryError, utils::find_by_id},
+	},
 };
 use error_stack::{Result, ResultExt};
 
@@ -36,6 +39,15 @@ pub async fn execute(
 	let history = find_by_id::execute(repo_user_ban_history, input.id)
 		.await?
 		.ok_or(UserBanHistoryError::InternalServerError)?;
+
+	if let Some(release_time) = history.release_time {
+		if chrono::offset::Utc::now() > release_time {
+			repo_user_ban_history
+				.update_user_status(&history.ban_user_id, &UserStatus::Normal)
+				.await
+				.change_context(UserBanHistoryError::InternalServerError)?;
+		}
+	}
 
 	Ok(history)
 }

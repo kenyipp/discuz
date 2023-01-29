@@ -6,12 +6,11 @@ use crate::service::{
 };
 
 pub fn execute(user: &User, roles: &[UserRole]) -> Result<(), AuthError> {
-	let user_role = UserRole::from_str(&user.role)
-		.map_err(|_| AuthError::InvalidRoleError(user.role.to_owned()))?;
+	let user_role = UserRole::from_str(&user.role).map_err(|_| AuthError::InternalServerError)?;
 
-	if roles.iter().any(|role| *role == user_role) {
-		Ok(())
-	} else {
-		Err(AuthError::InsufficientPrivilegesError)
+	if !roles.iter().any(|role| *role == user_role) {
+		return Err(AuthError::InsufficientPrivilegesError);
 	}
+
+	Ok(())
 }

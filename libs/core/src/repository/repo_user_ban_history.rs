@@ -4,6 +4,7 @@ pub use crate::repository::{
 	},
 	errors::RepoError,
 };
+use crate::service::user::constants::UserStatus;
 use error_stack::{IntoReport, Result, ResultExt};
 
 #[derive(Debug, Clone)]
@@ -26,6 +27,7 @@ pub trait RepoUserBanHistoryTrait {
 	async fn update(&self, input: &UpdateBanInput) -> Result<(), RepoError>;
 	async fn delete(&self, id: i32) -> Result<(), RepoError>;
 	async fn update_status(&self, id: i32, status_id: &str) -> Result<(), RepoError>;
+	async fn update_user_status(&self, id: &str, status_id: &UserStatus) -> Result<(), RepoError>;
 }
 
 #[async_trait]
@@ -78,6 +80,14 @@ impl RepoUserBanHistoryTrait for RepoUserBanHistory {
 	async fn update_status(&self, id: i32, status_id: &str) -> Result<(), RepoError> {
 		self.db_user_ban_history
 			.update_status(id, status_id)
+			.await
+			.into_report()
+			.change_context(RepoError::Generic)
+	}
+
+	async fn update_user_status(&self, id: &str, status_id: &UserStatus) -> Result<(), RepoError> {
+		self.db_user_ban_history
+			.update_user_status(id, status_id)
 			.await
 			.into_report()
 			.change_context(RepoError::Generic)

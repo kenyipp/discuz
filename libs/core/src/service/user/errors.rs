@@ -8,4 +8,6 @@ pub enum UserError {
 	InvalidCode,
 	#[display(fmt = "User Error: Invalid Credentials")]
 	InvalidCredentials,
+	#[display(fmt = "User Error: Internal Server Error")]
+	InternalServerError,
 }

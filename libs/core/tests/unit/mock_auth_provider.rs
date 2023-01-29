@@ -7,7 +7,8 @@ use tokio::sync::Mutex;
 use uuid::Uuid;
 
 use discuz_core::service::auth::provider::{
-	api_provider::ApiCognitoTrait, errors::ProviderError, utils::GetTokensOutput,
+	api_provider::{ApiCognitoTrait, GetTokensOutput},
+	errors::ProviderError,
 };
 
 lazy_static! {

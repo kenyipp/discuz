@@ -7,8 +7,10 @@ use error_stack::Result;
 
 use crate::service::auth::provider::{
 	errors::ProviderError,
-	utils::{get_tokens, get_user_by_access_token, validate_access_token, GetTokensOutput},
+	utils::{get_tokens, get_user_by_access_token, validate_access_token},
 };
+
+pub use get_tokens::GetTokensOutput;
 
 #[derive(Debug, Clone)]
 pub struct ApiCognito {
@@ -55,14 +57,14 @@ impl ApiCognitoTrait for ApiCognito {
 		&self,
 		access_token: &str,
 	) -> Result<GetUserOutput, ProviderError> {
-		get_user_by_access_token(&self.client, access_token).await
+		get_user_by_access_token::execute(&self.client, access_token).await
 	}
 	async fn validate_access_token(&self, access_token: &str) -> Result<String, ProviderError> {
 		let config = get_config();
 		let Amazon { region, .. } = config.amazon.clone();
-		validate_access_token(&region, &self.user_pool_id, access_token).await
+		validate_access_token::execute(&region, &self.user_pool_id, access_token).await
 	}
 	async fn get_tokens(&self, code: &str) -> Result<GetTokensOutput, ProviderError> {
-		get_tokens(&self.domain, &self.client_id, &self.redirect_uri, code).await
+		get_tokens::execute(&self.domain, &self.client_id, &self.redirect_uri, code).await
 	}
 }

@@ -2,9 +2,9 @@
 
 [![Actions Status](https://github.com/kenyipp/discuz/workflows/CI/badge.svg)](https://github.com/kenyipp/discuz/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/kenyipp/discuz/branch/master/graph/badge.svg?token=AMBNXM57T8)](https://codecov.io/gh/kenyipp/discuz)
 
-This codebase is a sample project building the forum server called Discuz. It built with [Actix-web](https://actix.rs) including CRUD operations, authentication, routing, pagination, and more.
+This rust-based forum server, named Discuz, is a sample project showcasing the use of [Actix-web](https://actix.rs) for CRUD operations, authentication, routing, pagination and more. 
 
-This implementation is not reviewed. See the [Contributing](#contributing) section below.
+However, this implementation is not thoroughly tested, so please refer to the [Contributing](#contributing) section for further instructions before use.
 
 ## Getting started
  - Install [Rust](https://www.rust-lang.org)
@@ -14,36 +14,37 @@ This implementation is not reviewed. See the [Contributing](#contributing) secti
  - Start the api server by `cargo run --bin discuz-server`
 
 ## How it works
-This [Rust](https://www.rust-lang.org) application utilizes Actix to develop the backend web service.
+The backend web service for this application is developed using [Rust](https://www.rust-lang.org) and the Actix framework.
 
-You can view a full list of crates being used in Cargo.toml, but here are some of the main ones of note:
+A comprehensive list of crates utilized in this project can be found in Cargo.toml, however, the following are some of the key ones to note:
 
  - [Cargo Make](https://github.com/sagiegurari/cargo-make) - the task runner. A set of tasks, including unit tests, linting, and formatting, need to be done for each commit. The [Makefile.toml](./Makefile.toml) includes configuration and code snippets to run those tasks. 
  - [Nextest](https://nexte.st/) - rust next generation test framework.It provides a clean interface for the test results for rust. It is faster than using the `cargo test`. Users can choose the test cases to run with by using this framework. It is 100% compatible with `cargo test` so you can use `cargo test` to perform unit testing instead of this framework.
 
 ## Program Design & Features
-This project includes the basic functionalities of the forum. Both users and admins can create a post and comment on it under the pre-defined category. In addition, we apply a list of restrictions to improve the performance of this application and create a fair environment of discussion. 
-
- - [x] There is a hard [limit](./libs/core/src/constants.rs) on the number of comments on each post. 
- - [ ] After the post reaches the maximum limit of comments, the program will archive the post. Users can't leave any comments after the post is archived.
- - [ ] We will cache archived posts so the traffic of archived posts will not go to the database.
- - [x] Admins can increase the limit of the number of comments for specific topics manually.
- - [ ] Only the admin can update or delete the post and comment. If the user wishes to delete the content they created, they can create the request for admins.
- - [x] Deleting the comment of the post will not decrease the comment count. 
- - [ ] Users can't comment on posts if they have been banned.
- - [ ] A cron job will archive the post if there are no more new comments.
+This project encompasses the fundamental functionality of a forum, where both users and admins can create posts and comment within pre-defined categories. Moreover, a set of restrictions has been implemented to enhance the performance of the application and foster a fair environment for discussion.
+ 
+ - [ ] Limit post and comment management to only administrators, with the option for users to request deletion of their own content
+ - [ ] Automatically archive posts that have not received new comments in a certain period of time using a cron job.
+ - [ ] Improve error handling on the server API for more efficient and effective troubleshooting.
+ - [ ] Once the maximum limit is reached, automatically archive the post and prevent further commenting
+ - [ ] Implement caching for archived posts to reduce database traffic
+ - [x] Implement the [maximum number](./libs/core/src/constants.rs) of comments per post
+ - [x] Allow administrators to manually increase the comment limit for specific posts
+ - [x] Ensure that deleting a comment does not decrease the overall comment count
+ - [x] Implement a ban system to prevent banned users from commenting
 
 ## Database Design
 
 ### Types of the table
-This repository has three types of tables: Entity Tables, Definition Tables, and Relation Tables. 
+This repository contains three types of tables: Entity Tables, Definition Tables, and Relation Tables. 
 
 - **Entity Table**  
-It is the basic unit of the program. It includes the basic information of different domains, including the post, user, and post comment table.
+The basic unit of the program, containing essential information for various domains such as post, user, and post comment tables
 - **Definition Table**  
-The definition tables include information on system configs. In most cases, only the admin can modify the content in definition tables. Most of the content in this type of table will be loaded into the application when it starts. All the definition tables start with the `def_` prefix.
+Contains information on system configurations, typically only accessible for modification by the admin. The contents of these tables are typically loaded into the application at startup and are identified by the "def_" prefix
 - **Relation Table**  
-The relation tables build the connection between entity table to entity table and the definition table. For example, the `post_tag` table describes the relationship between the post table and the def_post_tag table.
+Establishes connections between entity tables and definition tables, such as the post_tag table linking the post and def_post_tag tables
 
 ### Naming convention
 
@@ -51,8 +52,7 @@ The relation tables build the connection between entity table to entity table an
 The format of the foreign keys is `FK-{Table name}-{Table column}-{Target table name}-{Target table column}`, and index is `IDX-{Table name}-{Column name}`.
 
 ## Testing
-Simply run `cargo nextest run` or `cargo test` if you don't want to install Nextest.  
-You can also check postman / newman. See the `/tests` directory.  
+To execute the tests, simply run cargo nextest run or cargo test if you do not have Nextest installed. Additionally, you can use tools such as Postman or Newman by referring to the /tests directory.
 
 ## Logging
 I uses the [tracing](https://docs.rs/tracing/latest/tracing/index.html) module for the logging instead of the [env_logger](https://docs.rs/env_logger/latest/env_logger/) module. 
@@ -63,11 +63,11 @@ There are five types of logging levels (list from low priority to high priority)
 `Trace` -> `Debug` -> `Info` -> `Warn` -> `Error`
 
 ## Contributing
-Feel free to look at the current issues in this repo for anything that needs to improve.  
-You are also welcome to open a new issue if you see something missing or could be improved.
+Please review the existing issues in this repository for areas that require improvement.  
+If you identify any missing or potential areas for improvement, feel free to open a new issue for them.
 
 ### Before commit
-Before deploying and integrating the application, a set of validations (testing, linting, and formatting) are required. We advise to run `cargo make pre-commit` before each commit. 
+Before deploying and integrating the application, it is necessary to perform a series of validations such as testing, linting, and formatting. We recommend running cargo make pre-commit before making each commit to ensure compliance.
 
 ## Reference Projects
  - [Actix Examples](https://github.com/actix/examples)  

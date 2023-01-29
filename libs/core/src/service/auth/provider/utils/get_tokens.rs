@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use super::super::errors::ProviderError;
 
-pub async fn get_tokens(
+pub async fn execute(
 	domain: &str,
 	client_id: &str,
 	redirect_uri: &str,

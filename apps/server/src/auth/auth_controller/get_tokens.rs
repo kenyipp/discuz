@@ -1,13 +1,13 @@
 use actix_web::{web, HttpResponse, Result};
 use discuz_core::service::auth::{
-	auth_service::AuthServiceTrait, provider::utils::GetTokensOutput,
+	auth_service::AuthServiceTrait, provider::api_provider::GetTokensOutput,
 };
 use serde::{Deserialize, Serialize};
 use tracing::trace;
 
 use crate::{auth::errors::ApiAuthError, errors::AppError, utils::app_state::AppState};
 
-pub async fn get_tokens(
+pub async fn execute(
 	app_state: web::Data<AppState>,
 	body: web::Json<Body>,
 ) -> Result<HttpResponse, AppError> {

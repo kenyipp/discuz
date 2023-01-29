@@ -3,7 +3,10 @@ use crate::{
 	repository::repo_user_ban_history::{
 		RepoUserBanHistory, RepoUserBanHistoryTrait, UserBanHistory,
 	},
-	service::user_ban_history::{errors::UserBanHistoryError, utils::find_by_id},
+	service::{
+		user::constants::UserStatus,
+		user_ban_history::{errors::UserBanHistoryError, utils::find_by_id},
+	},
 };
 use error_stack::{Result, ResultExt};
 
@@ -13,6 +16,11 @@ pub async fn execute(
 ) -> Result<UserBanHistory, UserBanHistoryError> {
 	let user_ban_history_id = repo_user_ban_history
 		.create(input)
+		.await
+		.change_context(UserBanHistoryError::InternalServerError)?;
+
+	repo_user_ban_history
+		.update_user_status(&input.ban_user_id.to_owned(), &UserStatus::Banned)
 		.await
 		.change_context(UserBanHistoryError::InternalServerError)?;
 

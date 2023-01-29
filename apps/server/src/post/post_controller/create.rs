@@ -2,7 +2,10 @@ use actix_web::{web, HttpResponse, Result};
 use serde::{Deserialize, Serialize};
 use tracing::trace;
 
-use discuz_core::service::post::post_service::{CreatePostInput, Post, PostServiceTrait};
+use discuz_core::service::{
+	post::post_service::{CreatePostInput, Post, PostServiceTrait},
+	prelude::AuthServiceTrait,
+};
 
 use crate::{
 	auth::errors::ApiAuthError, errors::AppError, post::errors::ApiPostError,
@@ -14,10 +17,14 @@ pub async fn execute(
 	auth: Auth,
 	body: web::Json<Body>,
 ) -> Result<HttpResponse, AppError> {
+	let auth_service = app_state.auth_service.clone();
+
 	let user = auth.user.ok_or(ApiAuthError::MissingAuthorization)?;
-	if user.status_id != "A" {
-		return Err(ApiAuthError::UserBanned.into());
-	}
+
+	auth_service.validate_user(&user, None).map_err(|error| {
+		trace!("{:#?}", error);
+		ApiAuthError::UserBanned
+	})?;
 
 	let post_service = app_state.post_service.clone();
 

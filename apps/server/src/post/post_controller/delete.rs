@@ -17,16 +17,16 @@ pub async fn execute(
 	app_state: web::Data<AppState>,
 	params: web::Path<Params>,
 ) -> Result<HttpResponse, AppError> {
+	let auth_service = app_state.auth_service.clone();
 	let user = auth.user.ok_or(ApiAuthError::MissingAuthorization)?;
 
-	if user.status_id != "A" {
-		return Err(ApiAuthError::UserBanned.into());
-	}
-
-	let auth_service = app_state.auth_service.clone();
+	auth_service.validate_user(&user, None).map_err(|error| {
+		trace!("{:#?}", error);
+		ApiAuthError::UserBanned
+	})?;
 
 	auth_service
-		.validate_permission(&user, &[UserRole::Admin])
+		.validate_user(&user, Some(&[UserRole::Admin]))
 		.map_err(|_| ApiAuthError::InsufficientPrivilege)?;
 
 	let post_service = app_state.post_service.clone();

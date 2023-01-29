@@ -4,13 +4,14 @@ use uuid::Uuid;
 use crate::unit::mock_auth_provider::MockApiCognito;
 use discuz_core::{
 	migration::{Migrator, MigratorTrait},
-	service::{auth::constants::UserRole, prelude::*},
+	service::{auth::constants::UserRole, prelude::*, user::constants::UserStatus},
 };
 use discuz_utils::{amazon::get_aws_sdk_config, get_db_connection};
 
 #[tokio::test]
 async fn ban_user_account() {
 	let SetupResponse {
+		auth_service,
 		user_service,
 		user_ban_history_service,
 	} = setup().await;
@@ -41,11 +42,17 @@ async fn ban_user_account() {
 	assert_eq!(history.ban_reason, Some(ban_reason.to_owned()));
 	assert!(history.ban_time.is_some());
 	assert!(history.release_time.is_some());
+
+	let user = user_service.get_profile(&user_token).await.unwrap();
+	assert_eq!(user.status_id, UserStatus::Banned.to_string());
+
+	assert!(auth_service.validate_user(&user, None).is_err());
 }
 
 #[tokio::test]
 async fn ban_user_permanently() {
 	let SetupResponse {
+		auth_service,
 		user_service,
 		user_ban_history_service,
 	} = setup().await;
@@ -75,6 +82,11 @@ async fn ban_user_permanently() {
 	assert!(history.ban_reason.is_none());
 	assert!(history.ban_time.is_none());
 	assert!(history.release_time.is_none());
+
+	let user = user_service.get_profile(&user_token).await.unwrap();
+	assert_eq!(user.status_id, UserStatus::Banned.to_string());
+
+	assert!(auth_service.validate_user(&user, None).is_err());
 }
 
 #[tokio::test]
@@ -82,6 +94,7 @@ async fn update_user_ban() {
 	let SetupResponse {
 		user_service,
 		user_ban_history_service,
+		..
 	} = setup().await;
 
 	let admin_user_token = Uuid::new_v4().to_string();
@@ -128,17 +141,17 @@ async fn setup() -> SetupResponse {
 	Migrator::refresh(&db_connection).await.unwrap();
 	let api_provider = Arc::new(MockApiCognito);
 	let auth_service = Arc::new(AuthService { api_provider });
-	let user_service = Arc::new(factory.new_user_service(auth_service));
+	let user_service = Arc::new(factory.new_user_service(auth_service.clone()));
 	let user_ban_history_service = Arc::new(factory.new_user_ban_history_service());
 	SetupResponse {
-		// auth_service,
+		auth_service,
 		user_service,
 		user_ban_history_service,
 	}
 }
 
 pub struct SetupResponse {
-	// auth_service: Arc<AuthService>,
+	auth_service: Arc<AuthService>,
 	user_service: Arc<UserService>,
 	user_ban_history_service: Arc<UserBanHistoryService>,
 }

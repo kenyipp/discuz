@@ -51,9 +51,9 @@ impl MigrationTrait for Migration {
 					.col(
 						ColumnDef::new(User::StatusId)
 							.string()
-							.string_len(1)
+							.string_len(15)
 							.not_null()
-							.default("A"),
+							.default("normal"),
 					)
 					.col(
 						ColumnDef::new(User::CreatedAt)

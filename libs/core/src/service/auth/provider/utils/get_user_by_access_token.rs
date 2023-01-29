@@ -3,10 +3,7 @@ use error_stack::{IntoReport, Result, ResultExt};
 
 use crate::service::auth::provider::errors::ProviderError;
 
-pub async fn get_user_by_access_token(
-	client: &Client,
-	access_token: &str,
-) -> Result<GetUserOutput, ProviderError> {
+pub async fn execute(client: &Client, access_token: &str) -> Result<GetUserOutput, ProviderError> {
 	client
 		.get_user()
 		.access_token(access_token)

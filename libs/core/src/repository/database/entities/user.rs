@@ -17,7 +17,7 @@ pub struct Model {
 	#[sea_orm(nullable)]
 	pub notes: Option<String>,
 	pub number_of_ban: u32,
-	#[sea_orm(default_value = "A")]
+	#[sea_orm(default_value = "normal")]
 	pub status_id: String,
 	pub created_at: DateTimeUtc,
 	pub updated_at: DateTimeUtc,

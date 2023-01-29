@@ -44,7 +44,7 @@ impl DbUserTrait for DbUser {
 			name: Set(input.name.to_owned()),
 			email: Set(input.email.to_owned()),
 			avatar_url: Set(input.avatar_url.to_owned()),
-			status_id: Set("A".to_owned()),
+			status_id: Set("normal".to_owned()),
 			created_at: Set(now),
 			updated_at: Set(now),
 			..Default::default()

@@ -10,7 +10,7 @@ lazy_static! {
 	static ref JWK_CACHE: Mutex<HashMap<String, Vec<Jwk>>> = Mutex::new(HashMap::new());
 }
 
-pub async fn validate_access_token(
+pub async fn execute(
 	region: &str,
 	user_pool_id: &str,
 	access_token: &str,

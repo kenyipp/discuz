@@ -11,7 +11,7 @@ use crate::{
 
 use discuz_utils::config::get_config;
 
-pub async fn get_profile(
+pub async fn execute(
 	repo_user: &RepoUser,
 	auth_service: &dyn AuthServiceTrait,
 	access_token: &str,

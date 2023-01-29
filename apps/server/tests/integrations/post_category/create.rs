@@ -5,9 +5,16 @@ use discuz_core::{
 	service::{auth::constants::UserRole, user::user_service::UserServiceTrait},
 };
 use discuz_server::{app, post_category::post_category_controller, user::user_controller};
+use tracing_subscriber::fmt::Subscriber;
+use tracing_subscriber::EnvFilter;
 
 #[actix_web::test]
 async fn create_post_category() {
+	let subscriber = Subscriber::builder()
+		.with_env_filter(EnvFilter::from_default_env())
+		.finish();
+	tracing::subscriber::set_global_default(subscriber).expect("Setting default subscriber failed");
+
 	let app_state = app::get_app_state().await;
 	Migrator::refresh(&app_state.db_connection).await.unwrap();
 	let app = test::init_service(

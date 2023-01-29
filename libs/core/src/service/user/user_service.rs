@@ -29,7 +29,7 @@ pub trait UserServiceTrait: Sync + Send + Debug {
 #[async_trait]
 impl UserServiceTrait for UserService {
 	async fn get_profile(&self, access_token: &str) -> Result<User, UserError> {
-		get_profile(&self.repo_user, &*self.auth_service, access_token).await
+		get_profile::execute(&self.repo_user, &*self.auth_service, access_token).await
 	}
 
 	async fn update(&self, input: &UpdateUserInput) -> Result<(), UserError> {

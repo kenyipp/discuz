@@ -1,10 +1,11 @@
-use std::sync::Arc;
-
 use chrono::{self, DateTime, Utc};
 use sea_orm::{DatabaseConnection, *};
+use std::{string::ToString, sync::Arc};
 
-use super::entities::user_ban_history;
+use crate::service::user::constants::UserStatus;
+
 pub use super::entities::user_ban_history::UserBanHistory;
+use super::entities::{user, user_ban_history};
 
 #[derive(Debug, Clone)]
 pub struct DbUserBanHistory {
@@ -18,6 +19,7 @@ pub trait DbUserBanHistoryTrait {
 	async fn update(&self, input: &UpdateBanInput) -> Result<(), DbErr>;
 	async fn delete(&self, id: i32) -> Result<(), DbErr>;
 	async fn update_status(&self, id: i32, status_id: &str) -> Result<(), DbErr>;
+	async fn update_user_status(&self, id: &str, status_id: &UserStatus) -> Result<(), DbErr>;
 }
 
 #[async_trait]
@@ -101,6 +103,18 @@ impl DbUserBanHistoryTrait for DbUserBanHistory {
 		history.status_id = Set(status_id.to_owned());
 
 		history.update(&*self.db_connection).await?;
+		Ok(())
+	}
+
+	async fn update_user_status(&self, id: &str, status_id: &UserStatus) -> Result<(), DbErr> {
+		let mut user: user::ActiveModel = user::Entity::find()
+			.filter(user::Column::Id.eq(id))
+			.one(&*self.db_connection)
+			.await?
+			.ok_or_else(|| DbErr::Custom(format!("User with id #{} not exist", id)))?
+			.into();
+		user.status_id = Set(status_id.to_string());
+		user.update(&*self.db_connection).await?;
 		Ok(())
 	}
 }

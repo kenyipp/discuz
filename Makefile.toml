@@ -20,12 +20,12 @@ command = "cargo"
 args = ["fmt", "--all"]
 
 [tasks.test]
-env = { RUN_MODE = "testing", RUST_BACKTRACE = "0" }
+env = { RUN_MODE = "testing", RUST_BACKTRACE = "1", RUST_LOG = "discuz-server=trace,discuz-layers=trace" }
 command = "cargo"
 args = ["nextest", "run"]
 
 [tasks.cargo-test]
-env = { RUN_MODE = "testing" }
+env = { RUN_MODE = "testing", RUST_BACKTRACE = "0", RUST_LOG = "discuz-server=trace,discuz-layers=trace" }
 command = "cargo"
 args = ["test"]
 

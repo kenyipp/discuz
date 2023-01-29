@@ -3,13 +3,13 @@ use crate::service::{
 	auth::{
 		constants::UserRole,
 		errors::AuthError,
-		provider::{api_provider::ApiCognitoTrait, utils::GetTokensOutput},
+		provider::{api_provider::ApiCognitoTrait, utils::get_tokens::GetTokensOutput},
 		utils::{
 			get_auth_user_by_access_token,
 			mock_data::{
 				get_fake_sub, get_mock_auth_user, should_return_mock_user_by_access_token,
 			},
-			validate_permission,
+			validate_user,
 		},
 	},
 	user::user_service::User,
@@ -31,8 +31,8 @@ pub trait AuthServiceTrait: Sync + Send + Debug {
 		access_token: &str,
 	) -> Result<AuthUser, AuthError>;
 	async fn get_tokens(&self, code: &str) -> Result<GetTokensOutput, AuthError>;
-	fn validate_permission(&self, user: &User, roles: &[UserRole]) -> Result<(), AuthError> {
-		validate_permission::execute(user, roles)?;
+	fn validate_user(&self, user: &User, roles: Option<&[UserRole]>) -> Result<(), AuthError> {
+		validate_user::execute(user, roles)?;
 		Ok(())
 	}
 }
@@ -48,6 +48,7 @@ impl AuthServiceTrait for AuthService {
 			.await
 			.change_context(AuthError::InvalidAccessTokenError)
 	}
+
 	async fn get_auth_user_by_access_token(
 		&self,
 		access_token: &str,
@@ -57,6 +58,7 @@ impl AuthServiceTrait for AuthService {
 		}
 		get_auth_user_by_access_token(&*self.api_provider, access_token).await
 	}
+
 	async fn get_tokens(&self, code: &str) -> Result<GetTokensOutput, AuthError> {
 		self.api_provider
 			.get_tokens(code)

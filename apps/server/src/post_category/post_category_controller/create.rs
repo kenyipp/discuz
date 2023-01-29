@@ -18,12 +18,11 @@ pub async fn execute(
 	body: web::Json<Body>,
 	auth: Auth,
 ) -> Result<HttpResponse, AppError> {
+	let auth_service = app_state.auth_service.clone();
 	let user = auth.user.ok_or(ApiAuthError::MissingAuthorization)?;
 
-	let auth_service = app_state.auth_service.clone();
-
 	auth_service
-		.validate_permission(&user, &[UserRole::Admin])
+		.validate_user(&user, Some(&[UserRole::Admin]))
 		.map_err(|_| ApiAuthError::InsufficientPrivilege)?;
 
 	let input = CreateCategoryInput {
