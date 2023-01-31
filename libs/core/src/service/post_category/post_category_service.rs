@@ -3,7 +3,9 @@ use std::fmt::Debug;
 
 pub use crate::repository::repo_post_category::DefPostCategory;
 pub use crate::service::post_category::utils::{
-	create::CreateCategoryInput, update::UpdateCategoryInput,
+	create::CreateCategoryInput,
+	get_categories::{GetCategoriesResponse, InputCategoryList},
+	update::UpdateCategoryInput,
 };
 
 use crate::{
@@ -18,6 +20,10 @@ pub struct PostCategoryService {
 
 #[async_trait]
 pub trait PostCategoryServiceTrait: Sync + Send + Debug {
+	async fn get_categories(
+		&self,
+		input: Option<&InputCategoryList>,
+	) -> Result<GetCategoriesResponse, PostCategoryError>;
 	async fn find_by_id(&self, id: &str) -> Result<Option<DefPostCategory>, PostCategoryError>;
 	async fn find_by_slug(&self, slug: &str) -> Result<Option<DefPostCategory>, PostCategoryError>;
 	async fn create(
@@ -33,6 +39,13 @@ pub trait PostCategoryServiceTrait: Sync + Send + Debug {
 
 #[async_trait]
 impl PostCategoryServiceTrait for PostCategoryService {
+	async fn get_categories(
+		&self,
+		input: Option<&InputCategoryList>,
+	) -> Result<GetCategoriesResponse, PostCategoryError> {
+		utils::get_categories::execute(&self.repo_post_category, input).await
+	}
+
 	async fn find_by_id(&self, id: &str) -> Result<Option<DefPostCategory>, PostCategoryError> {
 		utils::find_by_id::execute(&self.repo_post_category, id).await
 	}

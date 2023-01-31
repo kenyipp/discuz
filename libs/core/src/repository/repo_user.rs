@@ -1,6 +1,6 @@
 pub use crate::repository::{
 	database::db_user::{
-		CreateUserInput, DbUser, DbUserTrait, InputUserList, UpdateUserInput, User,
+		CreateUserInput, DbUser, DbUserTrait, InputUserList, UpdateUserInput, User, UserFilter,
 	},
 	errors::RepoError,
 };
@@ -24,6 +24,7 @@ pub trait RepoUserTrait {
 	async fn update(&self, input: &UpdateUserInput) -> Result<(), RepoError>;
 	async fn update_role(&self, id: &str, role: &UserRole) -> Result<(), RepoError>;
 	async fn list(&self, input: &InputUserList) -> Result<Vec<User>, RepoError>;
+	async fn count(&self, filter: &UserFilter) -> Result<u64, RepoError>;
 	async fn find_by_id(&self, id: &str) -> Result<Option<User>, RepoError>;
 	async fn find_by_sub(&self, sub: &str) -> Result<Option<User>, RepoError>;
 }
@@ -57,6 +58,14 @@ impl RepoUserTrait for RepoUser {
 	async fn list(&self, input: &InputUserList) -> Result<Vec<User>, RepoError> {
 		self.db_user
 			.list(input)
+			.await
+			.into_report()
+			.change_context(RepoError::Generic)
+	}
+
+	async fn count(&self, filter: &UserFilter) -> Result<u64, RepoError> {
+		self.db_user
+			.count(filter)
 			.await
 			.into_report()
 			.change_context(RepoError::Generic)

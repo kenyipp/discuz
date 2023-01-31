@@ -22,22 +22,24 @@ impl DbPostCategory {
 
 #[async_trait]
 pub trait DbPostCategoryTrait {
-	async fn list(&self) -> Result<Vec<DefPostCategory>, DbErr>;
+	async fn list(&self, input: &InputCategoryList) -> Result<Vec<DefPostCategory>, DbErr>;
 	async fn find_by_id(&self, id: &str) -> Result<Option<DefPostCategory>, DbErr>;
 	async fn find_by_slug(&self, slug: &str) -> Result<Option<DefPostCategory>, DbErr>;
 	async fn create(&self, input: &CreateCategoryInput) -> Result<String, DbErr>;
 	async fn update(&self, input: &UpdateCategoryInput) -> Result<DefPostCategory, DbErr>;
 	async fn delete(&self, id: &str) -> Result<(), DbErr>;
-	async fn count(&self) -> Result<u64, DbErr>;
+	async fn count(&self, filter: &CategoryFilter) -> Result<u64, DbErr>;
 }
 
 #[async_trait]
 impl DbPostCategoryTrait for DbPostCategory {
-	async fn list(&self) -> Result<Vec<DefPostCategory>, DbErr> {
-		def_post_category::Entity::find()
-			.filter(def_post_category::Column::StatusId.eq("A"))
-			.all(&*self.db_connection)
-			.await
+	async fn list(&self, input: &InputCategoryList) -> Result<Vec<DefPostCategory>, DbErr> {
+		let mut builder =
+			def_post_category::Entity::find().order_by_desc(def_post_category::Column::UpdatedAt);
+
+		filter_query_results(&mut builder, &input.filter);
+
+		builder.all(&*self.db_connection).await
 	}
 
 	async fn find_by_id(&self, id: &str) -> Result<Option<DefPostCategory>, DbErr> {
@@ -128,7 +130,7 @@ impl DbPostCategoryTrait for DbPostCategory {
 		Ok(())
 	}
 
-	async fn count(&self) -> Result<u64, DbErr> {
+	async fn count(&self, _filter: &CategoryFilter) -> Result<u64, DbErr> {
 		let count = def_post_category::Entity::find()
 			.filter(def_post_category::Column::StatusId.eq("A"))
 			.count(&*self.db_connection)
@@ -136,6 +138,30 @@ impl DbPostCategoryTrait for DbPostCategory {
 		Ok(count)
 	}
 }
+
+//
+
+fn filter_query_results(builder: &mut Select<def_post_category::Entity>, _filter: &CategoryFilter) {
+	let mut builder_clone = builder.clone();
+	builder_clone = builder_clone.filter(def_post_category::Column::StatusId.eq("A"));
+	*builder = builder_clone;
+}
+
+#[derive(Debug, Clone)]
+pub struct InputCategoryList {
+	pub filter: CategoryFilter,
+}
+
+impl Default for InputCategoryList {
+	fn default() -> Self {
+		InputCategoryList {
+			filter: CategoryFilter::default(),
+		}
+	}
+}
+
+#[derive(Default, Debug, Clone)]
+pub struct CategoryFilter;
 
 #[derive(Debug, Clone)]
 pub struct CreateCategoryInput {

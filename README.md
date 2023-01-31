@@ -18,8 +18,8 @@ The backend web service for this application is developed using [Rust](https://w
 
 A comprehensive list of crates utilized in this project can be found in Cargo.toml, however, the following are some of the key ones to note:
 
- - [Cargo Make](https://github.com/sagiegurari/cargo-make) - the task runner. A set of tasks, including unit tests, linting, and formatting, need to be done for each commit. The [Makefile.toml](./Makefile.toml) includes configuration and code snippets to run those tasks. 
- - [Nextest](https://nexte.st/) - rust next generation test framework.It provides a clean interface for the test results for rust. It is faster than using the `cargo test`. Users can choose the test cases to run with by using this framework. It is 100% compatible with `cargo test` so you can use `cargo test` to perform unit testing instead of this framework.
+ - [Cargo Make](https://github.com/sagiegurari/cargo-make) - a task runner for Rust projects that allows developers to automate common tasks such as building, testing, and deploying their projects. It simplifies the development process by using a [simple configuration file](./Makefile.toml) to define a set of tasks and leveraging the power of Rust's package manager, Cargo. With Cargo Make, Rust developers can streamline their workflow, making it easier to focus on writing high-quality code.
+ - [Nextest](https://nexte.st/) - A testing framework for Rust projects that provides developers with a set of tools and APIs for writing and running tests for their Rust projects, making it easier to ensure the quality and reliability of their code.
 
 ## Program Design & Features
 This project encompasses the fundamental functionality of a forum, where both users and admins can create posts and comment within pre-defined categories. Moreover, a set of restrictions has been implemented to enhance the performance of the application and foster a fair environment for discussion.
@@ -55,11 +55,11 @@ The format of the foreign keys is `FK-{Table name}-{Table column}-{Target table 
 To execute the tests, simply run cargo nextest run or cargo test if you do not have Nextest installed. Additionally, you can use tools such as Postman or Newman by referring to the /tests directory.
 
 ## Logging
-I uses the [tracing](https://docs.rs/tracing/latest/tracing/index.html) module for the logging instead of the [env_logger](https://docs.rs/env_logger/latest/env_logger/) module. 
+I have implement the use of the [tracing](https://docs.rs/tracing/latest/tracing/index.html) module for logging in place of [env_logger](https://docs.rs/env_logger/latest/env_logger/) module.
 
-The tracing module provides an additional module called `tracing-subscriber` to allow us to subscribe to the logging information. We can use this module to manipulate the loggings, like sending the logs to the logging monitoring system like [cloudwatch](https://aws.amazon.com/tw/cloudwatch) or [datadog](https://www.datadoghq.com).
+The "tracing" module offers additional functionality through the "tracing-subscriber" module, which allows us to subscribe to and manipulate log information, such as sending logs to a logging monitoring system such as [Cloudwatch](https://aws.amazon.com/tw/cloudwatch) or [DataDog](https://www.datadoghq.com).
 
-There are five types of logging levels (list from low priority to high priority):  
+Additionally, the five levels of logging priority, listed in ascending order of importance, are:  
 `Trace` -> `Debug` -> `Info` -> `Warn` -> `Error`
 
 ## Contributing
@@ -71,16 +71,14 @@ Before deploying and integrating the application, it is necessary to perform a s
 
 ## Reference Projects
  - [Actix Examples](https://github.com/actix/examples)  
-A list of actix web examples
+A list of Actix Web examples
  - [Real world example app](https://github.com/TatriX/realworld-rust-rocket)  
 Rust implementation of [Real world](https://github.com/gothinkster/realworld)
  - [Rust Async-GraphQL Example: Caster Api](https://github.com/bkonkle/rust-example-caster-api)  
-A sample project that use SeaORM as the database ORM and Axum as the server framework
+A sample project utilizing SeaORM as the database ORM and Axum as the server framework
  - [Alkonost](https://github.com/Asapin/alkonost)  
-Simple console spam detector for YouTube chats.
- - [SeaOrm with Actix](https://github.com/SeaQL/sea-orm/tree/master/examples/actix_example)  
-Integrate the Sea Orm with Actix
+Simple console spam detector for YouTube chats
  - [Whatsoo](https://github.com/Whatsoo/whatsoo)  
 A simple opensource community
  - [The Rust Programming Language](https://web.mit.edu/rust-lang_v1.25/arch/amd64_ubuntu1404/share/doc/rust/html/book/first-edition/README.html)  
-The git book from MIT
+The Git book about Rust from MIT

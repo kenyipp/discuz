@@ -8,10 +8,23 @@ use discuz_core::{
 		database::db_post_category::DbPostCategory, repo_post_category::RepoPostCategory,
 	},
 	service::post_category::post_category_service::{
-		CreateCategoryInput, PostCategoryService, PostCategoryServiceTrait, UpdateCategoryInput,
+		CreateCategoryInput, GetCategoriesResponse, PostCategoryService, PostCategoryServiceTrait,
+		UpdateCategoryInput,
 	},
 };
 use discuz_utils::get_db_connection;
+
+#[tokio::test]
+async fn get_categories_basic() {
+	let SetupResponse {
+		post_category_service,
+		..
+	} = setup().await;
+	let GetCategoriesResponse { data, count } =
+		post_category_service.get_categories(None).await.unwrap();
+	assert_eq!(data.len(), 1);
+	assert_eq!(count, 1);
+}
 
 #[tokio::test]
 async fn get_unclassified_category() {

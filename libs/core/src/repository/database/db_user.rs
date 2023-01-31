@@ -18,6 +18,7 @@ pub struct DbUser {
 pub trait DbUserTrait {
 	async fn create(&self, input: &CreateUserInput) -> Result<String, DbErr>;
 	async fn list(&self, input: &InputUserList) -> Result<Vec<User>, DbErr>;
+	async fn count(&self, filter: &UserFilter) -> Result<u64, DbErr>;
 	async fn update(&self, input: &UpdateUserInput) -> Result<(), DbErr>;
 	async fn find_by_id(&self, id: &str) -> Result<Option<User>, DbErr>;
 	async fn find_by_sub(&self, sub: &str) -> Result<Option<User>, DbErr>;
@@ -58,16 +59,19 @@ impl DbUserTrait for DbUser {
 	async fn list(&self, input: &InputUserList) -> Result<Vec<User>, DbErr> {
 		let mut builder = user::Entity::find()
 			.order_by_desc(user::Column::CreatedAt)
-			.filter(user::Column::StatusId.eq("A"))
+			.filter(user::Column::StatusId.eq("normal"))
 			.limit(input.limit)
 			.offset(input.limit * input.offset);
-		if input.filter.id.is_some() {
-			builder = builder.filter(user::Column::Id.eq(input.filter.id.to_owned()));
-		}
-		if input.filter.email.is_some() {
-			builder = builder.filter(user::Column::Email.eq(input.filter.email.to_owned()));
-		}
+
+		filter_query_results(&mut builder, &input.filter);
+
 		builder.all(&*self.db_connection).await
+	}
+
+	async fn count(&self, filter: &UserFilter) -> Result<u64, DbErr> {
+		let mut builder = user::Entity::find();
+		filter_query_results(&mut builder, filter);
+		builder.count(&*self.db_connection).await
 	}
 
 	async fn update(&self, input: &UpdateUserInput) -> Result<(), DbErr> {
@@ -110,6 +114,22 @@ impl DbUserTrait for DbUser {
 		user.update(&*self.db_connection).await?;
 		Ok(())
 	}
+}
+
+// Helper functions
+
+fn filter_query_results(builder: &mut Select<user::Entity>, filter: &UserFilter) {
+	let mut builder_clone = builder.clone();
+
+	builder_clone = builder_clone.filter(user::Column::StatusId.eq("normal"));
+
+	if let Some(id) = filter.id.to_owned() {
+		builder_clone = builder_clone.filter(user::Column::Id.eq(id));
+	}
+	if let Some(email) = filter.email.to_owned() {
+		builder_clone = builder_clone.filter(user::Column::Email.eq(email));
+	}
+	*builder = builder_clone;
 }
 
 //

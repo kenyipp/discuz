@@ -1,7 +1,7 @@
 pub use crate::repository::{
 	database::db_post_category::{
-		CreateCategoryInput, DbPostCategory, DbPostCategoryTrait, DefPostCategory,
-		UpdateCategoryInput,
+		CategoryFilter, CreateCategoryInput, DbPostCategory, DbPostCategoryTrait, DefPostCategory,
+		InputCategoryList, UpdateCategoryInput,
 	},
 	errors::RepoError,
 };
@@ -20,7 +20,8 @@ impl RepoPostCategory {
 
 #[async_trait]
 pub trait RepoPostCategoryTrait {
-	async fn list(&self) -> Result<Vec<DefPostCategory>, RepoError>;
+	async fn list(&self, input: &InputCategoryList) -> Result<Vec<DefPostCategory>, RepoError>;
+	async fn count(&self, &filter: &CategoryFilter) -> Result<u64, RepoError>;
 	async fn find_by_id(&self, id: &str) -> Result<Option<DefPostCategory>, RepoError>;
 	async fn find_by_slug(&self, slug: &str) -> Result<Option<DefPostCategory>, RepoError>;
 	async fn create(&self, input: &CreateCategoryInput) -> Result<String, RepoError>;
@@ -30,9 +31,17 @@ pub trait RepoPostCategoryTrait {
 
 #[async_trait]
 impl RepoPostCategoryTrait for RepoPostCategory {
-	async fn list(&self) -> Result<Vec<DefPostCategory>, RepoError> {
+	async fn list(&self, input: &InputCategoryList) -> Result<Vec<DefPostCategory>, RepoError> {
 		self.db_post_category
-			.list()
+			.list(input)
+			.await
+			.into_report()
+			.change_context(RepoError::Generic)
+	}
+
+	async fn count(&self, filter: &CategoryFilter) -> Result<u64, RepoError> {
+		self.db_post_category
+			.count(filter)
 			.await
 			.into_report()
 			.change_context(RepoError::Generic)

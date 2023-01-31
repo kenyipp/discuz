@@ -16,6 +16,7 @@ use crate::{
 	user::user_route, utils::app_state::AppState,
 };
 
+#[cfg_attr(test, allow(dead_code))]
 pub async fn listen() -> std::io::Result<()> {
 	// Get the environment variables
 	dotenv().ok();

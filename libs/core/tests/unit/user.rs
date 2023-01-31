@@ -5,7 +5,7 @@ use discuz_core::{
 	service::{
 		auth::auth_service::{AuthService, AuthServiceTrait},
 		factory::Factory,
-		user::user_service::{UpdateUserInput, UserService, UserServiceTrait},
+		user::user_service::{GetUsersResponse, UpdateUserInput, UserService, UserServiceTrait},
 	},
 };
 use discuz_utils::{amazon::get_aws_sdk_config, get_db_connection};
@@ -29,6 +29,15 @@ async fn user_get_profile() {
 	assert_eq!(auth_user.name, user.name);
 	assert_eq!(auth_user.email, user.email);
 	assert!(user.avatar_url.is_none());
+}
+
+#[tokio::test]
+async fn user_get_users_basic() {
+	let SetupResponse { user_service, .. } = setup().await;
+	user_service.get_profile(FAKE_ACCESS_TOKEN).await.unwrap();
+	let GetUsersResponse { data, count } = user_service.get_users(None).await.unwrap();
+	assert_eq!(data.len(), 1);
+	assert_eq!(count, 1);
 }
 
 #[tokio::test]
