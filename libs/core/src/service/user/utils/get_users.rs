@@ -1,5 +1,5 @@
 use error_stack::{Result, ResultExt};
-use futures::try_join;
+use tokio::try_join;
 
 pub use crate::repository::repo_user::InputUserList;
 
@@ -14,7 +14,7 @@ pub async fn execute(
 ) -> Result<GetUsersResponse, UserError> {
 	let default_input = InputUserList::default();
 	let input = input.unwrap_or(&default_input);
-	let (data, count) = try_join!(repo_user.list(&input), repo_user.count(&input.filter))
+	let (data, count) = try_join!(repo_user.list(input), repo_user.count(&input.filter))
 		.change_context(UserError::InternalServerError)?;
 	Ok(GetUsersResponse { data, count })
 }

@@ -47,6 +47,8 @@ pub async fn create_post_category(
 		slug: slugify!(&input.name),
 		parent_id: input.parent_id.to_owned(),
 		description: input.description.to_owned(),
+		postable: input.postable.to_owned(),
+		level: input.level.to_owned(),
 		user_id: input.user_id.to_owned(),
 	};
 	let id = repo_post_category
@@ -73,12 +75,16 @@ pub async fn update_deleted_post_category(
 		description,
 		parent_id,
 		user_id,
+		postable,
+		level,
 	} = input;
 
 	let input = UpdateCategoryInput {
 		id: id.to_owned(),
 		name: name.to_owned(),
 		description: description.to_owned(),
+		postable: postable.to_owned(),
+		level: level.to_owned(),
 		user_id: user_id.to_owned(),
 		parent_id: parent_id.to_owned(),
 		status_id: Some("A".to_owned()),
@@ -92,6 +98,8 @@ pub async fn update_deleted_post_category(
 pub struct CreateCategoryInput {
 	pub name: String,
 	pub description: Option<String>,
+	pub postable: bool,
+	pub level: i32,
 	pub parent_id: Option<String>,
 	pub user_id: Option<String>,
 }

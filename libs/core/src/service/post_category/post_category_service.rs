@@ -1,11 +1,13 @@
 use error_stack::Result;
 use std::fmt::Debug;
 
-pub use crate::repository::repo_post_category::DefPostCategory;
-pub use crate::service::post_category::utils::{
-	create::CreateCategoryInput,
-	get_categories::{GetCategoriesResponse, InputCategoryList},
-	update::UpdateCategoryInput,
+pub use crate::{
+	repository::repo_post_category::DefPostCategory,
+	service::post_category::utils::{
+		create::CreateCategoryInput,
+		get_categories::{GetCategoriesResponse, InputCategoryList},
+		update::UpdateCategoryInput,
+	},
 };
 
 use crate::{

@@ -22,8 +22,8 @@ async fn get_categories_basic() {
 	} = setup().await;
 	let GetCategoriesResponse { data, count } =
 		post_category_service.get_categories(None).await.unwrap();
-	assert_eq!(data.len(), 1);
-	assert_eq!(count, 1);
+	assert!(data.len() > 1);
+	assert!(count > 1);
 }
 
 #[tokio::test]
@@ -38,8 +38,8 @@ async fn get_unclassified_category() {
 		.unwrap();
 	assert!(post_category.is_some());
 	let post_category = post_category.unwrap();
-	assert_eq!(post_category.name, "Unclassified");
-	assert_eq!(post_category.slug, "unclassified");
+	assert_eq!(post_category.name, "Chit Chat");
+	assert_eq!(post_category.slug, "chit-chat");
 }
 
 #[tokio::test]
@@ -52,6 +52,8 @@ async fn create_new_category() {
 	let input = CreateCategoryInput {
 		name: category_name.to_owned(),
 		description: None,
+		level: 1,
+		postable: false,
 		user_id: None,
 		parent_id: None,
 	};
@@ -69,6 +71,8 @@ async fn create_duplicated_category() {
 	let input = CreateCategoryInput {
 		name: category_name.to_owned(),
 		description: None,
+		level: 1,
+		postable: false,
 		user_id: None,
 		parent_id: None,
 	};
@@ -101,6 +105,8 @@ async fn update_category() {
 		id: UNCLASSIFIED_CATEGORY_ID.to_owned(),
 		name: category_name.to_owned(),
 		description: Some(category_description.to_owned()),
+		level: 1,
+		postable: false,
 		user_id: None,
 		parent_id: None,
 		status_id: None,
@@ -122,6 +128,8 @@ async fn update_not_exist_category() {
 		id: "NON_EXIST_CATEGORY_ID".to_owned(),
 		name: category_name.to_owned(),
 		description: Some(category_description.to_owned()),
+		level: 1,
+		postable: false,
 		user_id: None,
 		status_id: None,
 		parent_id: None,
@@ -197,7 +205,9 @@ async fn create_category_after_deleted() {
 	assert_eq!(post_category.status_id, "D");
 
 	let input = CreateCategoryInput {
-		name: "Unclassified".to_owned(),
+		name: "Chit Chat".to_owned(),
+		level: 1,
+		postable: false,
 		parent_id: None,
 		description: None,
 		user_id: None,

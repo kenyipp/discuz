@@ -39,7 +39,8 @@
 		"sqlx",
 		"thiserror",
 		"ulimits",
-		"whatsoo"
+		"whatsoo",
+		"postable"
 	],
 	"ignoreWords": [],
 	"import": []

@@ -1,4 +1,5 @@
 pub mod auth;
+pub mod config;
 pub mod factory;
 pub mod file;
 pub mod post;

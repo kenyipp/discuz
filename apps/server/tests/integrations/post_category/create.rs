@@ -26,6 +26,8 @@ async fn create_post_category() {
 
 	let body = post_category_controller::create::Body {
 		name: "New Category Id".to_owned(),
+		postable: None,
+		level: None,
 		description: None,
 		parent_id: None,
 	};

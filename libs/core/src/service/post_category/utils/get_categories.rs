@@ -1,5 +1,5 @@
 use error_stack::{Result, ResultExt};
-use futures::try_join;
+use tokio::try_join;
 
 pub use crate::repository::repo_post_category::InputCategoryList;
 
@@ -15,7 +15,7 @@ pub async fn execute(
 	let default_input = InputCategoryList::default();
 	let input = input.unwrap_or(&default_input);
 	let (data, count) = try_join!(
-		repo_post_category.list(&input),
+		repo_post_category.list(input),
 		repo_post_category.count(&input.filter)
 	)
 	.change_context(PostCategoryError::InternalServerError)?;

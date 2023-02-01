@@ -21,6 +21,8 @@ pub async fn execute(
 		slug: slugify!(&input.name),
 		parent_id: input.parent_id.to_owned(),
 		description: input.description.to_owned(),
+		postable: input.postable.to_owned(),
+		level: input.level.to_owned(),
 		user_id: input.user_id.to_owned(),
 		status_id: input
 			.status_id
@@ -41,6 +43,8 @@ pub struct UpdateCategoryInput {
 	pub id: String,
 	pub name: String,
 	pub description: Option<String>,
+	pub postable: bool,
+	pub level: i32,
 	pub parent_id: Option<String>,
 	pub user_id: Option<String>,
 	pub status_id: Option<String>,

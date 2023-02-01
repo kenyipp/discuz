@@ -1,14 +1,15 @@
-use std::sync::Arc;
-
 use aws_config::SdkConfig;
 use sea_orm::DatabaseConnection;
+use std::sync::Arc;
 
 use crate::{
 	repository::{
 		database::{
-			db_file::DbFile, db_post::DbPost, db_post_category::DbPostCategory,
-			db_post_reply::DbPostReply, db_user::DbUser, db_user_ban_history::DbUserBanHistory,
+			db_config::DbConfig, db_file::DbFile, db_post::DbPost,
+			db_post_category::DbPostCategory, db_post_reply::DbPostReply, db_user::DbUser,
+			db_user_ban_history::DbUserBanHistory,
 		},
+		repo_config::RepoConfig,
 		repo_file::RepoFile,
 		repo_post::RepoPost,
 		repo_post_category::RepoPostCategory,
@@ -21,8 +22,9 @@ use crate::{
 			auth_service::{AuthService, AuthServiceTrait},
 			provider::api_provider::ApiCognito,
 		},
+		config::config_service::ConfigService,
 		file::{file_service::FileService, provider::api_provider::ApiS3},
-		post::post_service::PostService,
+		post::post_service::{PostService, PostServiceTrait},
 		post_category::post_category_service::PostCategoryService,
 		post_reply::post_reply_service::PostReplyService,
 		user::user_service::UserService,
@@ -31,8 +33,6 @@ use crate::{
 };
 
 use discuz_utils::config::get_config;
-
-use super::post::post_service::PostServiceTrait;
 
 pub struct Factory {
 	db_connection: Arc<DatabaseConnection>,
@@ -45,6 +45,17 @@ impl Factory {
 			sdk_config: sdk_config.clone(),
 			db_connection: db_connection.clone(),
 		}
+	}
+
+	pub fn new_auth_service(&self) -> AuthService {
+		let api_provider = Arc::new(ApiCognito::new(&self.sdk_config));
+		AuthService { api_provider }
+	}
+
+	pub fn new_config_service(&self) -> ConfigService {
+		let db_config = DbConfig::new(&self.db_connection);
+		let repo_config = RepoConfig::new(db_config);
+		ConfigService { repo_config }
 	}
 
 	pub fn new_file_service(&self) -> FileService {
@@ -98,10 +109,5 @@ impl Factory {
 		UserBanHistoryService {
 			repo_user_ban_history,
 		}
-	}
-
-	pub fn new_auth_service(&self) -> AuthService {
-		let api_provider = Arc::new(ApiCognito::new(&self.sdk_config));
-		AuthService { api_provider }
 	}
 }

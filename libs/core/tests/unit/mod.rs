@@ -1,4 +1,5 @@
 mod auth;
+mod config;
 mod migration;
 mod mock_auth_provider;
 mod post;

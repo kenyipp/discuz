@@ -28,6 +28,8 @@ pub async fn execute(
 	let input = CreateCategoryInput {
 		name: body.name.to_owned(),
 		description: body.description.to_owned(),
+		postable: body.postable.unwrap_or(false),
+		level: body.level.unwrap_or(0),
 		user_id: Some(user.id.to_owned()),
 		parent_id: body.parent_id.to_owned(),
 	};
@@ -52,6 +54,8 @@ pub struct Response {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Body {
 	pub name: String,
+	pub level: Option<i32>,
+	pub postable: Option<bool>,
 	pub description: Option<String>,
 	pub parent_id: Option<String>,
 }

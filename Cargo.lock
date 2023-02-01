@@ -283,6 +283,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8da52d66c7071e2e3fa2a1e5c6d088fec47b593032b254f5e980de8ea54454d6"
 
 [[package]]
+name = "async-recursion"
+version = "1.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3b015a331cc64ebd1774ba119538573603427eaace0a1950c423ab971f903796"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "async-stream"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1200,6 +1211,7 @@ dependencies = [
 name = "discuz-core"
 version = "0.1.0"
 dependencies = [
+ "async-recursion",
  "async-trait",
  "aws-config",
  "aws-sdk-cognitoidentityprovider",
@@ -1211,7 +1223,6 @@ dependencies = [
  "error-stack",
  "fake",
  "fred",
- "futures",
  "jsonwebtoken",
  "lazy_static",
  "reqwest",

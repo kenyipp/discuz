@@ -66,6 +66,8 @@ impl DbPostCategoryTrait for DbPostCategory {
 			parent_id: Set(input.parent_id.to_owned()),
 			count: Set(0),
 			description: Set(input.description.to_owned()),
+			postable: Set(input.postable.to_owned()),
+			level: Set(input.level.to_owned()),
 			user_id: Set(input.user_id.to_owned()),
 			status_id: Set("A".to_owned()),
 			created_at: Set(now),
@@ -87,6 +89,8 @@ impl DbPostCategoryTrait for DbPostCategory {
 		post_category.name = Set(input.name.to_owned());
 		post_category.slug = Set(input.slug.to_owned());
 		post_category.description = Set(input.description.to_owned());
+		post_category.postable = Set(input.postable.to_owned());
+		post_category.level = Set(input.level.to_owned());
 		post_category.parent_id = Set(input.parent_id.to_owned());
 		post_category.user_id = Set(input.user_id.to_owned());
 		post_category.status_id = Set(input.status_id.to_owned());
@@ -147,17 +151,9 @@ fn filter_query_results(builder: &mut Select<def_post_category::Entity>, _filter
 	*builder = builder_clone;
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct InputCategoryList {
 	pub filter: CategoryFilter,
-}
-
-impl Default for InputCategoryList {
-	fn default() -> Self {
-		InputCategoryList {
-			filter: CategoryFilter::default(),
-		}
-	}
 }
 
 #[derive(Default, Debug, Clone)]
@@ -167,6 +163,8 @@ pub struct CategoryFilter;
 pub struct CreateCategoryInput {
 	pub name: String,
 	pub slug: String,
+	pub postable: bool,
+	pub level: i32,
 	pub description: Option<String>,
 	pub parent_id: Option<String>,
 	pub user_id: Option<String>,
@@ -178,6 +176,8 @@ pub struct UpdateCategoryInput {
 	pub name: String,
 	pub slug: String,
 	pub description: Option<String>,
+	pub postable: bool,
+	pub level: i32,
 	pub parent_id: Option<String>,
 	pub user_id: Option<String>,
 	pub status_id: String,
