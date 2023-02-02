@@ -31,7 +31,7 @@ async fn create_post() {
 
 	let body = post_controller::create::Body {
 		title: mock_data::post::POST_TITLE.to_owned(),
-		post_category_id: UNCLASSIFIED_CATEGORY_ID.to_owned(),
+		category_id: UNCLASSIFIED_CATEGORY_ID.to_owned(),
 		content: mock_data::post::POST_CONTENT.to_owned(),
 	};
 
@@ -49,8 +49,5 @@ async fn create_post() {
 
 	assert_eq!(create_post_resp.data.title, mock_data::post::POST_TITLE);
 	assert_eq!(create_post_resp.data.content, mock_data::post::POST_CONTENT);
-	assert_eq!(
-		create_post_resp.data.post_category_id,
-		UNCLASSIFIED_CATEGORY_ID
-	);
+	assert_eq!(create_post_resp.data.category_id, UNCLASSIFIED_CATEGORY_ID);
 }

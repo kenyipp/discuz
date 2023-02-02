@@ -19,3 +19,5 @@ ignore:
   - "libs/utils/src/redis.rs"
   # Relation is never used in test
   - "libs/core/src/repository/database/entities"
+  - "libs/core/src/utils/db_tools.rs"
+  - "libs/core/src/service/file/provider"

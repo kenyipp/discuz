@@ -66,7 +66,7 @@ fn create_post(manager: &SchemaManager) -> TableCreateStatement {
 				.not_null(),
 		)
 		.col(
-			ColumnDef::new(Post::PostCategoryId)
+			ColumnDef::new(Post::CategoryId)
 				.string()
 				.string_len(64)
 				.not_null(),
@@ -98,7 +98,7 @@ fn create_post(manager: &SchemaManager) -> TableCreateStatement {
 		)
 		.foreign_key(
 			ForeignKey::create()
-				.name("FK-post-post_category_id-def_post_category-post_category_id")
+				.name("FK-post-category_id-category-category_id")
 				.from(Post::Table, Post::UserId)
 				.to(User::Table, User::UserId),
 		)
@@ -111,7 +111,7 @@ pub enum Post {
 	PostId,
 	Title,
 	Slug,
-	PostCategoryId,
+	CategoryId,
 	Content,
 	CommentCount,
 	MaxCommentCount,

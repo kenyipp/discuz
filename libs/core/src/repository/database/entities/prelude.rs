@@ -1,4 +1,4 @@
-pub use super::def_post_category::Entity as DefPostCategory;
+pub use super::category::Entity as Category;
 pub use super::file::Entity as File;
 pub use super::post::Entity as Post;
 pub use super::post_reply::Entity as PostReply;

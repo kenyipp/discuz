@@ -101,6 +101,7 @@ pub struct S3 {
 }
 
 impl Config {
+	#[cfg(not(tarpaulin_include))]
 	pub fn new() -> Result<Self, ConfigError> {
 		dotenv().ok();
 		let run_mode = env::var("RUN_MODE").unwrap_or_else(|_| "development".to_string());

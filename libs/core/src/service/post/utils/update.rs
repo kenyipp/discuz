@@ -1,13 +1,13 @@
 use crate::{
 	repository::repo_post::{self, Post, RepoPost, RepoPostTrait},
-	service::post::{errors::PostError, utils::find_by_id::execute as find_by_id},
+	service::post::{errors::PostError, utils::find_by_id},
 };
 
 use error_stack::{Result, ResultExt};
 use slugify::slugify;
 
 pub async fn execute(repo_post: &RepoPost, input: &UpdatePostInput) -> Result<Post, PostError> {
-	let post = find_by_id(repo_post, input.id)
+	let post = find_by_id::execute(repo_post, input.id)
 		.await?
 		.ok_or(PostError::PostNotExistError)?;
 
@@ -15,7 +15,7 @@ pub async fn execute(repo_post: &RepoPost, input: &UpdatePostInput) -> Result<Po
 		id: input.id.to_owned(),
 		title: input.title.to_owned(),
 		slug: slugify!(&input.title),
-		post_category_id: input.post_category_id.to_owned(),
+		category_id: input.category_id.to_owned(),
 		max_comment_count: input.max_comment_count,
 		content: input.content.to_owned(),
 		user_id: input.user_id.to_owned(),
@@ -27,7 +27,7 @@ pub async fn execute(repo_post: &RepoPost, input: &UpdatePostInput) -> Result<Po
 		.await
 		.change_context(PostError::InternalServerError)?;
 
-	let post = find_by_id(repo_post, input.id)
+	let post = find_by_id::execute(repo_post, input.id)
 		.await?
 		.ok_or(PostError::InternalServerError)?;
 	Ok(post)
@@ -37,7 +37,7 @@ pub async fn execute(repo_post: &RepoPost, input: &UpdatePostInput) -> Result<Po
 pub struct UpdatePostInput {
 	pub id: i32,
 	pub title: String,
-	pub post_category_id: String,
+	pub category_id: String,
 	pub max_comment_count: Option<i32>,
 	pub content: String,
 	pub user_id: Option<String>,

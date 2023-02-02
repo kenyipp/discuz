@@ -1,7 +1,7 @@
 pub mod auth;
+pub mod category;
 pub mod file;
 pub mod post;
-pub mod post_category;
 pub mod user;
 
 pub mod app;

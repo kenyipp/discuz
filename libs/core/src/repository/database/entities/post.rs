@@ -8,7 +8,7 @@ pub struct Model {
 	pub id: i32,
 	pub title: String,
 	pub slug: String,
-	pub post_category_id: String,
+	pub category_id: String,
 	pub comment_count: i32,
 	pub max_comment_count: i32,
 	pub content: String,

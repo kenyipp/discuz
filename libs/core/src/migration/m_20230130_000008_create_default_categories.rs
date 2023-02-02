@@ -1,6 +1,4 @@
-use crate::{
-	constants::UNCLASSIFIED_CATEGORY_ID, repository::database::entities::def_post_category,
-};
+use crate::{constants::UNCLASSIFIED_CATEGORY_ID, repository::database::entities::category};
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter, Set};
 use sea_orm_migration::prelude::*;
 use slugify::slugify;
@@ -26,7 +24,7 @@ impl MigrationTrait for Migration {
 	async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
 		let categories = vec![
 			Category {
-				name: "Life".to_owned(),
+				name: "Daily Life".to_owned(),
 				child: vec![
 					Category {
 						name: "Creative".to_owned(),
@@ -40,30 +38,30 @@ impl MigrationTrait for Migration {
 								child: vec![],
 							},
 							Category {
-								name: "Art Design".to_owned(),
+								name: "Art and literature".to_owned(),
 								child: vec![],
 							},
 						],
 					},
 					Category {
-						name: "Health".to_owned(),
+						name: "Health and wellness".to_owned(),
 						child: vec![],
 					},
 					Category {
-						name: "Diet".to_owned(),
+						name: "Food and cooking".to_owned(),
 						child: vec![],
 					},
 					Category {
-						name: "Love".to_owned(),
+						name: "Relationships and dating".to_owned(),
 						child: vec![],
 					},
 				],
 			},
 			Category {
-				name: "Hobby".to_owned(),
+				name: "Hobbies and interests".to_owned(),
 				child: vec![
 					Category {
-						name: "Sport".to_owned(),
+						name: "Sports and recreation".to_owned(),
 						child: vec![],
 					},
 					Category {
@@ -78,13 +76,13 @@ impl MigrationTrait for Migration {
 						child: vec![],
 					},
 					Category {
-						name: "Game".to_owned(),
+						name: "Gaming".to_owned(),
 						child: vec![],
 					},
 				],
 			},
 			Category {
-				name: "Other".to_owned(),
+				name: "Others".to_owned(),
 				child: vec![
 					Category {
 						name: "Admin".to_owned(),
@@ -102,9 +100,9 @@ impl MigrationTrait for Migration {
 	}
 
 	async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-		def_post_category::Entity::update_many()
-			.col_expr(def_post_category::Column::StatusId, Expr::value("D"))
-			.filter(def_post_category::Column::Id.ne(UNCLASSIFIED_CATEGORY_ID))
+		category::Entity::update_many()
+			.col_expr(category::Column::StatusId, Expr::value("D"))
+			.filter(category::Column::Id.ne(UNCLASSIFIED_CATEGORY_ID))
 			.exec(manager.get_connection())
 			.await
 			.unwrap();
@@ -139,16 +137,16 @@ async fn insert_category(
 	level: i32,
 ) -> String {
 	let id = Uuid::new_v4().to_string();
-	let category = def_post_category::ActiveModel {
+	let category = category::ActiveModel {
 		id: Set(id.to_owned()),
 		name: Set(category.name.to_owned()),
 		slug: Set(slugify!(&category.name)),
 		parent_id: Set(parent_id.to_owned()),
 		postable: Set(level == 3),
 		level: Set(level.to_owned()),
-		..def_post_category::ActiveModel::default()
+		..category::ActiveModel::default()
 	};
-	def_post_category::Entity::insert(category)
+	category::Entity::insert(category)
 		.exec(manager.get_connection())
 		.await
 		.unwrap();

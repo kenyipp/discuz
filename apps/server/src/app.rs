@@ -12,11 +12,11 @@ use discuz_core::service::factory::Factory;
 use discuz_utils::{amazon::get_aws_sdk_config, config::get_config, get_db_connection, redis};
 
 use crate::{
-	auth::auth_route, file::file_route, post::post_route, post_category::post_category_route,
+	auth::auth_route, category::category_route, file::file_route, post::post_route,
 	user::user_route, utils::app_state::AppState,
 };
 
-#[cfg_attr(test, allow(dead_code))]
+#[cfg(not(tarpaulin_include))]
 pub async fn listen() -> std::io::Result<()> {
 	// Get the environment variables
 	dotenv().ok();
@@ -62,11 +62,12 @@ pub async fn get_app_state() -> AppState {
 	let factory = Factory::new(&db_connection, &sdk_config);
 
 	let auth_service = Arc::new(factory.new_auth_service());
+	let config_service = Arc::new(factory.new_config_service());
 	let user_service = Arc::new(factory.new_user_service(auth_service.clone()));
 	let user_ban_history_service = Arc::new(factory.new_user_ban_history_service());
 	let file_service = Arc::new(factory.new_file_service());
 	let post_service = Arc::new(factory.new_post_service());
-	let post_category_service = Arc::new(factory.new_post_category_service());
+	let category_service = Arc::new(factory.new_category_service());
 	let redis_client = Arc::new(
 		redis::get_redis_connection()
 			.await
@@ -78,15 +79,17 @@ pub async fn get_app_state() -> AppState {
 		db_connection,
 		sdk_config,
 		auth_service,
+		config_service,
 		user_service,
 		user_ban_history_service,
 		file_service,
 		post_service,
-		post_category_service,
+		category_service,
 		redis_client,
 	}
 }
 
+#[cfg(not(tarpaulin_include))]
 pub fn get_cors_middleware() -> Cors {
 	let config = get_config();
 	match config.app.allowed_origin {
@@ -111,6 +114,6 @@ pub fn get_api_routes(cfg: &mut web::ServiceConfig) {
 	cfg.service(web::scope("/auth").configure(auth_route::route));
 	cfg.service(web::scope("/file").configure(file_route::route));
 	cfg.service(web::scope("/user").configure(user_route::route));
-	cfg.service(web::scope("/post/category").configure(post_category_route::route));
+	cfg.service(web::scope("/post/category").configure(category_route::route));
 	cfg.service(web::scope("/post").configure(post_route::route));
 }

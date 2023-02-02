@@ -33,7 +33,7 @@ async fn delete_post() {
 
 	let body = post_controller::create::Body {
 		title: mock_data::post::POST_TITLE.to_owned(),
-		post_category_id: UNCLASSIFIED_CATEGORY_ID.to_owned(),
+		category_id: UNCLASSIFIED_CATEGORY_ID.to_owned(),
 		content: mock_data::post::POST_CONTENT.to_owned(),
 	};
 

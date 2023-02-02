@@ -17,7 +17,6 @@ use std::{fmt::Debug, sync::Arc};
 pub struct FileService {
 	pub repo_file: RepoFile,
 	pub api_provider: Arc<dyn ApiS3Trait>,
-	pub bucket: String,
 }
 
 #[async_trait]

@@ -40,9 +40,14 @@ pub async fn get_http_errors() -> Result<Vec<HttpError>, GetHttpError> {
 		.into_report()
 		.change_context(GetHttpError::ParseError)?;
 
+	// Save the http errors into mutex block
+	let mut lock = HTTP_ERRORS.lock().await;
+	*lock = Some(errors.clone());
+
 	Ok(errors)
 }
 
+#[cfg(not(tarpaulin_include))]
 #[derive(Debug, Display)]
 pub enum GetHttpError {
 	#[display(fmt = "Generic Error")]

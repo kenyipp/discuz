@@ -33,7 +33,7 @@ pub async fn execute(
 	let input = UpdatePostInput {
 		id: params.id.to_owned(),
 		title: body.title.to_owned(),
-		post_category_id: body.post_category_id.to_owned(),
+		category_id: body.category_id.to_owned(),
 		max_comment_count: None,
 		content: body.content.to_owned(),
 		user_id: Some(user.id.to_owned()),
@@ -66,6 +66,6 @@ pub struct Params {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Body {
 	pub title: String,
-	pub post_category_id: String,
+	pub category_id: String,
 	pub content: String,
 }

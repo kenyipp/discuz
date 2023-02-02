@@ -1,9 +1,10 @@
 mod auth;
+mod category;
 mod config;
+mod file;
 mod migration;
 mod mock_auth_provider;
 mod post;
-mod post_category;
 mod post_reply;
 mod user;
 mod user_ban_history;

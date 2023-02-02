@@ -12,4 +12,7 @@ pub enum PostError {
 	#[display(fmt = "Post Error: Target post not exist")]
 	#[strum(props(code = "post_not_exist"))]
 	PostNotExistError,
+	#[display(fmt = "Maximum reply reached")]
+	#[strum(props(code = "post_maximum_reply"))]
+	MaximumReplyError,
 }

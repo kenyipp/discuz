@@ -30,7 +30,7 @@ pub async fn execute(
 
 	let input = CreatePostInput {
 		title: body.title.to_owned(),
-		post_category_id: body.post_category_id.to_owned(),
+		category_id: body.category_id.to_owned(),
 		content: body.content.to_owned(),
 		user_id: Some(user.id),
 	};
@@ -51,6 +51,6 @@ pub struct Response {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Body {
 	pub title: String,
-	pub post_category_id: String,
+	pub category_id: String,
 	pub content: String,
 }

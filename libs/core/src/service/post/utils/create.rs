@@ -12,7 +12,7 @@ pub async fn execute(repo_post: &RepoPost, input: &CreatePostInput) -> Result<Po
 
 	let CreatePostInput {
 		title,
-		post_category_id,
+		category_id,
 		content,
 		user_id,
 	} = input;
@@ -20,7 +20,7 @@ pub async fn execute(repo_post: &RepoPost, input: &CreatePostInput) -> Result<Po
 	let input = repo_post::CreatePostInput {
 		title: title.to_owned(),
 		slug,
-		post_category_id: post_category_id.to_owned(),
+		category_id: category_id.to_owned(),
 		content: content.to_owned(),
 		user_id: user_id.to_owned(),
 	};
@@ -39,7 +39,7 @@ pub async fn execute(repo_post: &RepoPost, input: &CreatePostInput) -> Result<Po
 #[derive(Debug, Clone)]
 pub struct CreatePostInput {
 	pub title: String,
-	pub post_category_id: String,
+	pub category_id: String,
 	pub content: String,
 	pub user_id: Option<String>,
 }

@@ -1,6 +1,7 @@
 # Discuz
 
-[![Actions Status](https://github.com/kenyipp/discuz/workflows/CI/badge.svg)](https://github.com/kenyipp/discuz/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/kenyipp/discuz/branch/master/graph/badge.svg?token=AMBNXM57T8)](https://codecov.io/gh/kenyipp/discuz)
+[![Actions Status](https://github.com/kenyipp/discuz/workflows/CI/badge.svg)](https://github.com/kenyipp/discuz/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/kenyipp/discuz/branch/master/graph/badge.svg?token=AMBNXM57T8)](https://codecov.io/gh/kenyipp/discuz)
 
 This rust-based forum server, named Discuz, is a sample project showcasing the use of [Actix-web](https://actix.rs) for CRUD operations, authentication, routing, pagination and more. 
 
