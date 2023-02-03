@@ -1,13 +1,20 @@
 use derive_more::{Display, Error};
+use strum_macros::EnumProperty;
 
-#[derive(Debug, Display, Error)]
+#[derive(Debug, Display, EnumProperty, Error)]
 pub enum UserError {
-	#[display(fmt = "User Error: Generic")]
+	#[display(fmt = "Generic")]
+	#[strum(props(code = "user_generic"))]
 	Generic,
-	#[display(fmt = "User Error: Invalid Code")]
+	#[display(fmt = "Invalid Code")]
+	#[strum(props(code = "user_invalid_code"))]
 	InvalidCode,
-	#[display(fmt = "User Error: Invalid Credentials")]
+	#[display(fmt = "Invalid Credentials")]
 	InvalidCredentials,
-	#[display(fmt = "User Error: Internal Server Error")]
+	#[display(fmt = "Target history not exist")]
+	#[strum(props(code = "user_ban_history_not_exist"))]
+	UserBanHistoryNotExistError,
+	#[display(fmt = "Internal Server Error")]
+	#[strum(props(code = "user_internal_server_error"))]
 	InternalServerError,
 }

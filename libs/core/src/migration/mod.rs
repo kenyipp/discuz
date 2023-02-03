@@ -9,6 +9,7 @@ mod m_20230116_000006_create_post_reply_table;
 mod m_20230124_000007_create_user_ban_history_table;
 mod m_20230130_000008_create_default_categories;
 mod m_20230131_000009_create_apps_version_table;
+mod m_20230201_000010_create_config_table;
 
 pub struct Migrator;
 pub use sea_orm_migration::MigratorTrait;
@@ -26,6 +27,7 @@ impl MigratorTrait for Migrator {
 			Box::new(m_20230124_000007_create_user_ban_history_table::Migration),
 			Box::new(m_20230130_000008_create_default_categories::Migration),
 			Box::new(m_20230131_000009_create_apps_version_table::Migration),
+			Box::new(m_20230201_000010_create_config_table::Migration),
 		]
 	}
 }

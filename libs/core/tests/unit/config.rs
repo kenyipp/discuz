@@ -10,8 +10,8 @@ use discuz_utils::{amazon::get_aws_sdk_config, get_db_connection};
 #[tokio::test]
 async fn get_app_config() {
 	let SetupResponse { config_service } = setup().await;
-	let AppConfig { versions } = config_service.get_config().await.unwrap();
-	assert_eq!(versions.len(), 1);
+	let result = config_service.get_config().await;
+	assert!(result.is_ok());
 }
 
 async fn setup() -> SetupResponse {

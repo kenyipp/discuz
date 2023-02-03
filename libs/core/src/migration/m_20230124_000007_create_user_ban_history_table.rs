@@ -68,6 +68,7 @@ fn create_user_ban_history_table(manager: &SchemaManager) -> TableCreateStatemen
 				.integer_len(11)
 				.unsigned()
 				.not_null()
+				.auto_increment()
 				.primary_key(),
 		)
 		.col(

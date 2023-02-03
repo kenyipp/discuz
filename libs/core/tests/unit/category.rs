@@ -34,7 +34,7 @@ async fn get_unclassified_category() {
 		.unwrap();
 	assert!(category.is_some());
 	let category = category.unwrap();
-	assert_eq!(category.name, "Chit Chat");
+	assert_eq!(category.name, "Chit chat");
 	assert_eq!(category.slug, "chit-chat");
 }
 
@@ -51,6 +51,7 @@ async fn create_new_category() {
 		postable: false,
 		user_id: None,
 		parent_id: None,
+		sort_index: None,
 	};
 	let category = category_service.create(&input).await.unwrap();
 	assert_eq!(category.name, category_name);
@@ -69,6 +70,7 @@ async fn create_duplicated_category() {
 		postable: false,
 		user_id: None,
 		parent_id: None,
+		sort_index: None,
 	};
 
 	let category = category_service.create(&input).await;
@@ -103,6 +105,7 @@ async fn update_category() {
 		user_id: None,
 		parent_id: None,
 		status_id: None,
+		sort_index: 100,
 	};
 	let category = category_service.update(&input).await.unwrap();
 	assert_eq!(category.name, category_name);
@@ -125,6 +128,7 @@ async fn update_not_exist_category() {
 		user_id: None,
 		status_id: None,
 		parent_id: None,
+		sort_index: 100,
 	};
 	let category = category_service.update(&input).await;
 	assert!(category.is_err());
@@ -200,6 +204,7 @@ async fn create_category_after_deleted() {
 		parent_id: None,
 		description: None,
 		user_id: None,
+		sort_index: None,
 	};
 
 	let category = category_service.create(&input).await;

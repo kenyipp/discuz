@@ -1,5 +1,6 @@
 pub mod apps_version;
 pub mod category;
+pub mod config;
 pub mod file;
 pub mod post;
 pub mod post_reply;

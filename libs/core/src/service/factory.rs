@@ -6,14 +6,13 @@ use crate::{
 	repository::{
 		database::{
 			category::DbCategory, db_config::DbConfig, db_file::DbFile, db_post::DbPost,
-			db_user::DbUser, db_user_ban_history::DbUserBanHistory,
+			db_user::DbUser,
 		},
 		repo_category::RepoCategory,
 		repo_config::RepoConfig,
 		repo_file::RepoFile,
 		repo_post::RepoPost,
 		repo_user::RepoUser,
-		repo_user_ban_history::RepoUserBanHistory,
 	},
 	service::{
 		auth::{
@@ -25,7 +24,6 @@ use crate::{
 		file::{file_service::FileService, provider::api_provider::ApiS3},
 		post::post_service::PostService,
 		user::user_service::UserService,
-		user_ban_history::user_ban_history_service::UserBanHistoryService,
 	},
 };
 
@@ -81,14 +79,6 @@ impl Factory {
 		UserService {
 			repo_user,
 			auth_service,
-		}
-	}
-
-	pub fn new_user_ban_history_service(&self) -> UserBanHistoryService {
-		let db_user_ban_history = DbUserBanHistory::new(&self.db_connection);
-		let repo_user_ban_history = RepoUserBanHistory::new(db_user_ban_history);
-		UserBanHistoryService {
-			repo_user_ban_history,
 		}
 	}
 }

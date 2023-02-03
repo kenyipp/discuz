@@ -1,4 +1,4 @@
-use crate::{constants::UNCLASSIFIED_CATEGORY_ID, utils::db_tools::on_update_current_timestamp};
+use crate::utils::db_tools::on_update_current_timestamp;
 use sea_orm::DbBackend;
 use sea_orm_migration::prelude::*;
 
@@ -26,7 +26,6 @@ impl MigrationTrait for Migration {
 				)
 				.await?;
 		}
-		manager.exec_stmt(seed_default_category()).await?;
 		Ok(())
 	}
 
@@ -36,18 +35,6 @@ impl MigrationTrait for Migration {
 			.await?;
 		Ok(())
 	}
-}
-
-fn seed_default_category() -> InsertStatement {
-	Query::insert()
-		.into_table(Category::Table)
-		.columns([Category::CategoryId, Category::Name, Category::Slug])
-		.values_panic([
-			UNCLASSIFIED_CATEGORY_ID.into(),
-			"Chit Chat".into(),
-			"chit-chat".into(),
-		])
-		.to_owned()
 }
 
 fn create_category(manager: &SchemaManager) -> TableCreateStatement {
@@ -79,7 +66,7 @@ fn create_category(manager: &SchemaManager) -> TableCreateStatement {
 				.integer()
 				.integer_len(3)
 				.unsigned()
-				.default(0),
+				.default(1),
 		)
 		.col(ColumnDef::new(Category::Postable).boolean().default(true))
 		.col(

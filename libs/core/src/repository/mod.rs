@@ -6,4 +6,3 @@ pub mod repo_config;
 pub mod repo_file;
 pub mod repo_post;
 pub mod repo_user;
-pub mod repo_user_ban_history;

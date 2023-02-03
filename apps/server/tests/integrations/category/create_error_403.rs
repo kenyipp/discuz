@@ -26,7 +26,7 @@ async fn create_category() {
 
 	// It should reject with error code 403
 	let req = test::TestRequest::post()
-		.uri("/api/post/category")
+		.uri("/api/category")
 		.append_header(("authorization", "bearer ".to_string() + FAKE_ACCESS_TOKEN))
 		.set_json(body.to_owned())
 		.to_request();

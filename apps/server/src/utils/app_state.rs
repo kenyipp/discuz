@@ -15,5 +15,4 @@ pub struct AppState {
 	pub post_service: Arc<PostService>,
 	pub category_service: Arc<CategoryService>,
 	pub user_service: Arc<UserService>,
-	pub user_ban_history_service: Arc<UserBanHistoryService>,
 }

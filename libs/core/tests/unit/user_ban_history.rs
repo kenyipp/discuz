@@ -13,7 +13,6 @@ async fn ban_user_account() {
 	let SetupResponse {
 		auth_service,
 		user_service,
-		user_ban_history_service,
 	} = setup().await;
 
 	let admin_user_token = Uuid::new_v4().to_string();
@@ -29,14 +28,14 @@ async fn ban_user_account() {
 		.await
 		.unwrap();
 
-	let input = CreateBanInput {
+	let input = CreateBanHistoryInput {
 		ban_user_id: user.id.to_owned(),
 		ban_reason: Some(ban_reason.to_owned()),
 		ban_time: Some(1000),
 		user_id: admin.id.to_owned(),
 	};
 
-	let history = user_ban_history_service.create(&input).await.unwrap();
+	let history = user_service.create_user_ban_history(&input).await.unwrap();
 
 	assert_eq!(history.ban_user_id, user.id);
 	assert_eq!(history.ban_reason, Some(ban_reason.to_owned()));
@@ -54,7 +53,6 @@ async fn ban_user_permanently() {
 	let SetupResponse {
 		auth_service,
 		user_service,
-		user_ban_history_service,
 	} = setup().await;
 
 	let admin_user_token = Uuid::new_v4().to_string();
@@ -69,14 +67,14 @@ async fn ban_user_permanently() {
 		.await
 		.unwrap();
 
-	let input = CreateBanInput {
+	let input = CreateBanHistoryInput {
 		ban_user_id: user.id.to_owned(),
 		ban_reason: None,
 		ban_time: None,
 		user_id: admin.id.to_owned(),
 	};
 
-	let history = user_ban_history_service.create(&input).await.unwrap();
+	let history = user_service.create_user_ban_history(&input).await.unwrap();
 
 	assert_eq!(history.ban_user_id, user.id);
 	assert!(history.ban_reason.is_none());
@@ -91,11 +89,7 @@ async fn ban_user_permanently() {
 
 #[tokio::test]
 async fn update_user_ban() {
-	let SetupResponse {
-		user_service,
-		user_ban_history_service,
-		..
-	} = setup().await;
+	let SetupResponse { user_service, .. } = setup().await;
 
 	let admin_user_token = Uuid::new_v4().to_string();
 	let user_token = Uuid::new_v4().to_string();
@@ -110,24 +104,25 @@ async fn update_user_ban() {
 		.await
 		.unwrap();
 
-	let input = CreateBanInput {
+	let input = CreateBanHistoryInput {
 		ban_user_id: user.id.to_owned(),
 		ban_reason: None,
 		ban_time: None,
 		user_id: admin.id.to_owned(),
 	};
 
-	let history = user_ban_history_service.create(&input).await.unwrap();
+	let history = user_service.create_user_ban_history(&input).await.unwrap();
 
-	let input = UpdateBanInput {
+	let input = UpdateBanHistoryInput {
 		id: history.id,
 		ban_user_id: user.id.to_owned(),
 		ban_reason: Some(ban_reason.to_owned()),
 		ban_time: Some(1000),
+		release_time: None,
 		user_id: admin.id.to_owned(),
 	};
 
-	let history = user_ban_history_service.update(&input).await.unwrap();
+	let history = user_service.update_user_ban_history(&input).await.unwrap();
 
 	assert_eq!(history.ban_reason, Some(ban_reason));
 	assert_eq!(history.ban_time, Some(1000));
@@ -142,16 +137,13 @@ async fn setup() -> SetupResponse {
 	let api_provider = Arc::new(MockApiCognito);
 	let auth_service = Arc::new(AuthService { api_provider });
 	let user_service = Arc::new(factory.new_user_service(auth_service.clone()));
-	let user_ban_history_service = Arc::new(factory.new_user_ban_history_service());
 	SetupResponse {
 		auth_service,
 		user_service,
-		user_ban_history_service,
 	}
 }
 
 pub struct SetupResponse {
 	auth_service: Arc<AuthService>,
 	user_service: Arc<UserService>,
-	user_ban_history_service: Arc<UserBanHistoryService>,
 }

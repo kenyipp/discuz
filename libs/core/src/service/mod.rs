@@ -6,4 +6,3 @@ pub mod file;
 pub mod post;
 pub mod prelude;
 pub mod user;
-pub mod user_ban_history;

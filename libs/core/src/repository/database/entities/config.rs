@@ -2,20 +2,12 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
-#[sea_orm(table_name = "category")]
+#[sea_orm(table_name = "config")]
 pub struct Model {
-	#[sea_orm(primary_key, column_name = "category_id")]
-	pub id: String,
-	pub name: String,
-	pub slug: String,
-	#[sea_orm(nullable)]
-	pub description: Option<String>,
-	pub level: i32,
-	pub postable: bool,
-	pub sort_index: i32,
-	pub parent_id: Option<String>,
-	#[sea_orm(default_value = 0)]
-	pub count: i64,
+	#[sea_orm(primary_key, column_name = "config_key")]
+	pub key: String,
+	#[sea_orm(column_name = "config_value")]
+	pub value: String,
 	#[sea_orm(nullable)]
 	pub user_id: Option<String>,
 	#[sea_orm(default_value = "A")]
@@ -26,22 +18,14 @@ pub struct Model {
 
 #[derive(Copy, Clone, Debug, EnumIter)]
 pub enum Relation {
-	ParentCategory,
 	User,
 }
 
 impl RelationTrait for Relation {
 	fn def(&self) -> RelationDef {
 		match self {
-			Relation::ParentCategory => Entity::belongs_to(Entity).into(),
 			Relation::User => Entity::belongs_to(super::user::Entity).into(),
 		}
-	}
-}
-
-impl Related<Entity> for Entity {
-	fn to() -> RelationDef {
-		Relation::ParentCategory.def()
 	}
 }
 
@@ -53,4 +37,4 @@ impl Related<super::user::Entity> for Entity {
 
 impl ActiveModelBehavior for ActiveModel {}
 
-pub type Category = Model;
+pub type Config = Model;

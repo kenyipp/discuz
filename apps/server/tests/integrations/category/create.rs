@@ -52,7 +52,7 @@ async fn create_category() {
 
 	// Run test
 	let req = test::TestRequest::post()
-		.uri("/api/post/category")
+		.uri("/api/category")
 		.append_header(("authorization", "bearer ".to_string() + FAKE_ACCESS_TOKEN))
 		.set_json(body.to_owned())
 		.to_request();

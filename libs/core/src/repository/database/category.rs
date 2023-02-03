@@ -67,6 +67,7 @@ impl DbCategoryTrait for DbCategory {
 			description: Set(input.description.to_owned()),
 			postable: Set(input.postable.to_owned()),
 			level: Set(input.level.to_owned()),
+			sort_index: Set(input.sort_index.unwrap_or(100).to_owned()),
 			user_id: Set(input.user_id.to_owned()),
 			status_id: Set("A".to_owned()),
 			created_at: Set(now),
@@ -90,6 +91,7 @@ impl DbCategoryTrait for DbCategory {
 		category.description = Set(input.description.to_owned());
 		category.postable = Set(input.postable.to_owned());
 		category.level = Set(input.level.to_owned());
+		category.sort_index = Set(input.sort_index.to_owned());
 		category.parent_id = Set(input.parent_id.to_owned());
 		category.user_id = Set(input.user_id.to_owned());
 		category.status_id = Set(input.status_id.to_owned());
@@ -164,6 +166,7 @@ pub struct CreateCategoryInput {
 	pub slug: String,
 	pub postable: bool,
 	pub level: i32,
+	pub sort_index: Option<i32>,
 	pub description: Option<String>,
 	pub parent_id: Option<String>,
 	pub user_id: Option<String>,
@@ -177,6 +180,7 @@ pub struct UpdateCategoryInput {
 	pub description: Option<String>,
 	pub postable: bool,
 	pub level: i32,
+	pub sort_index: i32,
 	pub parent_id: Option<String>,
 	pub user_id: Option<String>,
 	pub status_id: String,
