@@ -47,7 +47,6 @@ pub async fn get_http_errors() -> Result<Vec<HttpError>, GetHttpError> {
 	Ok(errors)
 }
 
-#[cfg(not(tarpaulin_include))]
 #[derive(Debug, Display)]
 pub enum GetHttpError {
 	#[display(fmt = "Generic Error")]

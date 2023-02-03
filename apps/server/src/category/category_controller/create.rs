@@ -51,7 +51,7 @@ pub struct Response {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Body {
 	pub name: String,
-	pub level: Option<i32>,
+	pub level: Option<u32>,
 	pub postable: Option<bool>,
 	pub description: Option<String>,
 	pub parent_id: Option<String>,

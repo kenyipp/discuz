@@ -138,7 +138,7 @@ async fn create_categories(
 	manager: &SchemaManager<'_>,
 	categories: Vec<Category>,
 	parent_id: Option<String>,
-	level: Option<i32>,
+	level: Option<u32>,
 ) {
 	let level = level.unwrap_or(1);
 	for category in categories.iter() {
@@ -157,7 +157,7 @@ async fn insert_category(
 	manager: &SchemaManager<'_>,
 	category: &Category,
 	parent_id: Option<String>,
-	level: i32,
+	level: u32,
 ) -> String {
 	let id = if category.name == "Chit chat" {
 		UNCLASSIFIED_CATEGORY_ID.to_owned()

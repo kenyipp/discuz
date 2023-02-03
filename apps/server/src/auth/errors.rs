@@ -1,19 +1,21 @@
 use crate::errors::{ErrorDetail, GetErrorDetailTrait};
+use discuz_core::service::auth::errors::AuthError;
 
 #[derive(Debug, Clone)]
 pub enum ApiAuthError {
+	Generic,
 	UserBanned,
-	InvalidAccessToken,
 	InvalidAuthCode,
 	InsufficientPrivilege,
 	MissingAuthorization,
+	InternalServerError,
 }
 
 impl GetErrorDetailTrait for ApiAuthError {
 	fn get_error_detail(&self) -> ErrorDetail {
 		match self {
-			ApiAuthError::InvalidAccessToken => ErrorDetail {
-				code: "auth_invalid_access_token".to_owned(),
+			ApiAuthError::Generic => ErrorDetail {
+				code: "auth_generic".to_owned(),
 				status: 400,
 				message: None,
 				detail: None,
@@ -42,6 +44,28 @@ impl GetErrorDetailTrait for ApiAuthError {
 				message: None,
 				detail: None,
 			},
+			ApiAuthError::InternalServerError => ErrorDetail {
+				code: "auth_internal_server_error".to_owned(),
+				status: 500,
+				message: None,
+				detail: None,
+			},
+		}
+	}
+}
+
+impl From<AuthError> for ApiAuthError {
+	fn from(auth_error: AuthError) -> Self {
+		match auth_error {
+			AuthError::Generic(_) => ApiAuthError::Generic,
+			AuthError::InvalidAccessTokenError => ApiAuthError::Generic,
+			AuthError::InsufficientPrivilegesError => ApiAuthError::InsufficientPrivilege,
+			AuthError::UserBannedError {
+				reason: _,
+				ban_time: _,
+				release_time: _,
+			} => ApiAuthError::UserBanned,
+			AuthError::InternalServerError => ApiAuthError::InternalServerError,
 		}
 	}
 }

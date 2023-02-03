@@ -40,7 +40,7 @@ pub trait RepoUserTrait {
 	// -> Queries
 	async fn find_ban_history_by_id(&self, id: i32) -> Result<Option<UserBanHistory>, RepoError>;
 	// -> Mutations
-	async fn create_ban_history(&self, input: &CreateBanHistoryInput) -> Result<i32, RepoError>;
+	async fn create_ban_history(&self, input: &BanUserInput) -> Result<i32, RepoError>;
 	async fn update_ban_history(&self, input: &UpdateBanHistoryInput) -> Result<(), RepoError>;
 	async fn update_user_ban_history_status_to_resolved(
 		&self,
@@ -122,13 +122,13 @@ impl RepoUserTrait for RepoUser {
 			.change_context(RepoError::Generic)
 	}
 
-	async fn create_ban_history(&self, input: &CreateBanHistoryInput) -> Result<i32, RepoError> {
+	async fn create_ban_history(&self, input: &BanUserInput) -> Result<i32, RepoError> {
 		let release_time = input.ban_time.map(|time| {
 			let now = chrono::offset::Utc::now();
 			now + chrono::Duration::milliseconds(time as i64)
 		});
 
-		let db_input = db_user::CreateBanHistoryInput {
+		let db_input = db_user::BanUserInput {
 			ban_user_id: input.ban_user_id.to_owned(),
 			ban_reason: input.ban_reason.to_owned(),
 			ban_time: input.ban_time.to_owned(),
@@ -164,7 +164,7 @@ impl RepoUserTrait for RepoUser {
 }
 
 #[derive(Debug, Clone)]
-pub struct CreateBanHistoryInput {
+pub struct BanUserInput {
 	pub ban_user_id: String,
 	pub ban_reason: Option<String>,
 	pub ban_time: Option<i32>,

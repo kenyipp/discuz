@@ -32,7 +32,7 @@ pub trait DbUserTrait {
 	// -> Queries
 	async fn find_ban_history_by_id(&self, id: i32) -> Result<Option<UserBanHistory>, DbErr>;
 	// -> Mutations
-	async fn create_ban_history(&self, input: &CreateBanHistoryInput) -> Result<i32, DbErr>;
+	async fn create_ban_history(&self, input: &BanUserInput) -> Result<i32, DbErr>;
 	async fn update_ban_history(&self, input: &UpdateBanHistoryInput) -> Result<(), DbErr>;
 	async fn update_user_ban_history_status_to_resolved(&self, user_id: &str) -> Result<(), DbErr>;
 }
@@ -146,7 +146,7 @@ impl DbUserTrait for DbUser {
 			.await
 	}
 
-	async fn create_ban_history(&self, input: &CreateBanHistoryInput) -> Result<i32, DbErr> {
+	async fn create_ban_history(&self, input: &BanUserInput) -> Result<i32, DbErr> {
 		let now = chrono::offset::Utc::now();
 		let input = user_ban_history::ActiveModel {
 			ban_user_id: Set(input.ban_user_id.to_owned()),
@@ -259,7 +259,7 @@ pub struct UpdateUserInput {
 //
 
 #[derive(Debug, Clone)]
-pub struct CreateBanHistoryInput {
+pub struct BanUserInput {
 	pub ban_user_id: String,
 	pub ban_reason: Option<String>,
 	pub ban_time: Option<i32>,

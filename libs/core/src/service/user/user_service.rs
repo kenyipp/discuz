@@ -3,7 +3,7 @@ use std::{fmt::Debug, sync::Arc};
 
 pub use crate::{
 	repository::repo_user::{
-		CreateBanHistoryInput, UpdateBanHistoryInput, UpdateUserInput, User, UserBanHistory,
+		BanUserInput, UpdateBanHistoryInput, UpdateUserInput, User, UserBanHistory,
 	},
 	service::user::utils::get_users::{GetUsersResponse, InputUserList},
 };
@@ -35,10 +35,7 @@ pub trait UserServiceTrait: Sync + Send + Debug {
 		&self,
 		id: i32,
 	) -> Result<Option<UserBanHistory>, UserError>;
-	async fn create_user_ban_history(
-		&self,
-		input: &CreateBanHistoryInput,
-	) -> Result<UserBanHistory, UserError>;
+	async fn ban_user_account(&self, input: &BanUserInput) -> Result<UserBanHistory, UserError>;
 	async fn update_user_ban_history(
 		&self,
 		input: &UpdateBanHistoryInput,
@@ -94,11 +91,8 @@ impl UserServiceTrait for UserService {
 		utils::find_user_ban_history_by_id::execute(&self.repo_user, id).await
 	}
 
-	async fn create_user_ban_history(
-		&self,
-		input: &CreateBanHistoryInput,
-	) -> Result<UserBanHistory, UserError> {
-		utils::create_user_ban_history::execute(&self.repo_user, input).await
+	async fn ban_user_account(&self, input: &BanUserInput) -> Result<UserBanHistory, UserError> {
+		utils::ban_user_account::execute(&self.repo_user, input).await
 	}
 
 	async fn update_user_ban_history(

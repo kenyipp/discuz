@@ -1,7 +1,7 @@
 pub use crate::repository::{
 	database::category::{
 		Category, CategoryFilter, CreateCategoryInput, DbCategory, DbCategoryTrait,
-		InputCategoryList, UpdateCategoryInput,
+		ListCategoryInput, UpdateCategoryInput,
 	},
 	errors::RepoError,
 };
@@ -20,7 +20,7 @@ impl RepoCategory {
 
 #[async_trait]
 pub trait RepoCategoryTrait {
-	async fn list(&self, input: &InputCategoryList) -> Result<Vec<Category>, RepoError>;
+	async fn list(&self, input: &ListCategoryInput) -> Result<Vec<Category>, RepoError>;
 	async fn count(&self, &filter: &CategoryFilter) -> Result<u64, RepoError>;
 	async fn find_by_id(&self, id: &str) -> Result<Option<Category>, RepoError>;
 	async fn find_by_slug(&self, slug: &str) -> Result<Option<Category>, RepoError>;
@@ -31,7 +31,7 @@ pub trait RepoCategoryTrait {
 
 #[async_trait]
 impl RepoCategoryTrait for RepoCategory {
-	async fn list(&self, input: &InputCategoryList) -> Result<Vec<Category>, RepoError> {
+	async fn list(&self, input: &ListCategoryInput) -> Result<Vec<Category>, RepoError> {
 		self.category
 			.list(input)
 			.await

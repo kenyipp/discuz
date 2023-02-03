@@ -1,12 +1,12 @@
 use crate::{
-	repository::repo_user::{CreateBanHistoryInput, RepoUser, RepoUserTrait, UserBanHistory},
+	repository::repo_user::{BanUserInput, RepoUser, RepoUserTrait, UserBanHistory},
 	service::user::{constants::UserStatus, errors::UserError, utils},
 };
 use error_stack::{Result, ResultExt};
 
 pub async fn execute(
 	repo_user: &RepoUser,
-	input: &CreateBanHistoryInput,
+	input: &BanUserInput,
 ) -> Result<UserBanHistory, UserError> {
 	let user_ban_history_id = repo_user
 		.create_ban_history(input)

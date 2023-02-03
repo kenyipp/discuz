@@ -99,7 +99,7 @@ pub struct CreateCategoryInput {
 	pub name: String,
 	pub description: Option<String>,
 	pub postable: bool,
-	pub level: i32,
+	pub level: u32,
 	pub parent_id: Option<String>,
 	pub sort_index: Option<i32>,
 	pub user_id: Option<String>,

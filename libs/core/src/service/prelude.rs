@@ -17,8 +17,10 @@ pub use crate::service::{
 
 // Service function inputs
 pub use crate::service::{
-	category::category_service::{CreateCategoryInput, UpdateCategoryInput},
+	category::category_service::{
+		CreateCategoryInput, GetCategoriesResponse, ListCategoryInput, UpdateCategoryInput,
+	},
 	config::config_service::AppConfig,
 	post::post_service::{CreatePostInput, CreateReplyInput, UpdatePostInput},
-	user::user_service::{CreateBanHistoryInput, UpdateBanHistoryInput, UpdateUserInput},
+	user::user_service::{BanUserInput, UpdateBanHistoryInput, UpdateUserInput},
 };

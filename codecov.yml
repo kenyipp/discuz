@@ -17,6 +17,7 @@ ignore:
   #
   - "apps/server/src/auth/auth_controller/get_tokens.rs"
   - "libs/utils/src/redis.rs"
+  - "libs/utils/src/config.rs"
   # Relation is never used in test
   - "libs/core/src/repository/database/entities"
   - "libs/core/src/utils/db_tools.rs"

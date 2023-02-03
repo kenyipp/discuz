@@ -40,7 +40,7 @@ pub struct UpdateCategoryInput {
 	pub name: String,
 	pub description: Option<String>,
 	pub postable: bool,
-	pub level: i32,
+	pub level: u32,
 	pub sort_index: i32,
 	pub parent_id: Option<String>,
 	pub user_id: Option<String>,

@@ -16,7 +16,7 @@ pub async fn execute(
 	app_state: web::Data<AppState>,
 	auth: Auth,
 ) -> Result<HttpResponse, AppError> {
-	let user = auth.user.ok_or(ApiAuthError::InvalidAccessToken)?;
+	let user = auth.user.ok_or(ApiAuthError::MissingAuthorization)?;
 	let id = params.id.to_owned();
 
 	if user.id != id {

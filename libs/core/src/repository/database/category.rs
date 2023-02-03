@@ -22,7 +22,7 @@ impl DbCategory {
 
 #[async_trait]
 pub trait DbCategoryTrait {
-	async fn list(&self, input: &InputCategoryList) -> Result<Vec<Category>, DbErr>;
+	async fn list(&self, input: &ListCategoryInput) -> Result<Vec<Category>, DbErr>;
 	async fn find_by_id(&self, id: &str) -> Result<Option<Category>, DbErr>;
 	async fn find_by_slug(&self, slug: &str) -> Result<Option<Category>, DbErr>;
 	async fn create(&self, input: &CreateCategoryInput) -> Result<String, DbErr>;
@@ -33,7 +33,7 @@ pub trait DbCategoryTrait {
 
 #[async_trait]
 impl DbCategoryTrait for DbCategory {
-	async fn list(&self, input: &InputCategoryList) -> Result<Vec<Category>, DbErr> {
+	async fn list(&self, input: &ListCategoryInput) -> Result<Vec<Category>, DbErr> {
 		let mut builder = category::Entity::find().order_by_desc(category::Column::UpdatedAt);
 
 		filter_query_results(&mut builder, &input.filter);
@@ -153,7 +153,7 @@ fn filter_query_results(builder: &mut Select<category::Entity>, _filter: &Catego
 }
 
 #[derive(Debug, Clone, Default)]
-pub struct InputCategoryList {
+pub struct ListCategoryInput {
 	pub filter: CategoryFilter,
 }
 
@@ -165,7 +165,7 @@ pub struct CreateCategoryInput {
 	pub name: String,
 	pub slug: String,
 	pub postable: bool,
-	pub level: i32,
+	pub level: u32,
 	pub sort_index: Option<i32>,
 	pub description: Option<String>,
 	pub parent_id: Option<String>,
@@ -179,7 +179,7 @@ pub struct UpdateCategoryInput {
 	pub slug: String,
 	pub description: Option<String>,
 	pub postable: bool,
-	pub level: i32,
+	pub level: u32,
 	pub sort_index: i32,
 	pub parent_id: Option<String>,
 	pub user_id: Option<String>,

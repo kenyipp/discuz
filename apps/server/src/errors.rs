@@ -4,8 +4,7 @@ use std::{convert::From, fmt};
 use uuid::Uuid;
 
 use crate::{
-	auth::errors::ApiAuthError, category::errors::ApiCategoryError, file::errors::ApiFileError,
-	post::errors::ApiPostError,
+	auth::errors::ApiAuthError, category::errors::ApiCategoryError, post::errors::ApiPostError,
 };
 
 #[derive(Debug, Serialize, Clone)]
@@ -43,7 +42,6 @@ pub trait GetErrorDetailTrait {
 }
 
 impl AppError {
-	#[cfg(not(tarpaulin_include))]
 	pub fn internal_server_error() -> AppError {
 		AppError {
 			id: Uuid::new_v4().to_string(),
@@ -59,19 +57,6 @@ impl AppError {
 
 impl From<ApiAuthError> for AppError {
 	fn from(error: ApiAuthError) -> Self {
-		let detail = error.get_error_detail();
-		AppError {
-			id: Uuid::new_v4().to_string(),
-			code: detail.code,
-			status: detail.status,
-			message: detail.message,
-			detail: detail.detail,
-		}
-	}
-}
-
-impl From<ApiFileError> for AppError {
-	fn from(error: ApiFileError) -> Self {
 		let detail = error.get_error_detail();
 		AppError {
 			id: Uuid::new_v4().to_string(),

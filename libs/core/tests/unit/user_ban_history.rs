@@ -28,14 +28,14 @@ async fn ban_user_account() {
 		.await
 		.unwrap();
 
-	let input = CreateBanHistoryInput {
+	let input = BanUserInput {
 		ban_user_id: user.id.to_owned(),
 		ban_reason: Some(ban_reason.to_owned()),
 		ban_time: Some(1000),
 		user_id: admin.id.to_owned(),
 	};
 
-	let history = user_service.create_user_ban_history(&input).await.unwrap();
+	let history = user_service.ban_user_account(&input).await.unwrap();
 
 	assert_eq!(history.ban_user_id, user.id);
 	assert_eq!(history.ban_reason, Some(ban_reason.to_owned()));
@@ -67,14 +67,14 @@ async fn ban_user_permanently() {
 		.await
 		.unwrap();
 
-	let input = CreateBanHistoryInput {
+	let input = BanUserInput {
 		ban_user_id: user.id.to_owned(),
 		ban_reason: None,
 		ban_time: None,
 		user_id: admin.id.to_owned(),
 	};
 
-	let history = user_service.create_user_ban_history(&input).await.unwrap();
+	let history = user_service.ban_user_account(&input).await.unwrap();
 
 	assert_eq!(history.ban_user_id, user.id);
 	assert!(history.ban_reason.is_none());
@@ -104,14 +104,14 @@ async fn update_user_ban() {
 		.await
 		.unwrap();
 
-	let input = CreateBanHistoryInput {
+	let input = BanUserInput {
 		ban_user_id: user.id.to_owned(),
 		ban_reason: None,
 		ban_time: None,
 		user_id: admin.id.to_owned(),
 	};
 
-	let history = user_service.create_user_ban_history(&input).await.unwrap();
+	let history = user_service.ban_user_account(&input).await.unwrap();
 
 	let input = UpdateBanHistoryInput {
 		id: history.id,

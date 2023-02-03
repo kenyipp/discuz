@@ -10,7 +10,7 @@ pub struct Model {
 	pub slug: String,
 	#[sea_orm(nullable)]
 	pub description: Option<String>,
-	pub level: i32,
+	pub level: u32,
 	pub postable: bool,
 	pub sort_index: i32,
 	pub parent_id: Option<String>,

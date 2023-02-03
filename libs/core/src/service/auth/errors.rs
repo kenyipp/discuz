@@ -1,7 +1,7 @@
 use chrono::{DateTime, Utc};
 use derive_more::{Display, Error};
 
-#[derive(Debug, Display, Error)]
+#[derive(Debug, Display, Error, Clone)]
 pub enum AuthError {
 	#[display(fmt = "{_0}")]
 	Generic(#[error(not(source))] String),

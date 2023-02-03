@@ -1,7 +1,7 @@
 use error_stack::{Result, ResultExt};
 use tokio::try_join;
 
-pub use crate::repository::repo_category::InputCategoryList;
+pub use crate::repository::repo_category::ListCategoryInput;
 
 use crate::{
 	repository::repo_category::{Category, RepoCategory, RepoCategoryTrait},
@@ -10,9 +10,9 @@ use crate::{
 
 pub async fn execute(
 	repo_category: &RepoCategory,
-	input: Option<&InputCategoryList>,
+	input: Option<&ListCategoryInput>,
 ) -> Result<GetCategoriesResponse, CategoryError> {
-	let default_input = InputCategoryList::default();
+	let default_input = ListCategoryInput::default();
 	let input = input.unwrap_or(&default_input);
 	let (data, count) = try_join!(
 		repo_category.list(input),
@@ -22,7 +22,7 @@ pub async fn execute(
 	Ok(GetCategoriesResponse { data, count })
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct GetCategoriesResponse {
 	pub data: Vec<Category>,
 	pub count: u64,

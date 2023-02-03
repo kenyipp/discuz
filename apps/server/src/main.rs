@@ -17,7 +17,7 @@ async fn main() {
 
 	// Set the default value of TRACING_LOG if it isn't explicitly defined
 	if env::var("TRACING_LOG").is_err() {
-		env::set_var("RUST_LOG", "discuz-core=debug");
+		env::set_var("TRACING_LOG", "discuz-core=debug");
 	}
 
 	let subscriber = Subscriber::builder()

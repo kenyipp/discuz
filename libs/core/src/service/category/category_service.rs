@@ -5,7 +5,7 @@ pub use crate::{
 	repository::repo_category::Category,
 	service::category::utils::{
 		create::CreateCategoryInput,
-		get_categories::{GetCategoriesResponse, InputCategoryList},
+		get_categories::{GetCategoriesResponse, ListCategoryInput},
 		update::UpdateCategoryInput,
 	},
 };
@@ -24,7 +24,7 @@ pub struct CategoryService {
 pub trait CategoryServiceTrait: Sync + Send + Debug {
 	async fn get_categories(
 		&self,
-		input: Option<&InputCategoryList>,
+		input: Option<&ListCategoryInput>,
 	) -> Result<GetCategoriesResponse, CategoryError>;
 	async fn find_by_id(&self, id: &str) -> Result<Option<Category>, CategoryError>;
 	async fn find_by_slug(&self, slug: &str) -> Result<Option<Category>, CategoryError>;
@@ -37,7 +37,7 @@ pub trait CategoryServiceTrait: Sync + Send + Debug {
 impl CategoryServiceTrait for CategoryService {
 	async fn get_categories(
 		&self,
-		input: Option<&InputCategoryList>,
+		input: Option<&ListCategoryInput>,
 	) -> Result<GetCategoriesResponse, CategoryError> {
 		utils::get_categories::execute(&self.repo_category, input).await
 	}
