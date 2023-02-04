@@ -1,10 +1,11 @@
 use error_stack::{Result, ResultExt};
-use std::string::ToString;
+use std::time::SystemTime;
+use std::{string::ToString, time::UNIX_EPOCH};
 use tokio::try_join;
 
 use crate::{
 	repository::{
-		database::category::Category,
+		database::db_category::Category,
 		repo_config::{AppsVersion, RepoConfig, RepoConfigTrait},
 	},
 	service::config::{constants::AppStatus, errors::ConfigError},
@@ -31,9 +32,15 @@ pub async fn execute(repo_config: &RepoConfig) -> Result<AppConfig, ConfigError>
 		.find(|config| config.key == "app_maintaining_message")
 		.map(|config| config.value.to_owned());
 
+	let server_time = SystemTime::now()
+		.duration_since(UNIX_EPOCH)
+		.expect("Time went backwards")
+		.as_millis();
+
 	let app_config = AppConfig {
 		app_status,
 		app_maintaining_message,
+		server_time,
 		versions,
 		categories,
 	};
@@ -88,9 +95,11 @@ fn parse_categories_into_tree(categories: Vec<Category>) -> Vec<DtoCategory> {
 	root_categories
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct AppConfig {
 	pub app_status: String,
 	pub app_maintaining_message: Option<String>,
+	pub server_time: u128,
 	pub versions: Vec<AppsVersion>,
 	pub categories: Vec<DtoCategory>,
 }
@@ -100,7 +109,7 @@ pub struct Configs {
 	pub app_maintaining_message: String,
 }
 
-#[derive(Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct DtoCategory {
 	pub id: String,
 	pub name: String,

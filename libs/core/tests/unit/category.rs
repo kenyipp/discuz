@@ -4,7 +4,7 @@ use strum::EnumProperty;
 use discuz_core::{
 	constants::UNCLASSIFIED_CATEGORY_ID,
 	migration::{Migrator, MigratorTrait},
-	repository::{database::category::DbCategory, repo_category::RepoCategory},
+	repository::{database::db_category::DbCategory, repo_category::RepoCategory},
 	service::category::category_service::{
 		CategoryService, CategoryServiceTrait, CreateCategoryInput, GetCategoriesResponse,
 		UpdateCategoryInput,

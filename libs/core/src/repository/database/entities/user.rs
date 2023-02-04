@@ -16,30 +16,23 @@ pub struct Model {
 	pub avatar_url: Option<String>,
 	#[sea_orm(nullable)]
 	pub notes: Option<String>,
-	pub number_of_ban: u32,
+	pub no_of_ban: u32,
 	#[sea_orm(default_value = "normal")]
 	pub status_id: String,
 	pub created_at: DateTimeUtc,
 	pub updated_at: DateTimeUtc,
 }
 
-#[derive(Copy, Clone, Debug, EnumIter)]
+#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+	#[sea_orm(has_many = "super::category::Entity")]
 	Category,
+	#[sea_orm(has_many = "super::file::Entity")]
 	File,
+	#[sea_orm(has_many = "super::post_reply::Entity")]
 	PostReply,
+	#[sea_orm(has_many = "super::user_ban_history::Entity")]
 	BanUserId,
-}
-
-impl RelationTrait for Relation {
-	fn def(&self) -> RelationDef {
-		match self {
-			Relation::Category => Entity::has_many(super::category::Entity).into(),
-			Relation::File => Entity::has_many(super::file::Entity).into(),
-			Relation::PostReply => Entity::has_many(super::post_reply::Entity).into(),
-			Relation::BanUserId => Entity::has_many(super::user_ban_history::Entity).into(),
-		}
-	}
 }
 
 impl Related<super::category::Entity> for Entity {

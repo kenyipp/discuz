@@ -12,7 +12,7 @@ pub struct Model {
 	pub comment_count: i32,
 	pub max_comment_count: i32,
 	pub content: String,
-	pub user_id: Option<String>,
+	pub user_id: String,
 	pub status_id: String,
 	pub created_at: DateTimeUtc,
 	pub updated_at: DateTimeUtc,

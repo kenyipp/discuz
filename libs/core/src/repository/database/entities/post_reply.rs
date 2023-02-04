@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
 	#[sea_orm(primary_key, column_name = "post_reply_id")]
 	pub id: i32,
+	pub no_of_reply: u32,
 	pub quote_reply_id: Option<i32>,
 	pub content: String,
 	pub post_id: i32,
@@ -19,21 +20,26 @@ pub struct Model {
 	pub updated_at: DateTimeUtc,
 }
 
-#[derive(Copy, Clone, Debug, EnumIter)]
+#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+	#[sea_orm(
+		belongs_to = "Entity",
+		from = "Column::QuoteReplyId",
+		to = "Column::Id"
+	)]
 	QuoteReply,
+	#[sea_orm(
+		belongs_to = "super::post::Entity",
+		from = "Column::PostId",
+		to = "super::post::Column::Id"
+	)]
 	Post,
+	#[sea_orm(
+		belongs_to = "super::user::Entity",
+		from = "Column::UserId",
+		to = "super::user::Column::Id"
+	)]
 	User,
-}
-
-impl RelationTrait for Relation {
-	fn def(&self) -> RelationDef {
-		match self {
-			Relation::QuoteReply => Entity::has_one(Entity).into(),
-			Relation::Post => Entity::belongs_to(super::post::Entity).into(),
-			Relation::User => Entity::belongs_to(super::user::Entity).into(),
-		}
-	}
 }
 
 impl Related<Entity> for Entity {

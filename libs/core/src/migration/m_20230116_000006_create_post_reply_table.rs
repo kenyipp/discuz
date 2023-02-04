@@ -90,6 +90,12 @@ fn create_post_reply_table(manager: &SchemaManager) -> TableCreateStatement {
 				.unsigned(),
 		)
 		.col(
+			ColumnDef::new(PostReply::NoOfReply)
+				.integer()
+				.integer_len(11)
+				.unsigned(),
+		)
+		.col(
 			ColumnDef::new(PostReply::PostId)
 				.integer()
 				.integer_len(11)
@@ -148,6 +154,7 @@ fn create_post_reply_table(manager: &SchemaManager) -> TableCreateStatement {
 pub enum PostReply {
 	Table,
 	PostReplyId,
+	NoOfReply,
 	QuoteReplyId,
 	Content,
 	PostId,

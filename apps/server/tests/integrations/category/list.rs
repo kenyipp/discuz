@@ -4,10 +4,10 @@ use discuz_core::{
 	migration::{Migrator, MigratorTrait},
 	service::{auth::constants::UserRole, user::user_service::UserServiceTrait},
 };
-use discuz_server::{app, category::category_controller, user::user_controller};
+use discuz_server::{app, category::category_controller::list::Response, user::user_controller};
 
 #[actix_web::test]
-async fn create_category() {
+async fn list_category() {
 	let app_state = app::get_app_state().await;
 	Migrator::refresh(&app_state.db_connection).await.unwrap();
 	let app = test::init_service(
@@ -16,14 +16,6 @@ async fn create_category() {
 			.service(web::scope("/api").configure(app::get_api_routes)),
 	)
 	.await;
-
-	let body = category_controller::create::Body {
-		name: "New Category Id".to_owned(),
-		postable: None,
-		level: None,
-		description: None,
-		parent_id: None,
-	};
 
 	// Get the user id
 	let req = test::TestRequest::get()
@@ -43,20 +35,15 @@ async fn create_category() {
 		.await
 		.unwrap();
 
-	// Run test
-	let req = test::TestRequest::post()
+	let req = test::TestRequest::get()
 		.uri("/api/category")
 		.append_header(("authorization", "bearer ".to_string() + FAKE_ACCESS_TOKEN))
-		.set_json(body.to_owned())
 		.to_request();
-
 	let resp = test::call_service(&app, req).await;
-
 	assert!(resp.status().is_success());
 
-	let create_category_resp: category_controller::create::Response =
-		test::read_body_json(resp).await;
+	let create_category_resp: Response = test::read_body_json(resp).await;
 
-	assert_eq!(create_category_resp.data.name, body.name);
-	assert_eq!(create_category_resp.data.description, body.description);
+	assert!(!create_category_resp.data.is_empty());
+	assert!(create_category_resp.count > 0);
 }

@@ -1,10 +1,10 @@
 use std::sync::Arc;
 use uuid::Uuid;
 
-use crate::unit::mock_auth_provider::MockApiCognito;
 use discuz_core::{
 	migration::{Migrator, MigratorTrait},
 	service::{auth::constants::UserRole, prelude::*, user::constants::UserStatus},
+	utils::mock_data::mock_cognito_provider::MockApiCognito,
 };
 use discuz_utils::{amazon::get_aws_sdk_config, get_db_connection};
 

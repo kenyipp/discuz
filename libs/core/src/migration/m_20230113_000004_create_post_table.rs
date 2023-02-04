@@ -72,7 +72,12 @@ fn create_post(manager: &SchemaManager) -> TableCreateStatement {
 				.not_null(),
 		)
 		.col(ColumnDef::new(Post::Content).text())
-		.col(ColumnDef::new(Post::UserId).string().string_len(64).null())
+		.col(
+			ColumnDef::new(Post::UserId)
+				.string()
+				.string_len(64)
+				.not_null(),
+		)
 		.col(
 			ColumnDef::new(Post::StatusId)
 				.string()

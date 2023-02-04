@@ -1,5 +1,5 @@
 pub use crate::repository::{
-	database::category::{
+	database::db_category::{
 		Category, CategoryFilter, CreateCategoryInput, DbCategory, DbCategoryTrait,
 		ListCategoryInput, UpdateCategoryInput,
 	},

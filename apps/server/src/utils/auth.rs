@@ -8,7 +8,7 @@ use tracing::trace;
 
 use crate::utils::app_state::AppState;
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 pub struct Auth {
 	pub user: Option<User>,
 }
@@ -46,9 +46,7 @@ impl Auth {
 			let access_token = if let Ok(access_token) = access_token.to_str() {
 				access_token.to_owned()
 			} else {
-				trace!(
-					"[Utils - auth.rs] Unable to convert the access token from header value to string"
-				);
+				trace!("[auth.rs] Unable to convert the access token from header value to string");
 				return None;
 			};
 			let mut chucks = access_token.split(' ').to_owned();

@@ -32,7 +32,7 @@ pub async fn execute(
 		title: body.title.to_owned(),
 		category_id: body.category_id.to_owned(),
 		content: body.content.to_owned(),
-		user_id: Some(user.id),
+		user_id: user.id,
 	};
 
 	let post = post_service.create(&input).await.map_err(|error| {

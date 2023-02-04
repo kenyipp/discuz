@@ -18,7 +18,6 @@ pub async fn execute(repo_post: &RepoPost, input: &UpdatePostInput) -> Result<Po
 		category_id: input.category_id.to_owned(),
 		max_comment_count: input.max_comment_count,
 		content: input.content.to_owned(),
-		user_id: input.user_id.to_owned(),
 		status_id: input.status_id.to_owned().unwrap_or(post.status_id),
 	};
 
@@ -40,6 +39,5 @@ pub struct UpdatePostInput {
 	pub category_id: String,
 	pub max_comment_count: Option<i32>,
 	pub content: String,
-	pub user_id: Option<String>,
 	pub status_id: Option<String>,
 }

@@ -12,8 +12,8 @@ use discuz_core::service::factory::Factory;
 use discuz_utils::{amazon::get_aws_sdk_config, config::get_config, get_db_connection, redis};
 
 use crate::{
-	auth::auth_route, category::category_route, post::post_route, user::user_route,
-	utils::app_state::AppState,
+	auth::auth_route, category::category_route, config::config_route, post::post_route,
+	user::user_route, utils::app_state::AppState,
 };
 
 pub async fn listen() -> std::io::Result<()> {
@@ -108,6 +108,7 @@ async fn health_check() -> impl Responder {
 pub fn get_api_routes(cfg: &mut web::ServiceConfig) {
 	cfg.route("/health-check", web::get().to(health_check));
 	cfg.service(web::scope("/auth").configure(auth_route::route));
+	cfg.service(web::scope("/config").configure(config_route::route));
 	cfg.service(web::scope("/user").configure(user_route::route));
 	cfg.service(web::scope("/category").configure(category_route::route));
 	cfg.service(web::scope("/post").configure(post_route::route));

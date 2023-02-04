@@ -1,31 +1,22 @@
 use std::sync::Arc;
 
 use discuz_core::{
-	constants::UNCLASSIFIED_CATEGORY_ID,
+	constants::{FAKE_ACCESS_TOKEN, UNCLASSIFIED_CATEGORY_ID},
 	migration::{Migrator, MigratorTrait},
-	repository::{
-		database::{category::DbCategory, db_post::DbPost},
-		repo_category::RepoCategory,
-		repo_post::RepoPost,
-	},
-	service::{
-		category::category_service::{CategoryService, CategoryServiceTrait},
-		post::post_service::{CreatePostInput, PostService, PostServiceTrait, UpdatePostInput},
-	},
+	service::prelude::*,
 };
-use discuz_utils::get_db_connection;
+use discuz_utils::{amazon::get_aws_sdk_config, get_db_connection};
 
 #[tokio::test]
 async fn create_post() {
 	let SetupResponse {
 		post_service,
 		category_service,
+		create_post_input,
 		..
 	} = setup().await;
 
-	let input = get_create_post_input();
-
-	let post = post_service.create(&input).await.unwrap();
+	let post = post_service.create(&create_post_input).await.unwrap();
 	assert!(post.slug.contains("hello-world"));
 	assert_eq!(post.category_id, UNCLASSIFIED_CATEGORY_ID);
 
@@ -42,13 +33,12 @@ async fn create_posts_with_same_content() {
 	let SetupResponse {
 		post_service,
 		category_service,
+		create_post_input,
 		..
 	} = setup().await;
 
-	let input = get_create_post_input();
-
-	post_service.create(&input).await.unwrap();
-	post_service.create(&input).await.unwrap();
+	post_service.create(&create_post_input).await.unwrap();
+	post_service.create(&create_post_input).await.unwrap();
 
 	let category = category_service
 		.find_by_id(UNCLASSIFIED_CATEGORY_ID)
@@ -60,11 +50,13 @@ async fn create_posts_with_same_content() {
 
 #[tokio::test]
 async fn update_post() {
-	let SetupResponse { post_service, .. } = setup().await;
+	let SetupResponse {
+		post_service,
+		create_post_input,
+		..
+	} = setup().await;
 
-	let input = get_create_post_input();
-
-	let post = post_service.create(&input).await.unwrap();
+	let post = post_service.create(&create_post_input).await.unwrap();
 
 	let update_input = UpdatePostInput {
 		id: post.id,
@@ -72,7 +64,6 @@ async fn update_post() {
 		category_id: UNCLASSIFIED_CATEGORY_ID.to_owned(),
 		content: "Content".to_owned(),
 		max_comment_count: None,
-		user_id: None,
 		status_id: None,
 	};
 
@@ -86,12 +77,11 @@ async fn delete_post() {
 	let SetupResponse {
 		post_service,
 		category_service,
+		create_post_input,
 		..
 	} = setup().await;
 
-	let input = get_create_post_input();
-
-	let post = post_service.create(&input).await.unwrap();
+	let post = post_service.create(&create_post_input).await.unwrap();
 
 	post_service.delete(post.id).await.unwrap();
 
@@ -108,31 +98,31 @@ async fn delete_post() {
 	assert_eq!(category.count, 0);
 }
 
-fn get_create_post_input() -> CreatePostInput {
-	CreatePostInput {
+async fn setup() -> SetupResponse {
+	let db_connection = Arc::new(get_db_connection().await.unwrap());
+	let sdk_config = Arc::new(get_aws_sdk_config().await);
+	Migrator::refresh(&db_connection).await.unwrap();
+	let factory = Factory::new(&db_connection, &sdk_config);
+	let category_service = Arc::new(factory.new_category_service());
+	let post_service = Arc::new(factory.new_post_service());
+	let auth_service = Arc::new(factory.new_auth_service());
+	let user_service = Arc::new(factory.new_user_service(auth_service));
+	let user = user_service.get_profile(FAKE_ACCESS_TOKEN).await.unwrap();
+	let create_post_input = CreatePostInput {
 		title: "Hello world".to_owned(),
 		category_id: UNCLASSIFIED_CATEGORY_ID.to_owned(),
 		content: "Content".to_owned(),
-		user_id: None,
-	}
-}
-
-async fn setup() -> SetupResponse {
-	let db_connection = Arc::new(get_db_connection().await.unwrap());
-	let category = DbCategory::new(&db_connection);
-	let repo_category = RepoCategory::new(category);
-	let category_service = Arc::new(CategoryService { repo_category });
-	let db_post = DbPost::new(&db_connection);
-	let repo_post = RepoPost::new(db_post);
-	let post_service = Arc::new(PostService { repo_post });
-	Migrator::refresh(&db_connection).await.unwrap();
+		user_id: user.id,
+	};
 	SetupResponse {
 		post_service,
 		category_service,
+		create_post_input,
 	}
 }
 
 pub struct SetupResponse {
 	post_service: Arc<PostService>,
 	category_service: Arc<CategoryService>,
+	create_post_input: CreatePostInput,
 }

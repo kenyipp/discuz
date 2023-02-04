@@ -36,7 +36,6 @@ pub async fn execute(
 		category_id: body.category_id.to_owned(),
 		max_comment_count: None,
 		content: body.content.to_owned(),
-		user_id: Some(user.id.to_owned()),
 		status_id: None,
 	};
 

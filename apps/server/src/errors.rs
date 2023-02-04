@@ -4,7 +4,8 @@ use std::{convert::From, fmt};
 use uuid::Uuid;
 
 use crate::{
-	auth::errors::ApiAuthError, category::errors::ApiCategoryError, post::errors::ApiPostError,
+	auth::errors::ApiAuthError, category::errors::ApiCategoryError, config::errors::ApiConfigError,
+	post::errors::ApiPostError,
 };
 
 #[derive(Debug, Serialize, Clone)]
@@ -83,6 +84,19 @@ impl From<ApiPostError> for AppError {
 
 impl From<ApiCategoryError> for AppError {
 	fn from(error: ApiCategoryError) -> Self {
+		let detail = error.get_error_detail();
+		AppError {
+			id: Uuid::new_v4().to_string(),
+			code: detail.code,
+			status: detail.status,
+			message: detail.message,
+			detail: detail.detail,
+		}
+	}
+}
+
+impl From<ApiConfigError> for AppError {
+	fn from(error: ApiConfigError) -> Self {
 		let detail = error.get_error_detail();
 		AppError {
 			id: Uuid::new_v4().to_string(),

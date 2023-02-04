@@ -91,7 +91,6 @@ impl DbPostTrait for DbPost {
 				.take()
 				.unwrap_or(MAX_POST_REPLY_COUNT)
 		}));
-		post.user_id = Set(input.user_id.clone());
 		post.status_id = Set(input.status_id.clone());
 		post.updated_at = Set(chrono::offset::Utc::now());
 
@@ -138,6 +137,7 @@ impl DbPostTrait for DbPost {
 		let post_reply = post_reply::ActiveModel {
 			post_id: Set(input.post_id.to_owned()),
 			content: Set(input.content.to_owned()),
+			no_of_reply: Set(input.no_of_reply.to_owned()),
 			quote_reply_id: Set(input.quote_reply_id.to_owned()),
 			user_id: Set(input.user_id.to_owned()),
 			..Default::default()
@@ -184,7 +184,7 @@ pub struct CreatePostInput {
 	pub slug: String,
 	pub category_id: String,
 	pub content: String,
-	pub user_id: Option<String>,
+	pub user_id: String,
 }
 
 pub struct UpdatePostInput {
@@ -194,13 +194,13 @@ pub struct UpdatePostInput {
 	pub category_id: String,
 	pub max_comment_count: Option<i32>,
 	pub content: String,
-	pub user_id: Option<String>,
 	pub status_id: String,
 }
 
 pub struct CreateReplyInput {
 	pub post_id: i32,
 	pub quote_reply_id: Option<i32>,
+	pub no_of_reply: u32,
 	pub content: String,
 	pub user_id: String,
 }

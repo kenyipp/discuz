@@ -28,3 +28,5 @@ pub async fn execute(app_state: web::Data<AppState>, auth: Auth) -> Result<HttpR
 
 	Ok(HttpResponse::Ok().json(response))
 }
+
+pub type Response = GetCategoriesResponse;

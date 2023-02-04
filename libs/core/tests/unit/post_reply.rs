@@ -85,7 +85,6 @@ async fn maximum_post_reply_error() {
 		category_id: UNCLASSIFIED_CATEGORY_ID.to_owned(),
 		content: mock_data::post::POST_CONTENT.to_owned(),
 		status_id: None,
-		user_id: None,
 	};
 
 	post_service.update(&input).await.unwrap();
@@ -99,7 +98,6 @@ async fn maximum_post_reply_error() {
 
 	let post_reply_resp = post_service.create_reply(&input).await;
 	assert!(post_reply_resp.is_ok());
-
 	let post_reply_resp = post_service.create_reply(&input).await;
 	assert!(post_reply_resp.is_err());
 
@@ -119,14 +117,14 @@ async fn setup() -> SetupResponse {
 	let auth_service = Arc::new(factory.new_auth_service());
 	let user_service = Arc::new(factory.new_user_service(auth_service));
 	Migrator::refresh(&db_connection).await.unwrap();
+	let user = user_service.get_profile(FAKE_ACCESS_TOKEN).await.unwrap();
 	let create_post_input = CreatePostInput {
 		title: mock_data::post::POST_TITLE.to_owned(),
 		category_id: UNCLASSIFIED_CATEGORY_ID.to_owned(),
 		content: mock_data::post::POST_CONTENT.to_owned(),
-		user_id: None,
+		user_id: user.id.to_owned(),
 	};
 	let post = post_service.create(&create_post_input).await.unwrap();
-	let user = user_service.get_profile(FAKE_ACCESS_TOKEN).await.unwrap();
 	SetupResponse {
 		user,
 		post,

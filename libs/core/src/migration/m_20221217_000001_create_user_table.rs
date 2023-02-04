@@ -40,7 +40,7 @@ impl MigrationTrait for Migration {
 					)
 					.col(ColumnDef::new(User::Phone).string().string_len(150))
 					.col(
-						ColumnDef::new(User::NumberOfBan)
+						ColumnDef::new(User::NoOfBan)
 							.integer()
 							.unsigned()
 							.not_null()
@@ -87,7 +87,7 @@ pub enum User {
 	Name,
 	Email,
 	Phone,
-	NumberOfBan,
+	NoOfBan,
 	Notes,
 	AvatarUrl,
 	StatusId,
