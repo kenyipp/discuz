@@ -16,6 +16,7 @@ use crate::{
 	user::user_route, utils::app_state::AppState,
 };
 
+#[cfg(not(tarpaulin_include))]
 pub async fn listen() -> std::io::Result<()> {
 	// Get the environment variables
 	dotenv().ok();

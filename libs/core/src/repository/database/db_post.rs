@@ -2,7 +2,6 @@ use crate::constants::MAX_POST_REPLY_COUNT;
 use chrono;
 use sea_orm::{sea_query::SimpleExpr, DatabaseConnection, *};
 use std::sync::Arc;
-// use uuid::Uuid;
 
 use super::entities::{category, post, post_reply};
 pub use super::entities::{post::Post, post_reply::PostReply};

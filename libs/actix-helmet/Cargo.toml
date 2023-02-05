@@ -1,0 +1,10 @@
+[package]
+name = "actix-helmet"
+description = "The `actix-helmet` is a Rust library that offers security enhancements for your Actix-web application by setting important HTTP headers."
+license = "MIT"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web = "4.3.0"
+futures-util = "0.3.26"
