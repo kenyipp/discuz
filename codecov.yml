@@ -22,3 +22,4 @@ ignore:
   - "libs/core/src/repository/database/entities"
   - "libs/core/src/utils/db_tools.rs"
   - "libs/core/src/service/file/provider"
+  - "libs/actix-helmet"

@@ -265,3 +265,25 @@ jobs:
       - name: Run Integration Test
         working-directory: ./tests
         run: ./api-test.sh
+
+  generate-code-coverage:
+    name: Generate Code Coverage
+    runs-on: ubuntu-latest
+    env:
+      RUN_MODE: testing
+    needs: [integration-test]
+    container:
+      image: xd009642/tarpaulin:develop-nightly
+      options: --security-opt seccomp=unconfined
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Generate Code Coverage
+        run: cargo +nightly tarpaulin --verbose --all-features --workspace --timeout 120 --out Xml
+
+      - name: Upload to codecov.io
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
